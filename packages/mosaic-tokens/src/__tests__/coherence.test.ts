@@ -28,7 +28,10 @@ const cssSource = readFileSync(CSS_PATH, "utf-8");
 function collectCssVars(prefix: string): Set<string> {
   const re = new RegExp(`--mosaic-${prefix}-([\\w-]+):`, "g");
   const out = new Set<string>();
-  for (const m of cssSource.matchAll(re)) out.add(m[1]);
+  for (const m of cssSource.matchAll(re)) {
+    const key = m[1];
+    if (key !== undefined) out.add(key);
+  }
   return out;
 }
 
@@ -101,21 +104,33 @@ describe("mosaic-tokens / scale invariants", () => {
     return n;
   }
 
+  function assertAscending(values: number[]): void {
+    for (let i = 1; i < values.length; i++) {
+      const cur = values[i];
+      const prev = values[i - 1];
+      if (cur === undefined || prev === undefined) throw new Error(`unexpected undefined at index ${i}`);
+      expect(cur).toBeGreaterThan(prev);
+    }
+  }
+
+  function requireToken(record: Readonly<Record<string, string>>, key: string): string {
+    const v = record[key];
+    if (v === undefined) throw new Error(`missing token: ${key}`);
+    return v;
+  }
+
   it("spacing — strictly ascending", () => {
-    const values = Object.values(spacing).map(pxToNumber);
-    for (let i = 1; i < values.length; i++) expect(values[i]).toBeGreaterThan(values[i - 1]);
+    assertAscending(Object.values(spacing).map(pxToNumber));
   });
 
   it("typography size — strictly ascending (xs → 3xl)", () => {
     const sizeKeys = ["size-xs", "size-sm", "size-base", "size-lg", "size-xl", "size-2xl", "size-3xl"] as const;
-    const values = sizeKeys.map((k) => pxToNumber(typography[k]));
-    for (let i = 1; i < values.length; i++) expect(values[i]).toBeGreaterThan(values[i - 1]);
+    assertAscending(sizeKeys.map((k) => pxToNumber(requireToken(typography, k))));
   });
 
   it("radii — strictly ascending (none → full)", () => {
     const radKeys = ["none", "xs", "sm", "md", "lg", "xl", "full"] as const;
-    const values = radKeys.map((k) => pxToNumber(radii[k]));
-    for (let i = 1; i < values.length; i++) expect(values[i]).toBeGreaterThan(values[i - 1]);
+    assertAscending(radKeys.map((k) => pxToNumber(requireToken(radii, k))));
   });
 
   it("color shades — present for all 5 statuses with 50/500/700 triplets", () => {
