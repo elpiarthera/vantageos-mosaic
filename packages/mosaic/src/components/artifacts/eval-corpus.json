@@ -1,0 +1,17 @@
+[
+  {
+    "case": "happy",
+    "input": { "content": "# Hello\n\nThis is **bold** text.", "locale": "fr" },
+    "expect": "renders markdown as HTML with article role"
+  },
+  {
+    "case": "edge",
+    "input": { "content": "", "locale": "en", "allowHtml": false },
+    "expect": "renders empty article without error"
+  },
+  {
+    "case": "failure",
+    "input": { "content": 42, "locale": "unknown" },
+    "expect": "renders error fallback alert"
+  }
+]

@@ -1,3 +1,6 @@
-// @vantageos/mosaic — media category barrel
-// Components land here in sub-tasks 2-5.
-export {};
+export { StatusBadge } from "./StatusBadge";
+export type { StatusBadgeProps } from "./StatusBadge.schema";
+export {
+  StatusBadgeSchema,
+  validateProps as validateStatusBadgeProps,
+} from "./StatusBadge.schema";

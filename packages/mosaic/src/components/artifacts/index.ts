@@ -1,3 +1,6 @@
-// @vantageos/mosaic — artifacts category barrel
-// Components land here in sub-tasks 2-5.
-export {};
+export { MarkdownRenderer } from "./MarkdownRenderer";
+export type { MarkdownRendererProps } from "./MarkdownRenderer.schema";
+export {
+  MarkdownRendererSchema,
+  validateProps as validateMarkdownRendererProps,
+} from "./MarkdownRenderer.schema";

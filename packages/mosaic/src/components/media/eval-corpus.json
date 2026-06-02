@@ -1,0 +1,17 @@
+[
+  {
+    "case": "happy",
+    "input": { "status": "active", "variant": "success", "locale": "en" },
+    "expect": "renders green badge with status text"
+  },
+  {
+    "case": "edge",
+    "input": { "status": "pending", "locale": "fr", "label": "En attente" },
+    "expect": "renders neutral badge with custom label"
+  },
+  {
+    "case": "failure",
+    "input": { "status": 123, "variant": "unknown" },
+    "expect": "renders error fallback alert span"
+  }
+]
