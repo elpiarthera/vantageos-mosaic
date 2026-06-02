@@ -23,11 +23,7 @@ import { describe, expect, it } from "vitest";
 
 // ─── Config ─────────────────────────────────────────────────────────────────
 
-const COMPONENTS_DIR = join(
-  import.meta.dirname,
-  "..",
-  "components",
-);
+const COMPONENTS_DIR = join(import.meta.dirname, "..", "components");
 
 /** Minimum text length to flag (avoids single-char JSXText like "," or " ") */
 const MIN_TEXT_LENGTH = 3;
@@ -73,7 +69,13 @@ function hasFileLevelEscape(source: string): boolean {
  */
 function hasSameLineOverride(
   _ast: ReturnType<typeof parser.parse>,
-  path: { node: { loc?: { start: { line: number } }; leadingComments?: Array<{ value: string }>; trailingComments?: Array<{ value: string }> } },
+  path: {
+    node: {
+      loc?: { start: { line: number } };
+      leadingComments?: Array<{ value: string }>;
+      trailingComments?: Array<{ value: string }>;
+    };
+  },
 ): boolean {
   const line = path.node.loc?.start.line;
   if (line === undefined) return false;
@@ -83,9 +85,7 @@ function hasSameLineOverride(
     ...(path.node.trailingComments ?? []),
   ];
 
-  return allComments.some((c) =>
-    /allow-hardcode-i18n\s*:/.test(c.value),
-  );
+  return allComments.some((c) => /allow-hardcode-i18n\s*:/.test(c.value));
 }
 
 // ─── Violation type ──────────────────────────────────────────────────────────
@@ -158,9 +158,7 @@ describe("no-hardcode-strings", () => {
     }
 
     if (allViolations.length > 0) {
-      const report = allViolations
-        .map((v) => `  ${v.file}:${v.line} — "${v.text}"`)
-        .join("\n");
+      const report = allViolations.map((v) => `  ${v.file}:${v.line} — "${v.text}"`).join("\n");
       throw new Error(
         `Found ${allViolations.length} hardcoded JSX string literal(s):\n${report}\n\n` +
           "Fix: pass string as a prop from the host app, or add:\n" +
