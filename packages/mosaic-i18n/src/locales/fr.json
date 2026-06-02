@@ -1,1 +1,61 @@
-{}
+{
+  "ProgressBar": {
+    "aria": {
+      "label": "Progression"
+    },
+    "error": {
+      "invalidProps": "ProgressBar : propriétés invalides"
+    }
+  },
+  "ConfirmDialog": {
+    "button": {
+      "confirm": "Confirmer",
+      "cancel": "Annuler"
+    },
+    "aria": {
+      "dialog": "Boîte de dialogue de confirmation"
+    }
+  },
+  "TableView": {
+    "aria": {
+      "table": "Tableau de données"
+    },
+    "pagination": {
+      "next": "Page suivante",
+      "prev": "Page précédente"
+    },
+    "empty": {
+      "message": "Aucune donnée à afficher"
+    },
+    "error": {
+      "invalidProps": "TableView : propriétés invalides"
+    }
+  },
+  "MarkdownRenderer": {
+    "aria": {
+      "content": "Contenu Markdown rendu"
+    },
+    "error": {
+      "invalidProps": "MarkdownRenderer : propriétés invalides",
+      "tooLong": "Le contenu dépasse la longueur maximale"
+    }
+  },
+  "TokenDisplayOnceModal": {
+    "button": {
+      "copy": "Copier le jeton",
+      "close": "Fermer"
+    },
+    "warning": {
+      "once": "Ce jeton ne sera affiché qu'une seule fois. Copiez-le maintenant."
+    },
+    "copied": "Copié"
+  },
+  "StatusBadge": {
+    "aria": {
+      "status": "Statut"
+    },
+    "error": {
+      "invalidProps": "StatusBadge : propriétés invalides"
+    }
+  }
+}

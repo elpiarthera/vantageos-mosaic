@@ -1,2 +1,32 @@
 version: "0.1.0"
-components: []
+components:
+  - name: ProgressBar
+    category: progress
+    schema: src/components/progress/ProgressBar.schema.ts
+    zodExport: ProgressBarSchema
+    i18nKeys: ["ProgressBar.aria.label", "ProgressBar.error.invalidProps"]
+  - name: ConfirmDialog
+    category: input
+    schema: src/components/input/ConfirmDialog.schema.ts
+    zodExport: ConfirmDialogSchema
+    i18nKeys: ["ConfirmDialog.button.confirm", "ConfirmDialog.button.cancel", "ConfirmDialog.aria.dialog"]
+  - name: TableView
+    category: display
+    schema: src/components/display/TableView.schema.ts
+    zodExport: TableViewSchema
+    i18nKeys: ["TableView.aria.table", "TableView.pagination.next", "TableView.pagination.prev", "TableView.empty.message", "TableView.error.invalidProps"]
+  - name: MarkdownRenderer
+    category: artifacts
+    schema: src/components/artifacts/MarkdownRenderer.schema.ts
+    zodExport: MarkdownRendererSchema
+    i18nKeys: ["MarkdownRenderer.aria.content", "MarkdownRenderer.error.invalidProps", "MarkdownRenderer.error.tooLong"]
+  - name: TokenDisplayOnceModal
+    category: confirmation
+    schema: src/components/confirmation/TokenDisplayOnceModal.schema.ts
+    zodExport: TokenDisplayOnceModalSchema
+    i18nKeys: ["TokenDisplayOnceModal.button.copy", "TokenDisplayOnceModal.button.close", "TokenDisplayOnceModal.warning.once", "TokenDisplayOnceModal.copied"]
+  - name: StatusBadge
+    category: media
+    schema: src/components/media/StatusBadge.schema.ts
+    zodExport: StatusBadgeSchema
+    i18nKeys: ["StatusBadge.aria.status", "StatusBadge.error.invalidProps"]

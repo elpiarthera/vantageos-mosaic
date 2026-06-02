@@ -1,1 +1,61 @@
-{}
+{
+  "ProgressBar": {
+    "aria": {
+      "label": "Progress"
+    },
+    "error": {
+      "invalidProps": "ProgressBar: invalid props"
+    }
+  },
+  "ConfirmDialog": {
+    "button": {
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "aria": {
+      "dialog": "Confirmation dialog"
+    }
+  },
+  "TableView": {
+    "aria": {
+      "table": "Data table"
+    },
+    "pagination": {
+      "next": "Next page",
+      "prev": "Previous page"
+    },
+    "empty": {
+      "message": "No data to display"
+    },
+    "error": {
+      "invalidProps": "TableView: invalid props"
+    }
+  },
+  "MarkdownRenderer": {
+    "aria": {
+      "content": "Rendered Markdown content"
+    },
+    "error": {
+      "invalidProps": "MarkdownRenderer: invalid props",
+      "tooLong": "Content exceeds maximum length"
+    }
+  },
+  "TokenDisplayOnceModal": {
+    "button": {
+      "copy": "Copy token",
+      "close": "Close"
+    },
+    "warning": {
+      "once": "This token will only be shown once. Copy it now."
+    },
+    "copied": "Copied"
+  },
+  "StatusBadge": {
+    "aria": {
+      "status": "Status"
+    },
+    "error": {
+      "invalidProps": "StatusBadge: invalid props"
+    }
+  }
+}

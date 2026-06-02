@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "noEmit": true,
     "types": ["vitest/globals"]
   },
   "include": ["src/**/*", "tests/**/*", "vitest.config.ts", "tsup.config.ts", ".storybook/**/*"],
