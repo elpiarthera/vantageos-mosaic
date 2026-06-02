@@ -1,0 +1,37 @@
+{
+  "name": "@vantageos/mosaic-i18n",
+  "version": "0.1.0",
+  "description": "FR+EN locale resources and react-i18next wiring for @vantageos/mosaic.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./locales/en.json": "./src/locales/en.json",
+    "./locales/fr.json": "./src/locales/fr.json"
+  },
+  "files": ["dist", "src/locales", "README.md"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "biome check --error-on-warnings src",
+    "test": "echo 'no tests yet' && exit 0"
+  },
+  "peerDependencies": {
+    "react-i18next": "15.5.2",
+    "i18next": "^25.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "i18next": "25.0.0",
+    "react-i18next": "15.5.2",
+    "tsup": "8.4.0",
+    "typescript": "5.8.3"
+  }
+}

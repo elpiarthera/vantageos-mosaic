@@ -1,0 +1,5 @@
+{
+  "id": "media",
+  "label": { "en": "Media", "fr": "Médias" },
+  "description": "Badges, avatars and inline media."
+}

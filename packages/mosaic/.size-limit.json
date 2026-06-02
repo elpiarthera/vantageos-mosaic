@@ -1,0 +1,7 @@
+[
+  {
+    "path": "dist/index.js",
+    "limit": "250 KB",
+    "gzip": true
+  }
+]

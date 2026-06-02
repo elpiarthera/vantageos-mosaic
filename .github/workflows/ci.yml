@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Lint · Type · Test · A11y · Size · Drift · Stories
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["22.x"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Step 1: tsc --noEmit (zero type errors)
+      - name: tsc
+        run: pnpm -r exec tsc --noEmit
+
+      # Step 2: biome check --error-on-warnings
+      - name: biome
+        run: pnpm exec biome check --error-on-warnings .
+
+      # Step 3: vitest run --coverage (thresholds enforced)
+      - name: vitest
+        run: pnpm --filter @vantageos/mosaic run test -- --coverage
+
+      # Step 4: playwright + axe-core (a11y violations = fail)
+      - name: playwright-axe
+        run: pnpm --filter @vantageos/mosaic exec playwright test tests/a11y/
+
+      # Step 5: size-limit (≤250KB gz)
+      - name: size-limit
+        run: pnpm --filter @vantageos/mosaic run size-limit
+
+      # Step 6: registry drift gate
+      - name: registry-drift
+        run: node packages/mosaic/scripts/mosaic-registry-drift-check.mjs
+
+      # Step 7: storybook test-runner (4 stories per comp)
+      - name: storybook-test
+        run: pnpm --filter @vantageos/mosaic exec storybook-test-runner
+
+  npm-publish:
+    name: Publish to npm (Eta gate)
+    needs: ci
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @vantageos/mosaic run build
+      - name: Eta gate check
+        env:
+          ETA_APPROVED_TASK_ID: ${{ secrets.ETA_APPROVED_TASK_ID }}
+        run: node packages/mosaic/scripts/check-eta-gate.js
+      - name: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          ETA_APPROVED_TASK_ID: ${{ secrets.ETA_APPROVED_TASK_ID }}
+        run: pnpm --filter @vantageos/mosaic publish --no-git-checks --access public
