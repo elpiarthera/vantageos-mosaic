@@ -1,15 +1,84 @@
 /*
- * @vantageos/mosaic-tokens — CSS custom properties (skeleton).
+ * @vantageos/mosaic-tokens — CSS custom properties (T3-B implementation).
  *
- * Full token values land in T3-B (≈84 vars, ≤3 KB gz target).
- * This skeleton declares the :root scope so consumers can already
- * import "@vantageos/mosaic-tokens/css" without 404.
+ * Mirror of tokens.ts. Consumers can:
+ *   1. import "@vantageos/mosaic-tokens/css" — surface in :root globally
+ *   2. apply the Tailwind v4 plugin (./tailwind) for @theme inline integration
+ *   3. import the JS tokens for typed runtime access
+ *
+ * Naming convention: --mosaic-<category>-<key>. Categories: color, space,
+ * text, lh, fw, shadow, radius, duration, easing. All vars declared on :root.
+ *
+ * Size target: ≤3 KB gz (enforced via size-limit gate).
  */
 :root {
-  /* colors — populated in T3-B (status: success / warning / danger / info / neutral) */
-  /* spacing — populated in T3-B (4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 px) */
-  /* typography — populated in T3-B (font-size scale 1.25x) */
-  /* shadows — populated in T3-B (6 elevation steps, oklch-based) */
-  /* radii — populated in T3-B (6 strictly ascending values) */
-  /* motion — populated in T3-B (durations + easing curves) */
+  /* Colors — semantic × 3 shades, OKLCH */
+  --mosaic-color-success-50: oklch(0.965 0.040 145);
+  --mosaic-color-success-500: oklch(0.660 0.180 145);
+  --mosaic-color-success-700: oklch(0.470 0.140 145);
+  --mosaic-color-warning-50: oklch(0.975 0.045 85);
+  --mosaic-color-warning-500: oklch(0.770 0.170 85);
+  --mosaic-color-warning-700: oklch(0.560 0.145 65);
+  --mosaic-color-danger-50: oklch(0.965 0.035 25);
+  --mosaic-color-danger-500: oklch(0.640 0.205 25);
+  --mosaic-color-danger-700: oklch(0.460 0.180 25);
+  --mosaic-color-info-50: oklch(0.970 0.035 250);
+  --mosaic-color-info-500: oklch(0.650 0.170 250);
+  --mosaic-color-info-700: oklch(0.460 0.150 250);
+  --mosaic-color-neutral-50: oklch(0.980 0.005 250);
+  --mosaic-color-neutral-500: oklch(0.580 0.012 250);
+  --mosaic-color-neutral-700: oklch(0.380 0.010 250);
+
+  /* Spacing — 4 → 64 px */
+  --mosaic-space-1: 4px;
+  --mosaic-space-2: 8px;
+  --mosaic-space-3: 12px;
+  --mosaic-space-4: 16px;
+  --mosaic-space-6: 24px;
+  --mosaic-space-8: 32px;
+  --mosaic-space-12: 48px;
+  --mosaic-space-16: 64px;
+
+  /* Typography — 1.25x scale + line-height + weight */
+  --mosaic-text-xs: 12px;
+  --mosaic-text-sm: 14px;
+  --mosaic-text-base: 16px;
+  --mosaic-text-lg: 20px;
+  --mosaic-text-xl: 24px;
+  --mosaic-text-2xl: 30px;
+  --mosaic-text-3xl: 38px;
+  --mosaic-lh-tight: 1.2;
+  --mosaic-lh-normal: 1.5;
+  --mosaic-lh-relaxed: 1.6;
+  --mosaic-fw-regular: 400;
+  --mosaic-fw-medium: 500;
+  --mosaic-fw-semibold: 600;
+  --mosaic-fw-bold: 700;
+
+  /* Shadows — 6 elevation, OKLCH neutral tint */
+  --mosaic-shadow-0: none;
+  --mosaic-shadow-1: 0 1px 2px 0 oklch(0.200 0.010 250 / 0.05);
+  --mosaic-shadow-2: 0 2px 4px -1px oklch(0.200 0.010 250 / 0.08), 0 1px 2px -1px oklch(0.200 0.010 250 / 0.06);
+  --mosaic-shadow-3: 0 4px 8px -2px oklch(0.200 0.010 250 / 0.10), 0 2px 4px -2px oklch(0.200 0.010 250 / 0.06);
+  --mosaic-shadow-4: 0 8px 16px -4px oklch(0.200 0.010 250 / 0.12), 0 4px 8px -4px oklch(0.200 0.010 250 / 0.08);
+  --mosaic-shadow-5: 0 16px 32px -8px oklch(0.200 0.010 250 / 0.16), 0 8px 16px -8px oklch(0.200 0.010 250 / 0.10);
+
+  /* Radii — strictly ascending */
+  --mosaic-radius-none: 0px;
+  --mosaic-radius-xs: 2px;
+  --mosaic-radius-sm: 4px;
+  --mosaic-radius-md: 6px;
+  --mosaic-radius-lg: 8px;
+  --mosaic-radius-xl: 12px;
+  --mosaic-radius-full: 9999px;
+
+  /* Motion — durations + easing */
+  --mosaic-duration-fast: 75ms;
+  --mosaic-duration-base: 150ms;
+  --mosaic-duration-slow: 300ms;
+  --mosaic-easing-linear: linear;
+  --mosaic-easing-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --mosaic-easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --mosaic-easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --mosaic-easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
