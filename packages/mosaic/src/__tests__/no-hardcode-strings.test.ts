@@ -72,7 +72,7 @@ function hasFileLevelEscape(source: string): boolean {
  * Checks both leadingComments and trailingComments on the node.
  */
 function hasSameLineOverride(
-  node: parser.ParseResult<unknown> extends never ? never : ReturnType<typeof parser.parse>,
+  _ast: ReturnType<typeof parser.parse>,
   path: { node: { loc?: { start: { line: number } }; leadingComments?: Array<{ value: string }>; trailingComments?: Array<{ value: string }> } },
 ): boolean {
   const line = path.node.loc?.start.line;
