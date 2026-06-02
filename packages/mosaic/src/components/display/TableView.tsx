@@ -5,17 +5,17 @@ import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type MosaicLocale, t } from "../../i18n/strings.js";
 import { validateTableViewProps } from "./TableView.schema";
-import type { TableViewProps } from "./TableView.schema";
+import type { StreamingTableViewProps, TableViewProps } from "./TableView.schema";
 
 const OVERSCAN = 5;
 
 /**
- * TableView — Pattern 4 Streaming Hydration reference implementation.
+ * TableView — Static rows variant (primary API).
  *
- * - Consumes an RxJS Observable<Row[]> for incremental row appending.
- * - Activates TanStack Virtual v3 windowing when rows.length > virtualizeThreshold.
- * - Zod-validates serialisable props; renders role="alert" fallback on failure.
- * - Fully accessible: aria-rowcount, aria-label, scope="col".
+ * Accepts `rows: Row[]` for already-fetched data — no rxjs required.
+ * Activates TanStack Virtual v3 windowing when rows.length > virtualizeThreshold.
+ * Zod-validates serialisable props; renders role="alert" fallback on failure.
+ * Fully accessible: aria-rowcount, aria-label, scope="col".
  */
 export function TableView<TRow extends Record<string, unknown> = Record<string, unknown>>(
   props: TableViewProps<TRow>,
@@ -35,18 +35,70 @@ export function TableView<TRow extends Record<string, unknown> = Record<string, 
     return <div role="alert">{t("TableView.error.invalidProps", locale)}</div>;
   }
 
-  return <TableViewInner<TRow> {...props} virtualizeThreshold={validatedThreshold} />;
+  const isVirtual = props.rows.length > validatedThreshold;
+  const resolvedLocale: MosaicLocale = props.locale === "fr" ? "fr" : "en";
+
+  if (isVirtual) {
+    return (
+      <VirtualTable<TRow>
+        rows={props.rows}
+        columns={props.columns}
+        ariaLabel={props.ariaLabel}
+        locale={resolvedLocale}
+      />
+    );
+  }
+
+  return (
+    <StaticTable<TRow>
+      rows={props.rows}
+      columns={props.columns}
+      ariaLabel={props.ariaLabel}
+      locale={resolvedLocale}
+    />
+  );
 }
 
-// ── Inner implementation (rendered only after validation passes) ───────────────
+/**
+ * StreamingTableView — Streaming rows variant (advanced, opt-in).
+ *
+ * Pattern 4 Streaming Hydration reference implementation.
+ * Consumes an RxJS Observable<Row[]> for incremental row appending.
+ * Consumers MUST install rxjs ^7.8.0 in their project.
+ * Activates TanStack Virtual v3 windowing when rows.length > virtualizeThreshold.
+ * Zod-validates serialisable props; renders role="alert" fallback on failure.
+ * Fully accessible: aria-rowcount, aria-label, scope="col".
+ */
+export function StreamingTableView<TRow extends Record<string, unknown> = Record<string, unknown>>(
+  props: StreamingTableViewProps<TRow>,
+) {
+  // ── Zod validation (serialisable props only) ───────────────────────────────
+  let validatedThreshold = 100;
+  try {
+    const validated = validateTableViewProps({
+      columns: props.columns.map(({ key, header }) => ({ key, header })),
+      virtualizeThreshold: props.virtualizeThreshold,
+      ariaLabel: props.ariaLabel,
+      locale: props.locale,
+    });
+    validatedThreshold = validated.virtualizeThreshold;
+  } catch {
+    const locale: MosaicLocale = props.locale === "fr" ? "fr" : "en";
+    return <div role="alert">{t("TableView.error.invalidProps", locale)}</div>;
+  }
 
-function TableViewInner<TRow extends Record<string, unknown> = Record<string, unknown>>({
+  return <StreamingTableViewInner<TRow> {...props} virtualizeThreshold={validatedThreshold} />;
+}
+
+// ── Inner implementation for streaming (rendered only after validation passes) ──
+
+function StreamingTableViewInner<TRow extends Record<string, unknown> = Record<string, unknown>>({
   columns,
   rows$,
   virtualizeThreshold = 100,
   ariaLabel,
   locale,
-}: TableViewProps<TRow>) {
+}: StreamingTableViewProps<TRow> & { virtualizeThreshold: number }) {
   const resolvedLocale: MosaicLocale = locale === "fr" ? "fr" : "en";
   const [rows, setRows] = useState<Partial<TRow>[]>([]);
 

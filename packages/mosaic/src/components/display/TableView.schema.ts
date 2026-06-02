@@ -31,8 +31,25 @@ export const TableViewPropsSchema = z.object({
 export type TableViewPropsSchemaInput = z.input<typeof TableViewPropsSchema>;
 export type TableViewPropsSchemaOutput = z.output<typeof TableViewPropsSchema>;
 
-/** Full runtime props — rows$ is typed but not Zod-parseable. */
+/**
+ * Props for the static TableView — accepts a plain array of rows.
+ * Primary API for already-fetched data (no rxjs required).
+ */
 export type TableViewProps<TRow extends Record<string, unknown> = Record<string, unknown>> = {
+  columns: ColumnDef<TRow>[];
+  rows: Partial<TRow>[];
+  virtualizeThreshold?: number;
+  ariaLabel: string;
+  locale?: "en" | "fr";
+};
+
+/**
+ * Props for StreamingTableView — accepts an RxJS Observable for incremental row appending.
+ * Consumers using this variant MUST install rxjs ^7.8.0 in their project.
+ */
+export type StreamingTableViewProps<
+  TRow extends Record<string, unknown> = Record<string, unknown>,
+> = {
   columns: ColumnDef<TRow>[];
   rows$: Observable<Partial<TRow>[]>;
   virtualizeThreshold?: number;

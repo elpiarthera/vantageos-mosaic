@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import React from "react";
-import { EMPTY, Subject, of } from "rxjs";
-import { TableView } from "./TableView";
-import type { TableViewProps } from "./TableView.schema";
+import { EMPTY, Subject } from "rxjs";
+import { StreamingTableView, TableView } from "./TableView";
+import type { StreamingTableViewProps, TableViewProps } from "./TableView.schema";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -34,7 +34,7 @@ const meta: Meta<typeof TableView> = {
     docs: {
       description: {
         component:
-          "Pattern 4 — Streaming hydration table. Consumes an RxJS Observable<Row[]> for incremental row appending. Activates TanStack Virtual v3 windowing above `virtualizeThreshold`.",
+          "Static TableView — accepts `rows: Row[]` for already-fetched data (no rxjs required). For streaming data, use `StreamingTableView` with `rows$: Observable<Row[]>`. Activates TanStack Virtual v3 windowing above `virtualizeThreshold`.",
       },
     },
   },
@@ -43,14 +43,14 @@ const meta: Meta<typeof TableView> = {
 export default meta;
 type Story = StoryObj<typeof TableView>;
 
-// ── Default — 200 rows static ─────────────────────────────────────────────────
+// ── Default — 200 rows static array ──────────────────────────────────────────
 
 export const Default: Story = {
-  name: "Default (200 rows static)",
+  name: "Default (200 rows static array)",
   render: () => (
     <TableView<Row>
       columns={columns}
-      rows$={of(makeRows(200))}
+      rows={makeRows(200)}
       ariaLabel="Items table — 200 static rows"
       virtualizeThreshold={100}
       locale="en"
@@ -58,22 +58,34 @@ export const Default: Story = {
   ),
 };
 
-// ── Loading — empty Observable, never emits ───────────────────────────────────
+// ── Small — 10 rows static array, no virtualization ───────────────────────────
 
-export const Loading: Story = {
-  name: "Loading (Observable never emits)",
-  render: () => {
-    const subject = new Subject<Partial<Row>[]>();
-    return (
-      <TableView<Row>
-        columns={columns}
-        rows$={subject.asObservable()}
-        ariaLabel="Items table — loading"
-        virtualizeThreshold={100}
-        locale="en"
-      />
-    );
-  },
+export const Small: Story = {
+  name: "Small (10 rows, no virtualization)",
+  render: () => (
+    <TableView<Row>
+      columns={columns}
+      rows={makeRows(10)}
+      ariaLabel="Items table — 10 rows"
+      virtualizeThreshold={100}
+      locale="en"
+    />
+  ),
+};
+
+// ── Empty — static empty array ────────────────────────────────────────────────
+
+export const Empty: Story = {
+  name: "Empty (static empty array)",
+  render: () => (
+    <TableView<Row>
+      columns={columns}
+      rows={[]}
+      ariaLabel="Items table — no data"
+      virtualizeThreshold={100}
+      locale="fr"
+    />
+  ),
 };
 
 // ── ErrorState — invalid schema (empty columns) ───────────────────────────────
@@ -83,22 +95,40 @@ export const ErrorState: Story = {
   render: () => (
     <TableView
       columns={[] as unknown as TableViewProps<Row>["columns"]}
-      rows$={EMPTY}
+      rows={[]}
       ariaLabel="Bad table"
       locale="en"
     />
   ),
 };
 
-// ── Empty — Observable emits empty array ──────────────────────────────────────
+// ── Streaming — StreamingTableView with Observable ────────────────────────────
 
-export const Empty: Story = {
-  name: "Empty (Observable emits [])",
+type StreamingStory = StoryObj<typeof StreamingTableView>;
+
+export const Streaming: StreamingStory = {
+  name: "Streaming (Observable, never emits — loading state)",
+  render: () => {
+    const subject = new Subject<Partial<Row>[]>();
+    return (
+      <StreamingTableView<Row>
+        columns={columns}
+        rows$={subject.asObservable()}
+        ariaLabel="Items table — streaming loading"
+        virtualizeThreshold={100}
+        locale="en"
+      />
+    );
+  },
+};
+
+export const StreamingEmpty: StreamingStory = {
+  name: "Streaming Empty (Observable emits [])",
   render: () => (
-    <TableView<Row>
+    <StreamingTableView<Row>
       columns={columns}
-      rows$={of([])}
-      ariaLabel="Items table — no data"
+      rows$={EMPTY}
+      ariaLabel="Items table — streaming no data"
       virtualizeThreshold={100}
       locale="fr"
     />
