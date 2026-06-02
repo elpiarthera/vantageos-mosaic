@@ -1,3 +1,7 @@
 // @vantageos/mosaic — confirmation category barrel
-// Components land here in sub-tasks 2-5.
-export {};
+export { TokenDisplayOnceModal } from "./TokenDisplayOnceModal";
+export type { TokenDisplayOnceModalProps } from "./TokenDisplayOnceModal.schema";
+export {
+  TokenDisplayOnceModalSchema,
+  validateTokenDisplayOnceModalProps,
+} from "./TokenDisplayOnceModal.schema";

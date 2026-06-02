@@ -1,0 +1,37 @@
+[
+  {
+    "case": "happy",
+    "input": {
+      "token": "tok_demo_xxx_safe_dummy",
+      "title": "Your API Token",
+      "warningMessage": "This token will only be shown once. Copy it now and store it securely.",
+      "copyLabel": "Copy token",
+      "closeLabel": "I have copied it",
+      "locale": "en"
+    },
+    "expect": "renders modal with token in code block and copy + close buttons"
+  },
+  {
+    "case": "edge",
+    "input": {
+      "token": "t",
+      "title": "Jeton d'accès",
+      "warningMessage": "Ce jeton ne sera affiché qu'une seule fois.",
+      "copyLabel": "Copier",
+      "closeLabel": "Fermer",
+      "locale": "fr"
+    },
+    "expect": "renders correctly with single-character token and fr locale"
+  },
+  {
+    "case": "failure",
+    "input": {
+      "token": "",
+      "title": "",
+      "warningMessage": "",
+      "copyLabel": "",
+      "closeLabel": ""
+    },
+    "expect": "renders null (Zod validation fails — empty token and required strings)"
+  }
+]

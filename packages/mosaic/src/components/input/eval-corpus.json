@@ -1,0 +1,36 @@
+[
+  {
+    "case": "happy",
+    "input": {
+      "title": "Delete record",
+      "message": "This action cannot be undone.",
+      "confirmLabel": "Delete",
+      "cancelLabel": "Cancel",
+      "variant": "danger",
+      "locale": "en"
+    },
+    "expect": "renders dialog with danger confirm button (bg-red-600)"
+  },
+  {
+    "case": "edge",
+    "input": {
+      "title": "Confirm",
+      "message": "Are you sure?",
+      "confirmLabel": "Yes",
+      "cancelLabel": "No",
+      "variant": "default",
+      "locale": "fr"
+    },
+    "expect": "renders dialog with default variant confirm button"
+  },
+  {
+    "case": "failure",
+    "input": {
+      "title": "",
+      "message": "",
+      "confirmLabel": "",
+      "cancelLabel": ""
+    },
+    "expect": "renders null (Zod validation fails — empty required strings)"
+  }
+]
