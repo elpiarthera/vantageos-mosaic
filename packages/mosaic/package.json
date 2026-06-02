@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -53,6 +53,9 @@
     "zod": "3.25.28"
   },
   "devDependencies": {
+    "@babel/parser": "7.29.7",
+    "@babel/traverse": "7.29.7",
+    "@types/babel__traverse": "7.28.0",
     "@axe-core/playwright": "4.10.1",
     "@biomejs/biome": "1.9.4",
     "@playwright/test": "1.50.1",
