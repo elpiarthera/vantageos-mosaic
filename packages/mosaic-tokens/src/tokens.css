@@ -1,0 +1,15 @@
+/*
+ * @vantageos/mosaic-tokens — CSS custom properties (skeleton).
+ *
+ * Full token values land in T3-B (≈84 vars, ≤3 KB gz target).
+ * This skeleton declares the :root scope so consumers can already
+ * import "@vantageos/mosaic-tokens/css" without 404.
+ */
+:root {
+  /* colors — populated in T3-B (status: success / warning / danger / info / neutral) */
+  /* spacing — populated in T3-B (4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 px) */
+  /* typography — populated in T3-B (font-size scale 1.25x) */
+  /* shadows — populated in T3-B (6 elevation steps, oklch-based) */
+  /* radii — populated in T3-B (6 strictly ascending values) */
+  /* motion — populated in T3-B (durations + easing curves) */
+}

@@ -1,0 +1,5 @@
+{
+  "id": "confirmation",
+  "label": { "en": "Confirmation", "fr": "Confirmation" },
+  "description": "Security-critical dialogs and one-shot reveals."
+}

@@ -1,7 +1,7 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.1.2",
-  "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready.",
+  "version": "0.2.0",
+  "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -42,6 +42,74 @@
       "require": "./dist/media.cjs",
       "types": "./dist/media.d.ts"
     },
+    "./react": {
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.cjs",
+      "types": "./dist/react/index.d.ts"
+    },
+    "./react/progress": {
+      "import": "./dist/react/progress.js",
+      "require": "./dist/react/progress.cjs",
+      "types": "./dist/react/progress.d.ts"
+    },
+    "./react/input": {
+      "import": "./dist/react/input.js",
+      "require": "./dist/react/input.cjs",
+      "types": "./dist/react/input.d.ts"
+    },
+    "./react/display": {
+      "import": "./dist/react/display.js",
+      "require": "./dist/react/display.cjs",
+      "types": "./dist/react/display.d.ts"
+    },
+    "./react/artifacts": {
+      "import": "./dist/react/artifacts.js",
+      "require": "./dist/react/artifacts.cjs",
+      "types": "./dist/react/artifacts.d.ts"
+    },
+    "./react/confirmation": {
+      "import": "./dist/react/confirmation.js",
+      "require": "./dist/react/confirmation.cjs",
+      "types": "./dist/react/confirmation.d.ts"
+    },
+    "./react/media": {
+      "import": "./dist/react/media.js",
+      "require": "./dist/react/media.cjs",
+      "types": "./dist/react/media.d.ts"
+    },
+    "./preact": {
+      "import": "./dist/preact/index.js",
+      "types": "./dist/preact/index.d.ts"
+    },
+    "./preact/progress": {
+      "import": "./dist/preact/progress.js",
+      "types": "./dist/preact/progress.d.ts"
+    },
+    "./preact/input": {
+      "import": "./dist/preact/input.js",
+      "types": "./dist/preact/input.d.ts"
+    },
+    "./preact/display": {
+      "import": "./dist/preact/display.js",
+      "types": "./dist/preact/display.d.ts"
+    },
+    "./preact/artifacts": {
+      "import": "./dist/preact/artifacts.js",
+      "types": "./dist/preact/artifacts.d.ts"
+    },
+    "./preact/confirmation": {
+      "import": "./dist/preact/confirmation.js",
+      "types": "./dist/preact/confirmation.d.ts"
+    },
+    "./preact/media": {
+      "import": "./dist/preact/media.js",
+      "types": "./dist/preact/media.d.ts"
+    },
+    "./tokens": {
+      "import": "./dist/tokens.js",
+      "require": "./dist/tokens.cjs",
+      "types": "./dist/tokens.d.ts"
+    },
     "./server": {
       "import": "./dist/server.js",
       "require": "./dist/server.cjs",
@@ -66,6 +134,7 @@
   },
   "peerDependencies": {
     "@mcp-ui/client": "7.1.1",
+    "preact": "^10.25.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-i18next": "15.5.2",
@@ -73,6 +142,15 @@
   },
   "peerDependenciesMeta": {
     "@mcp-ui/client": {
+      "optional": true
+    },
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
       "optional": true
     },
     "react-i18next": {
@@ -86,6 +164,7 @@
     "@lit-labs/react": "1.0.6",
     "@mcp-ui/server": "6.1.0",
     "@tanstack/react-virtual": "3.13.6",
+    "@vantageos/mosaic-tokens": "workspace:*",
     "dompurify": "3.2.4",
     "marked": "15.0.7",
     "zod": "3.25.28"
@@ -111,6 +190,7 @@
     "@vitejs/plugin-react": "4.3.4",
     "@vitest/coverage-v8": "3.2.2",
     "jsdom": "26.0.0",
+    "preact": "10.27.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "size-limit": "11.2.0",
