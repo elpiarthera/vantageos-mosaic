@@ -1,0 +1,16 @@
+{
+  "en": {
+    "TokenDisplayOnceModal": {
+      "button": { "copy": "Copy token", "close": "Close" },
+      "warning": { "once": "This token will only be shown once. Copy it now." },
+      "copied": "Copied"
+    }
+  },
+  "fr": {
+    "TokenDisplayOnceModal": {
+      "button": { "copy": "Copier le jeton", "close": "Fermer" },
+      "warning": { "once": "Ce jeton ne sera affiché qu'une seule fois. Copiez-le maintenant." },
+      "copied": "Copié"
+    }
+  }
+}

@@ -3,7 +3,7 @@ export { TableView } from "./TableView";
 export type {
   ColumnDef,
   TableViewProps,
-  TableViewSchemaInput,
-  TableViewSchemaOutput,
+  TableViewPropsSchemaInput,
+  TableViewPropsSchemaOutput,
 } from "./TableView.schema";
-export { TableViewSchema, validateTableViewProps } from "./TableView.schema";
+export { TableViewPropsSchema, validateTableViewProps } from "./TableView.schema";

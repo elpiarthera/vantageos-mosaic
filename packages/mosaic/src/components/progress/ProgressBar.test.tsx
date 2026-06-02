@@ -1,19 +1,19 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ProgressBar } from "./ProgressBar";
-import { ProgressBarSchema, validateProps } from "./ProgressBar.schema";
+import { ProgressBarPropsSchema, validateProps } from "./ProgressBar.schema";
 import corpus from "./eval-corpus.json";
 
 // ─── Schema unit tests ───────────────────────────────────────────────────────
 
-describe("ProgressBarSchema", () => {
+describe("ProgressBarPropsSchema", () => {
   it("accepts valid happy-path props", () => {
-    const result = ProgressBarSchema.safeParse({ value: 75, label: "Budget", locale: "fr" });
+    const result = ProgressBarPropsSchema.safeParse({ value: 75, label: "Budget", locale: "fr" });
     expect(result.success).toBe(true);
   });
 
   it("applies default locale=en and colorVariant=default when omitted", () => {
-    const result = ProgressBarSchema.safeParse({ value: 50, label: "Usage" });
+    const result = ProgressBarPropsSchema.safeParse({ value: 50, label: "Usage" });
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.locale).toBe("en");
@@ -22,27 +22,27 @@ describe("ProgressBarSchema", () => {
   });
 
   it("rejects value > 100", () => {
-    const result = ProgressBarSchema.safeParse({ value: 150, label: "Budget" });
+    const result = ProgressBarPropsSchema.safeParse({ value: 150, label: "Budget" });
     expect(result.success).toBe(false);
   });
 
   it("rejects value < 0", () => {
-    const result = ProgressBarSchema.safeParse({ value: -1, label: "Budget" });
+    const result = ProgressBarPropsSchema.safeParse({ value: -1, label: "Budget" });
     expect(result.success).toBe(false);
   });
 
   it("rejects empty label", () => {
-    const result = ProgressBarSchema.safeParse({ value: 50, label: "" });
+    const result = ProgressBarPropsSchema.safeParse({ value: 50, label: "" });
     expect(result.success).toBe(false);
   });
 
   it("rejects invalid locale", () => {
-    const result = ProgressBarSchema.safeParse({ value: 50, label: "X", locale: "de" });
+    const result = ProgressBarPropsSchema.safeParse({ value: 50, label: "X", locale: "de" });
     expect(result.success).toBe(false);
   });
 
   it("accepts colorVariant=warning", () => {
-    const result = ProgressBarSchema.safeParse({
+    const result = ProgressBarPropsSchema.safeParse({
       value: 80,
       label: "Warn",
       colorVariant: "warning",
@@ -51,7 +51,7 @@ describe("ProgressBarSchema", () => {
   });
 
   it("accepts colorVariant=danger", () => {
-    const result = ProgressBarSchema.safeParse({
+    const result = ProgressBarPropsSchema.safeParse({
       value: 95,
       label: "Crit",
       colorVariant: "danger",
@@ -60,7 +60,11 @@ describe("ProgressBarSchema", () => {
   });
 
   it("rejects invalid colorVariant", () => {
-    const result = ProgressBarSchema.safeParse({ value: 50, label: "X", colorVariant: "purple" });
+    const result = ProgressBarPropsSchema.safeParse({
+      value: 50,
+      label: "X",
+      colorVariant: "purple",
+    });
     expect(result.success).toBe(false);
   });
 });
@@ -108,6 +112,19 @@ describe("ProgressBar component", () => {
     render(<ProgressBar value={100} label="Full" locale="en" colorVariant="default" />);
     const bar = screen.getByRole("progressbar");
     expect(bar.getAttribute("aria-valuenow")).toBe("100");
+  });
+
+  it("renders FR error fallback when raw.locale=fr (i18n branch)", () => {
+    render(
+      <ProgressBar
+        value={999 as unknown as number}
+        label=""
+        locale={"fr" as "en"}
+        colorVariant="default"
+      />,
+    );
+    const alert = screen.getByRole("alert");
+    expect(alert.textContent).toMatch(/propriétés invalides/i);
   });
 
   it("renders error fallback for invalid props — role=alert", () => {

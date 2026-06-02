@@ -2,6 +2,7 @@ import DOMPurify from "dompurify";
 import { marked } from "marked";
 // i18nKeys: MarkdownRenderer.aria.content, MarkdownRenderer.error.invalidProps, MarkdownRenderer.error.tooLong
 import React from "react";
+import { type MosaicLocale, t } from "../../i18n/strings.js";
 import { type MarkdownRendererProps, validateProps } from "./MarkdownRenderer.schema";
 
 interface MarkdownRendererInnerProps {
@@ -58,6 +59,7 @@ export function MarkdownRenderer(raw: Record<string, unknown>) {
     const props = validateProps(raw);
     return <MarkdownRendererInner {...props} />;
   } catch {
-    return <div role="alert">MarkdownRenderer: invalid props</div>;
+    const locale: MosaicLocale = raw.locale === "fr" ? "fr" : "en";
+    return <div role="alert">{t("MarkdownRenderer.error.invalidProps", locale)}</div>;
   }
 }

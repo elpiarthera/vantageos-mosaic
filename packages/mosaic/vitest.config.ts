@@ -18,6 +18,8 @@ export default defineConfig({
         "**/eval-corpus.json",
         "src/hooks/**",
         "src/adapters/**",
+        "src/i18n/**",
+        "src/server/**",
       ],
     },
   },

@@ -1,6 +1,6 @@
 export { StatusBadge } from "./StatusBadge";
 export type { StatusBadgeProps } from "./StatusBadge.schema";
 export {
-  StatusBadgeSchema,
+  StatusBadgePropsSchema,
   validateProps as validateStatusBadgeProps,
 } from "./StatusBadge.schema";

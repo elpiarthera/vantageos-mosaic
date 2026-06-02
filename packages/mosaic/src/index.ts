@@ -8,3 +8,4 @@ export * from "./components/confirmation/index.js";
 export * from "./components/media/index.js";
 export * from "./hooks/useStreamingHydration.js";
 export * from "./adapters/postMessageAdapter.js";
+export * from "./server/create-mosaic-resource.js";

@@ -208,6 +208,20 @@ describe("TableView — Zod validation failure", () => {
     expect(screen.queryByRole("table")).toBeNull();
   });
 
+  it("renders FR role=alert fallback when ariaLabel is empty and locale=fr (i18n branch)", () => {
+    const subject = new Subject<Partial<Row>[]>();
+    render(
+      <TableView
+        columns={defaultColumns}
+        rows$={subject.asObservable()}
+        ariaLabel=""
+        locale="fr"
+      />,
+    );
+    const alert = screen.getByRole("alert");
+    expect(alert.textContent).toMatch(/propriétés invalides/i);
+  });
+
   it("renders role=alert fallback when ariaLabel is empty string", () => {
     const subject = new Subject<Partial<Row>[]>();
 

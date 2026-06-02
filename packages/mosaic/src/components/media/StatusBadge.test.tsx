@@ -83,4 +83,10 @@ describe("StatusBadge — unit", () => {
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toContain("StatusBadge: invalid props");
   });
+
+  it("renders FR invalid props alert when raw.locale=fr (i18n branch)", () => {
+    render(<StatusBadge status={123 as unknown as string} variant="unknown" locale="fr" />);
+    const alert = screen.getByRole("alert");
+    expect(alert.textContent).toMatch(/propriétés invalides/i);
+  });
 });

@@ -1,0 +1,14 @@
+{
+  "en": {
+    "ProgressBar": {
+      "aria": { "label": "Progress" },
+      "error": { "invalidProps": "ProgressBar: invalid props" }
+    }
+  },
+  "fr": {
+    "ProgressBar": {
+      "aria": { "label": "Progression" },
+      "error": { "invalidProps": "ProgressBar : propriétés invalides" }
+    }
+  }
+}

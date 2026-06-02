@@ -4,6 +4,7 @@
 //           TokenDisplayOnceModal.warning.once, TokenDisplayOnceModal.copied
 
 import { type KeyboardEvent, type MouseEvent, useEffect, useId, useRef, useState } from "react";
+import { t } from "../../i18n/strings.js";
 import {
   type TokenDisplayOnceModalProps,
   validateTokenDisplayOnceModalProps,
@@ -15,6 +16,7 @@ function TokenDisplayOnceModalInner({
   warningMessage,
   copyLabel,
   closeLabel,
+  locale,
   onClose,
 }: TokenDisplayOnceModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -91,7 +93,11 @@ function TokenDisplayOnceModalInner({
         </div>
         {/* Ephemeral "Copied" toast — aria-live polite, no token text */}
         <output aria-live="polite" aria-atomic="true" className="min-h-[1.25rem] block">
-          {copied && <span className="text-sm text-green-700 font-medium">Copied</span>}
+          {copied && (
+            <span className="text-sm text-green-700 font-medium">
+              {t("TokenDisplayOnceModal.copied", locale)}
+            </span>
+          )}
         </output>
         <div className="flex justify-end gap-3 mt-2">
           <button

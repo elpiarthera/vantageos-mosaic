@@ -1,0 +1,14 @@
+{
+  "en": {
+    "StatusBadge": {
+      "aria": { "status": "Status" },
+      "error": { "invalidProps": "StatusBadge: invalid props" }
+    }
+  },
+  "fr": {
+    "StatusBadge": {
+      "aria": { "status": "Statut" },
+      "error": { "invalidProps": "StatusBadge : propriétés invalides" }
+    }
+  }
+}

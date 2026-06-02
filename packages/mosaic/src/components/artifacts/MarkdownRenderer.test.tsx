@@ -81,4 +81,11 @@ describe("MarkdownRenderer — unit", () => {
     const article = screen.getByRole("article");
     expect(article.innerHTML).toContain("<strong>Hello</strong>");
   });
+
+  it("renders FR invalid props alert when raw.locale=fr (i18n branch)", () => {
+    // content missing → Zod fails; raw.locale="fr" → FR branch
+    render(<MarkdownRenderer locale="fr" />);
+    const alert = screen.getByRole("alert");
+    expect(alert.textContent).toMatch(/propriétés invalides/i);
+  });
 });

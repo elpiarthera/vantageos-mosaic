@@ -2,6 +2,6 @@
 export { TokenDisplayOnceModal } from "./TokenDisplayOnceModal";
 export type { TokenDisplayOnceModalProps } from "./TokenDisplayOnceModal.schema";
 export {
-  TokenDisplayOnceModalSchema,
+  TokenDisplayOnceModalPropsSchema,
   validateTokenDisplayOnceModalProps,
 } from "./TokenDisplayOnceModal.schema";

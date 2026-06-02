@@ -1,5 +1,6 @@
 // i18nKeys: StatusBadge.aria.status, StatusBadge.error.invalidProps
 import React from "react";
+import { type MosaicLocale, t } from "../../i18n/strings.js";
 import { type StatusBadgeProps, validateProps } from "./StatusBadge.schema";
 
 type Variant = "success" | "warning" | "danger" | "info" | "neutral";
@@ -41,6 +42,7 @@ export function StatusBadge(raw: Record<string, unknown>) {
     const props = validateProps(raw);
     return <StatusBadgeInner {...props} />;
   } catch {
-    return <span role="alert">StatusBadge: invalid props</span>;
+    const locale: MosaicLocale = raw.locale === "fr" ? "fr" : "en";
+    return <span role="alert">{t("StatusBadge.error.invalidProps", locale)}</span>;
   }
 }

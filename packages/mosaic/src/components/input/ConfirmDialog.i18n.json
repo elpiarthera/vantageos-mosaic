@@ -1,0 +1,14 @@
+{
+  "en": {
+    "ConfirmDialog": {
+      "button": { "confirm": "Confirm", "cancel": "Cancel" },
+      "aria": { "dialog": "Confirmation dialog" }
+    }
+  },
+  "fr": {
+    "ConfirmDialog": {
+      "button": { "confirm": "Confirmer", "cancel": "Annuler" },
+      "aria": { "dialog": "Boîte de dialogue de confirmation" }
+    }
+  }
+}

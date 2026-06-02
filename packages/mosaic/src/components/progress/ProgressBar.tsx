@@ -1,5 +1,10 @@
 import React from "react";
+import { type MosaicLocale, t } from "../../i18n/strings.js";
 import { type ProgressBarProps, validateProps } from "./ProgressBar.schema.js";
+
+function pickLocale(raw: Record<string, unknown>): MosaicLocale {
+  return raw.locale === "fr" ? "fr" : "en";
+}
 
 const colorVariantClasses: Record<ProgressBarProps["colorVariant"], string> = {
   default: "bg-blue-600",
@@ -52,7 +57,7 @@ export function ProgressBar(raw: Record<string, unknown>) {
   } catch {
     return (
       <div role="alert" className="mosaic-progress-error">
-        ProgressBar: invalid props
+        {t("ProgressBar.error.invalidProps", pickLocale(raw))}
       </div>
     );
   }

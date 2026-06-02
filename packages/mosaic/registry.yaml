@@ -3,30 +3,42 @@ components:
   - name: ProgressBar
     category: progress
     schema: src/components/progress/ProgressBar.schema.ts
-    zodExport: ProgressBarSchema
+    zodExport: ProgressBarPropsSchema
     i18nKeys: ["ProgressBar.aria.label", "ProgressBar.error.invalidProps"]
+    sizeLimit: "20KB"
+    a11yLevel: WCAG-AA
   - name: ConfirmDialog
     category: input
     schema: src/components/input/ConfirmDialog.schema.ts
-    zodExport: ConfirmDialogSchema
+    zodExport: ConfirmDialogPropsSchema
     i18nKeys: ["ConfirmDialog.button.confirm", "ConfirmDialog.button.cancel", "ConfirmDialog.aria.dialog"]
+    sizeLimit: "30KB"
+    a11yLevel: WCAG-AA
   - name: TableView
     category: display
     schema: src/components/display/TableView.schema.ts
-    zodExport: TableViewSchema
+    zodExport: TableViewPropsSchema
     i18nKeys: ["TableView.aria.table", "TableView.pagination.next", "TableView.pagination.prev", "TableView.empty.message", "TableView.error.invalidProps"]
+    sizeLimit: "80KB"
+    a11yLevel: WCAG-AA
   - name: MarkdownRenderer
     category: artifacts
     schema: src/components/artifacts/MarkdownRenderer.schema.ts
-    zodExport: MarkdownRendererSchema
+    zodExport: MarkdownRendererPropsSchema
     i18nKeys: ["MarkdownRenderer.aria.content", "MarkdownRenderer.error.invalidProps", "MarkdownRenderer.error.tooLong"]
+    sizeLimit: "60KB"
+    a11yLevel: WCAG-AA
   - name: TokenDisplayOnceModal
     category: confirmation
     schema: src/components/confirmation/TokenDisplayOnceModal.schema.ts
-    zodExport: TokenDisplayOnceModalSchema
+    zodExport: TokenDisplayOnceModalPropsSchema
     i18nKeys: ["TokenDisplayOnceModal.button.copy", "TokenDisplayOnceModal.button.close", "TokenDisplayOnceModal.warning.once", "TokenDisplayOnceModal.copied"]
+    sizeLimit: "30KB"
+    a11yLevel: WCAG-AA
   - name: StatusBadge
     category: media
     schema: src/components/media/StatusBadge.schema.ts
-    zodExport: StatusBadgeSchema
+    zodExport: StatusBadgePropsSchema
     i18nKeys: ["StatusBadge.aria.status", "StatusBadge.error.invalidProps"]
+    sizeLimit: "15KB"
+    a11yLevel: WCAG-AA

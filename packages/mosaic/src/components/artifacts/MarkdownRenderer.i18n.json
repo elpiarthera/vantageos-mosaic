@@ -1,0 +1,20 @@
+{
+  "en": {
+    "MarkdownRenderer": {
+      "aria": { "content": "Rendered Markdown content" },
+      "error": {
+        "invalidProps": "MarkdownRenderer: invalid props",
+        "tooLong": "Content exceeds maximum length"
+      }
+    }
+  },
+  "fr": {
+    "MarkdownRenderer": {
+      "aria": { "content": "Contenu Markdown rendu" },
+      "error": {
+        "invalidProps": "MarkdownRenderer : propriétés invalides",
+        "tooLong": "Le contenu dépasse la longueur maximale"
+      }
+    }
+  }
+}

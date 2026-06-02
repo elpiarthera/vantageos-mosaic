@@ -3,6 +3,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { type MosaicLocale, t } from "../../i18n/strings.js";
 import { validateTableViewProps } from "./TableView.schema";
 import type { TableViewProps } from "./TableView.schema";
 
@@ -30,7 +31,8 @@ export function TableView<TRow extends Record<string, unknown> = Record<string, 
     });
     validatedThreshold = validated.virtualizeThreshold;
   } catch {
-    return <div role="alert">TableView: invalid props</div>;
+    const locale: MosaicLocale = props.locale === "fr" ? "fr" : "en";
+    return <div role="alert">{t("TableView.error.invalidProps", locale)}</div>;
   }
 
   return <TableViewInner<TRow> {...props} virtualizeThreshold={validatedThreshold} />;
@@ -43,7 +45,9 @@ function TableViewInner<TRow extends Record<string, unknown> = Record<string, un
   rows$,
   virtualizeThreshold = 100,
   ariaLabel,
+  locale,
 }: TableViewProps<TRow>) {
+  const resolvedLocale: MosaicLocale = locale === "fr" ? "fr" : "en";
   const [rows, setRows] = useState<Partial<TRow>[]>([]);
 
   // Subscribe to the Observable and accumulate chunks
@@ -60,10 +64,24 @@ function TableViewInner<TRow extends Record<string, unknown> = Record<string, un
   const isVirtual = rows.length > virtualizeThreshold;
 
   if (isVirtual) {
-    return <VirtualTable<TRow> rows={rows} columns={columns} ariaLabel={ariaLabel} />;
+    return (
+      <VirtualTable<TRow>
+        rows={rows}
+        columns={columns}
+        ariaLabel={ariaLabel}
+        locale={resolvedLocale}
+      />
+    );
   }
 
-  return <StaticTable<TRow> rows={rows} columns={columns} ariaLabel={ariaLabel} />;
+  return (
+    <StaticTable<TRow>
+      rows={rows}
+      columns={columns}
+      ariaLabel={ariaLabel}
+      locale={resolvedLocale}
+    />
+  );
 }
 
 // ── Static table (rows <= virtualizeThreshold) ────────────────────────────────
@@ -72,6 +90,7 @@ type TableContentProps<TRow extends Record<string, unknown>> = {
   rows: Partial<TRow>[];
   columns: TableViewProps<TRow>["columns"];
   ariaLabel: string;
+  locale: MosaicLocale;
 };
 
 /** Renders a single cell — uses col.render if provided, else converts to string */
@@ -89,7 +108,9 @@ function StaticTable<TRow extends Record<string, unknown>>({
   rows,
   columns,
   ariaLabel,
+  locale,
 }: TableContentProps<TRow>) {
+  const emptyMsg = t("TableView.empty.message", locale);
   return (
     <table
       aria-label={ariaLabel}
@@ -108,8 +129,8 @@ function StaticTable<TRow extends Record<string, unknown>>({
       <tbody>
         {rows.length === 0 ? (
           <tr>
-            <td colSpan={columns.length} aria-label="No data available">
-              No data available
+            <td colSpan={columns.length} aria-label={emptyMsg}>
+              {emptyMsg}
             </td>
           </tr>
         ) : (
@@ -139,6 +160,8 @@ function VirtualTable<TRow extends Record<string, unknown>>({
   rows,
   columns,
   ariaLabel,
+  // locale reserved for future virtual-mode empty/pagination strings
+  locale: _locale,
 }: TableContentProps<TRow>) {
   const scrollRef = useRef<HTMLDivElement>(null);
 

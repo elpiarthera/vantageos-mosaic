@@ -21,15 +21,15 @@ export type ColumnDef<TRow extends Record<string, unknown> = Record<string, unkn
  * The `rows$` Observable and `render` callbacks are not Zod-parseable and
  * must be validated at the call-site type level.
  */
-export const TableViewSchema = z.object({
+export const TableViewPropsSchema = z.object({
   columns: z.array(ColumnDefSchema).min(1, "TableView requires at least one column"),
   virtualizeThreshold: z.number().int().positive().default(100),
   ariaLabel: z.string().min(1),
   locale: z.enum(["en", "fr"]).default("en"),
 });
 
-export type TableViewSchemaInput = z.input<typeof TableViewSchema>;
-export type TableViewSchemaOutput = z.output<typeof TableViewSchema>;
+export type TableViewPropsSchemaInput = z.input<typeof TableViewPropsSchema>;
+export type TableViewPropsSchemaOutput = z.output<typeof TableViewPropsSchema>;
 
 /** Full runtime props — rows$ is typed but not Zod-parseable. */
 export type TableViewProps<TRow extends Record<string, unknown> = Record<string, unknown>> = {
@@ -40,6 +40,6 @@ export type TableViewProps<TRow extends Record<string, unknown> = Record<string,
   locale?: "en" | "fr";
 };
 
-export function validateTableViewProps(raw: unknown): TableViewSchemaOutput {
-  return TableViewSchema.parse(raw);
+export function validateTableViewProps(raw: unknown): TableViewPropsSchemaOutput {
+  return TableViewPropsSchema.parse(raw);
 }
