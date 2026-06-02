@@ -1,3 +1,4 @@
 // @vantageos/mosaic — progress category barrel
-// Components land here in sub-tasks 2-5.
-export {};
+export { ProgressBar } from "./ProgressBar.js";
+export { ProgressBarSchema, validateProps } from "./ProgressBar.schema.js";
+export type { ProgressBarProps } from "./ProgressBar.schema.js";

@@ -1,0 +1,17 @@
+[
+  {
+    "case": "happy",
+    "input": { "value": 75, "label": "Budget", "locale": "fr" },
+    "expect": "renders bar at 75%"
+  },
+  {
+    "case": "edge",
+    "input": { "value": 0, "label": "X", "locale": "en" },
+    "expect": "renders at 0%"
+  },
+  {
+    "case": "failure",
+    "input": { "value": 150, "label": "" },
+    "expect": "renders error fallback alert"
+  }
+]
