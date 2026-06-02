@@ -1,8 +1,9 @@
 // @vantageos/mosaic — display category barrel
-export { TableView } from "./TableView";
+export { TableView, StreamingTableView } from "./TableView";
 export type {
   ColumnDef,
   TableViewProps,
+  StreamingTableViewProps,
   TableViewPropsSchemaInput,
   TableViewPropsSchemaOutput,
 } from "./TableView.schema";
