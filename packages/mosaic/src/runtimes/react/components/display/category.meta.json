@@ -1,0 +1,5 @@
+{
+  "id": "display",
+  "label": { "en": "Display", "fr": "Affichage" },
+  "description": "Tables, lists and read-only data views."
+}

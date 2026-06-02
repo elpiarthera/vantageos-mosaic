@@ -1,0 +1,5 @@
+{
+  "id": "input",
+  "label": { "en": "Input", "fr": "Saisie" },
+  "description": "Interactive prompts, confirmations and form controls."
+}

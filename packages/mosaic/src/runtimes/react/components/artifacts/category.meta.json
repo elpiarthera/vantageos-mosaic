@@ -1,0 +1,5 @@
+{
+  "id": "artifacts",
+  "label": { "en": "Artifacts", "fr": "Artefacts" },
+  "description": "Rich content renderers (markdown, code, JSON, etc)."
+}

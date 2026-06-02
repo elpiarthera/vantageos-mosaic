@@ -1,0 +1,12 @@
+[
+  {
+    "path": "dist/index.js",
+    "limit": "5 KB",
+    "gzip": true
+  },
+  {
+    "path": "src/tokens.css",
+    "limit": "3 KB",
+    "gzip": true
+  }
+]

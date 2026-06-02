@@ -1,0 +1,5 @@
+{
+  "id": "progress",
+  "label": { "en": "Progress", "fr": "Progression" },
+  "description": "Quota, budget, TTL and rate-limit progress bars."
+}
