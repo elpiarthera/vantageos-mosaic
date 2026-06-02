@@ -8,12 +8,13 @@ import type { TableViewProps } from "./TableView.schema";
 
 type Row = { id: number; name: string; status: string };
 
+const STATUS_CYCLE = ["active", "pending", "archived"] as const;
+
 function makeRows(count: number): Row[] {
-  const statuses = ["active", "pending", "archived"];
   return Array.from({ length: count }, (_, i) => ({
     id: i + 1,
     name: `Item ${i + 1}`,
-    status: statuses[i % statuses.length],
+    status: STATUS_CYCLE[i % STATUS_CYCLE.length] ?? "active",
   }));
 }
 

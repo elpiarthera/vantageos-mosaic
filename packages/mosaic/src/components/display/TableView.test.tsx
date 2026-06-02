@@ -1,10 +1,26 @@
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import { Subject } from "rxjs";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { TableView } from "./TableView";
 import type { TableViewProps } from "./TableView.schema";
 import corpus from "./eval-corpus.json";
+
+// Mock @tanstack/react-virtual so VirtualTable renders rows in jsdom (no real scroll dims)
+vi.mock("@tanstack/react-virtual", () => ({
+  useVirtualizer: (opts: { count: number; estimateSize: () => number }) => ({
+    getVirtualItems: () =>
+      Array.from({ length: opts.count }, (_, i) => ({
+        index: i,
+        start: i * opts.estimateSize(),
+        size: opts.estimateSize(),
+        end: (i + 1) * opts.estimateSize(),
+        lane: 0,
+        key: i,
+      })),
+    getTotalSize: () => opts.count * opts.estimateSize(),
+  }),
+}));
 
 afterEach(() => {
   cleanup();
@@ -207,6 +223,198 @@ describe("TableView — Zod validation failure", () => {
     const alert = screen.getByRole("alert");
     expect(alert).toBeDefined();
     expect(alert.textContent).toMatch(/TableView: invalid props/);
+  });
+});
+
+// ─── (e) Coverage branches — undefined cell value and missing row id ─────────
+
+describe("TableView — branch coverage: undefined cell value + missing row id", () => {
+  it("renders empty string when row value for a column key is undefined (??  fallback)", async () => {
+    type SparseRow = { id: number; name?: string };
+    const subject = new Subject<Partial<SparseRow>[]>();
+
+    const columns: TableViewProps<SparseRow>["columns"] = [
+      { key: "id", header: "ID" },
+      { key: "name", header: "Name" }, // name is optional — triggers ?? "" when absent
+    ];
+
+    render(
+      <TableView
+        columns={columns}
+        rows$={subject.asObservable()}
+        ariaLabel="Sparse table"
+        locale="en"
+      />,
+    );
+
+    act(() => {
+      // Row without 'name' — the String(undefined ?? "") fallback is hit
+      subject.next([{ id: 1 }]);
+    });
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole("row");
+      expect(rows.length).toBe(2); // header + 1 data row
+    });
+  });
+
+  it("uses row-${index} key when row has no id field", async () => {
+    type NoIdRow = { name: string };
+    const subject = new Subject<Partial<NoIdRow>[]>();
+
+    const columns: TableViewProps<NoIdRow>["columns"] = [{ key: "name", header: "Name" }];
+
+    render(
+      <TableView
+        columns={columns}
+        rows$={subject.asObservable()}
+        ariaLabel="No-id table"
+        locale="en"
+      />,
+    );
+
+    act(() => {
+      // Rows have no 'id' field — triggers the `row-${rowIndex}` key fallback
+      subject.next([{ name: "Alice" }, { name: "Bob" }]);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Alice")).toBeDefined();
+      expect(screen.getByText("Bob")).toBeDefined();
+    });
+  });
+});
+
+// ─── (e) Custom col.render callback (static table) ───────────────────────────
+
+describe("TableView — custom col.render callback (static)", () => {
+  it("uses col.render when provided instead of default string conversion", async () => {
+    const subject = new Subject<Partial<Row>[]>();
+
+    const columnsWithRender: TableViewProps<Row>["columns"] = [
+      { key: "id", header: "ID", render: (row) => <span data-testid="custom-id">{row.id}</span> },
+      { key: "name", header: "Name" },
+    ];
+
+    render(
+      <TableView
+        columns={columnsWithRender}
+        rows$={subject.asObservable()}
+        ariaLabel="Custom render table"
+        locale="en"
+      />,
+    );
+
+    act(() => {
+      subject.next([{ id: 42, name: "Test Row" }]);
+    });
+
+    await waitFor(() => {
+      const customCell = document.querySelector("[data-testid='custom-id']");
+      expect(customCell).not.toBeNull();
+      expect(customCell?.textContent).toBe("42");
+    });
+  });
+});
+
+// ─── (f) Virtual table — no-id row key fallback ──────────────────────────────
+
+describe("TableView — virtual table no-id row key fallback", () => {
+  it("uses vrow-${index} key in virtual table when row has no id field", async () => {
+    type NoIdRow = { name: string };
+    const subject = new Subject<Partial<NoIdRow>[]>();
+
+    const columns: TableViewProps<NoIdRow>["columns"] = [{ key: "name", header: "Name" }];
+
+    render(
+      <TableView
+        columns={columns}
+        rows$={subject.asObservable()}
+        ariaLabel="Virtual no-id table"
+        virtualizeThreshold={5}
+        locale="en"
+      />,
+    );
+
+    act(() => {
+      // Rows have no 'id' — triggers the `vrow-${index}` key fallback in VirtualTable
+      subject.next(Array.from({ length: 10 }, (_, i) => ({ name: `Item ${i + 1}` })));
+    });
+
+    await waitFor(() => {
+      const wrapper = document.querySelector("[data-virtual='true']");
+      expect(wrapper).not.toBeNull();
+      expect(wrapper?.textContent).toContain("Item 1");
+    });
+  });
+});
+
+// ─── (f) Virtual table — default string render (no col.render) ───────────────
+
+describe("TableView — virtual table default string render", () => {
+  it("renders row cells using String() fallback when col.render is not provided", async () => {
+    const subject = new Subject<Partial<Row>[]>();
+
+    render(
+      <TableView
+        columns={defaultColumns}
+        rows$={subject.asObservable()}
+        ariaLabel="Virtual default render table"
+        virtualizeThreshold={5}
+        locale="en"
+      />,
+    );
+
+    act(() => {
+      subject.next(makeRows(10));
+    });
+
+    await waitFor(() => {
+      const wrapper = document.querySelector("[data-virtual='true']");
+      expect(wrapper).not.toBeNull();
+      // Cells rendered via String() fallback — row 1 has id=1, name="Row 1"
+      expect(wrapper?.textContent).toContain("Row 1");
+    });
+  });
+});
+
+// ─── (g) Custom col.render callback (virtual table) ──────────────────────────
+
+describe("TableView — custom col.render callback (virtual)", () => {
+  it("uses col.render in virtual table when rows exceed threshold", async () => {
+    const subject = new Subject<Partial<Row>[]>();
+
+    const columnsWithRender: TableViewProps<Row>["columns"] = [
+      {
+        key: "id",
+        header: "ID",
+        render: (row) => <span data-testid={`virt-id-${row.id}`}>{row.id}</span>,
+      },
+      { key: "name", header: "Name" },
+    ];
+
+    render(
+      <TableView
+        columns={columnsWithRender}
+        rows$={subject.asObservable()}
+        ariaLabel="Virtual custom render table"
+        virtualizeThreshold={5}
+        locale="en"
+      />,
+    );
+
+    act(() => {
+      subject.next(makeRows(10));
+    });
+
+    await waitFor(() => {
+      // Virtual mode wraps in data-virtual div
+      const wrapper = document.querySelector("[data-virtual='true']");
+      expect(wrapper).not.toBeNull();
+      // At least one custom-rendered cell should be present
+      const firstCustomCell = document.querySelector("[data-testid='virt-id-1']");
+      expect(firstCustomCell).not.toBeNull();
+    });
   });
 });
 

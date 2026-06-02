@@ -7,6 +7,7 @@ import corpus from "./eval-corpus.json";
 describe("MarkdownRenderer — eval-corpus", () => {
   it("happy: renders markdown as HTML with article role", () => {
     const c = corpus[0];
+    if (!c) throw new Error("corpus[0] missing");
     render(<MarkdownRenderer {...c.input} />);
     const article = screen.getByRole("article");
     expect(article).toBeTruthy();
@@ -15,6 +16,7 @@ describe("MarkdownRenderer — eval-corpus", () => {
 
   it("edge: renders empty article without error", () => {
     const c = corpus[1];
+    if (!c) throw new Error("corpus[1] missing");
     render(<MarkdownRenderer {...c.input} />);
     const article = screen.getByRole("article");
     expect(article).toBeTruthy();
@@ -22,6 +24,7 @@ describe("MarkdownRenderer — eval-corpus", () => {
 
   it("failure: renders error fallback alert for invalid props", () => {
     const c = corpus[2];
+    if (!c) throw new Error("corpus[2] missing");
     render(<MarkdownRenderer {...c.input} />);
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toContain("MarkdownRenderer: invalid props");
@@ -71,5 +74,11 @@ describe("MarkdownRenderer — unit", () => {
     render(<MarkdownRenderer />);
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toContain("MarkdownRenderer: invalid props");
+  });
+
+  it("preserves HTML tags when allowHtml is true", () => {
+    render(<MarkdownRenderer content="<strong>Hello</strong>" locale="en" allowHtml={true} />);
+    const article = screen.getByRole("article");
+    expect(article.innerHTML).toContain("<strong>Hello</strong>");
   });
 });

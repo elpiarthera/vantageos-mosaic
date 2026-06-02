@@ -137,4 +137,25 @@ describe("ConfirmDialog behaviour", () => {
     expect(confirmBtn.className).toContain("bg-red-600");
     expect(confirmBtn.className).toContain("text-white");
   });
+
+  it("calls onCancel when clicking the dialog backdrop (target === dialog element)", () => {
+    const onConfirm = vi.fn();
+    const onCancel = vi.fn();
+    render(<ConfirmDialog {...baseProps} onConfirm={onConfirm} onCancel={onCancel} />);
+    const dialog = screen.getByRole("dialog");
+    // Simulate a click where e.target is the dialog itself (backdrop click)
+    fireEvent.click(dialog, { target: dialog });
+    expect(onCancel).toHaveBeenCalledOnce();
+  });
+
+  it("inner div stops keydown propagation to prevent unintended dialog-level keydown handling", () => {
+    const onConfirm = vi.fn();
+    const onCancel = vi.fn();
+    render(<ConfirmDialog {...baseProps} onConfirm={onConfirm} onCancel={onCancel} />);
+    const confirmBtn = screen.getByText("Confirm");
+    // Fire keydown on the button (inside the inner div) — exercises onKeyDown stopPropagation
+    fireEvent.keyDown(confirmBtn, { key: "Enter" });
+    // onCancel should NOT have been called (stopPropagation prevents dialog-level ESC handling)
+    expect(onCancel).not.toHaveBeenCalled();
+  });
 });

@@ -7,6 +7,7 @@ import corpus from "./eval-corpus.json";
 describe("StatusBadge — eval-corpus", () => {
   it("happy: renders green badge with status text", () => {
     const c = corpus[0];
+    if (!c) throw new Error("corpus[0] missing");
     render(<StatusBadge {...c.input} />);
     const badge = screen.getByRole("status");
     expect(badge).toBeTruthy();
@@ -16,6 +17,7 @@ describe("StatusBadge — eval-corpus", () => {
 
   it("edge: renders neutral badge with custom label", () => {
     const c = corpus[1];
+    if (!c) throw new Error("corpus[1] missing");
     render(<StatusBadge {...c.input} />);
     const badge = screen.getByRole("status");
     expect(badge.textContent).toBe("En attente");
@@ -24,6 +26,7 @@ describe("StatusBadge — eval-corpus", () => {
 
   it("failure: renders error fallback alert span for invalid props", () => {
     const c = corpus[2];
+    if (!c) throw new Error("corpus[2] missing");
     render(<StatusBadge {...c.input} />);
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toContain("StatusBadge: invalid props");

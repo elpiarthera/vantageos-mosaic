@@ -13,7 +13,11 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "registry.yaml", "README.md"],
+  "files": [
+    "dist",
+    "registry.yaml",
+    "README.md"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -21,17 +25,22 @@
     "test": "vitest run",
     "lint": "biome check --error-on-warnings src",
     "size-limit": "size-limit",
+    "build-storybook": "storybook build -o storybook-static",
     "prepublishOnly": "pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js"
   },
   "peerDependencies": {
+    "@mcp-ui/client": "7.1.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-i18next": "15.5.2",
-    "@mcp-ui/client": "7.1.1"
+    "react-i18next": "15.5.2"
   },
   "peerDependenciesMeta": {
-    "@mcp-ui/client": { "optional": true },
-    "react-i18next": { "optional": true }
+    "@mcp-ui/client": {
+      "optional": true
+    },
+    "react-i18next": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@lit-labs/react": "1.0.6",
@@ -48,7 +57,9 @@
     "@biomejs/biome": "1.9.4",
     "@playwright/test": "1.50.1",
     "@size-limit/preset-small-lib": "11.2.0",
-    "@storybook/react": "8.6.12",
+    "@storybook/builder-vite": "8.6.18",
+    "@storybook/react": "8.6.18",
+    "@storybook/react-vite": "8.6.18",
     "@storybook/test-runner": "0.21.0",
     "@tailwindcss/vite": "4.1.8",
     "@testing-library/react": "16.3.0",
@@ -57,16 +68,17 @@
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.0",
     "@vitejs/plugin-react": "4.3.4",
+    "@vitest/coverage-v8": "3.2.2",
     "jsdom": "26.0.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "size-limit": "11.2.0",
+    "storybook": "8.6.18",
     "tailwindcss": "4.1.8",
     "tsup": "8.4.0",
     "typescript": "5.8.3",
     "vite": "6.3.5",
     "vite-plugin-singlefile": "2.1.0",
-    "vitest": "3.2.2",
-    "@vitest/coverage-v8": "3.2.2"
+    "vitest": "3.2.2"
   }
 }

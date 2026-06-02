@@ -173,4 +173,46 @@ describe("TokenDisplayOnceModal behaviour", () => {
     // but it should NOT be embedded via dangerouslySetInnerHTML (verified by absence of script/XSS risk)
     expect(codeEl?.innerHTML).toBe("tok_demo_xxx_safe_dummy");
   });
+
+  it("calls onClose when ESC key is pressed", () => {
+    const onClose = vi.fn();
+    render(<TokenDisplayOnceModal {...baseProps} onClose={onClose} />);
+    const dialog = screen.getByRole("dialog");
+    fireEvent.keyDown(dialog, { key: "Escape", code: "Escape" });
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("calls onClose when clicking the dialog backdrop (target === dialog element)", () => {
+    const onClose = vi.fn();
+    render(<TokenDisplayOnceModal {...baseProps} onClose={onClose} />);
+    const dialog = screen.getByRole("dialog");
+    // Simulate backdrop click: e.target is the dialog itself
+    fireEvent.click(dialog, { target: dialog });
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("handles clipboard failure gracefully — copied stays false", async () => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockRejectedValue(new Error("Clipboard denied")) },
+      writable: true,
+      configurable: true,
+    });
+    const onClose = vi.fn();
+    render(<TokenDisplayOnceModal {...baseProps} onClose={onClose} />);
+    await act(async () => {
+      fireEvent.click(screen.getByText("Copy token"));
+    });
+    // Toast should NOT appear when copy fails
+    expect(screen.queryByText("Copied")).toBeNull();
+  });
+
+  it("inner div stops keydown propagation to prevent unintended dialog-level keydown handling", () => {
+    const onClose = vi.fn();
+    render(<TokenDisplayOnceModal {...baseProps} onClose={onClose} />);
+    const copyBtn = screen.getByText("Copy token");
+    // Fire keydown on the button (inside the inner div) — exercises onKeyDown stopPropagation
+    fireEvent.keyDown(copyBtn, { key: "Enter" });
+    // onClose should NOT have been called via ESC handling
+    expect(onClose).not.toHaveBeenCalled();
+  });
 });

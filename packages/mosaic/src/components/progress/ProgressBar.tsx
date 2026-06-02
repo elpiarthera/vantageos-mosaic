@@ -41,7 +41,11 @@ function ProgressBarInner(props: ProgressBarProps) {
   );
 }
 
-export function ProgressBar(raw: unknown) {
+/**
+ * ProgressBar accepts any props object for JSX and MCP postMessage injection alike.
+ * Internal Zod validation narrows the type — invalid data renders an accessible error fallback.
+ */
+export function ProgressBar(raw: Record<string, unknown>) {
   try {
     const props = validateProps(raw);
     return <ProgressBarInner {...props} />;

@@ -12,6 +12,13 @@ export default defineConfig({
       provider: "v8",
       thresholds: { lines: 90, functions: 100, branches: 100 },
       include: ["src/components/**"],
+      exclude: [
+        "**/*.stories.tsx",
+        "**/index.ts",
+        "**/eval-corpus.json",
+        "src/hooks/**",
+        "src/adapters/**",
+      ],
     },
   },
 });

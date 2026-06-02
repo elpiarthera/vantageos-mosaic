@@ -2,7 +2,7 @@ import DOMPurify from "dompurify";
 import { marked } from "marked";
 // i18nKeys: MarkdownRenderer.aria.content, MarkdownRenderer.error.invalidProps, MarkdownRenderer.error.tooLong
 import React from "react";
-import { validateProps } from "./MarkdownRenderer.schema";
+import { type MarkdownRendererProps, validateProps } from "./MarkdownRenderer.schema";
 
 interface MarkdownRendererInnerProps {
   content: string;
@@ -49,7 +49,11 @@ function MarkdownRendererInner({
   );
 }
 
-export function MarkdownRenderer(raw: unknown) {
+/**
+ * MarkdownRenderer accepts any props object for JSX and MCP postMessage injection alike.
+ * Internal Zod validation narrows the type — invalid data renders an accessible error fallback.
+ */
+export function MarkdownRenderer(raw: Record<string, unknown>) {
   try {
     const props = validateProps(raw);
     return <MarkdownRendererInner {...props} />;

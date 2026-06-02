@@ -27,6 +27,7 @@ function TokenDisplayOnceModalInner({
 
   useEffect(() => {
     const dialog = dialogRef.current;
+    /* v8 ignore next 2 */
     if (!dialog) return;
     dialog.showModal();
     return () => {

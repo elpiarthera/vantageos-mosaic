@@ -1,6 +1,6 @@
 // i18nKeys: StatusBadge.aria.status, StatusBadge.error.invalidProps
 import React from "react";
-import { validateProps } from "./StatusBadge.schema";
+import { type StatusBadgeProps, validateProps } from "./StatusBadge.schema";
 
 type Variant = "success" | "warning" | "danger" | "info" | "neutral";
 
@@ -32,7 +32,11 @@ function StatusBadgeInner({ status, variant, label, locale }: StatusBadgeInnerPr
   );
 }
 
-export function StatusBadge(raw: unknown) {
+/**
+ * StatusBadge accepts any props object for JSX and MCP postMessage injection alike.
+ * Internal Zod validation narrows the type — invalid data renders an accessible error fallback.
+ */
+export function StatusBadge(raw: Record<string, unknown>) {
   try {
     const props = validateProps(raw);
     return <StatusBadgeInner {...props} />;

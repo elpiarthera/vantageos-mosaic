@@ -43,7 +43,7 @@ export const Loading: Story = {
 export const ErrorState: Story = {
   name: "Error",
   args: {
-    // @ts-expect-error — intentionally invalid props to exercise Zod fallback
+    // Intentionally invalid props (empty strings fail Zod min(1)) — exercises the Zod fallback path
     token: "",
     title: "",
     warningMessage: "",

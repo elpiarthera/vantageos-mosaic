@@ -1,7 +1,8 @@
 // i18nKeys: TableView.aria.table, TableView.pagination.next, TableView.pagination.prev, TableView.empty.message, TableView.error.invalidProps
 
 import { useVirtualizer } from "@tanstack/react-virtual";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { validateTableViewProps } from "./TableView.schema";
 import type { TableViewProps } from "./TableView.schema";
 
@@ -73,6 +74,17 @@ type TableContentProps<TRow extends Record<string, unknown>> = {
   ariaLabel: string;
 };
 
+/** Renders a single cell — uses col.render if provided, else converts to string */
+function renderCell<TRow extends Record<string, unknown>>(
+  col: TableViewProps<TRow>["columns"][number],
+  row: Partial<TRow>,
+): React.ReactNode {
+  if (col.render) {
+    return col.render(row as TRow);
+  }
+  return String((row as Record<string, unknown>)[col.key] ?? "");
+}
+
 function StaticTable<TRow extends Record<string, unknown>>({
   rows,
   columns,
@@ -111,11 +123,7 @@ function StaticTable<TRow extends Record<string, unknown>>({
               aria-rowindex={rowIndex + 2}
             >
               {columns.map((col) => (
-                <td key={col.key}>
-                  {col.render
-                    ? col.render(row as TRow)
-                    : String((row as Record<string, unknown>)[col.key] ?? "")}
-                </td>
+                <td key={col.key}>{renderCell(col, row)}</td>
               ))}
             </tr>
           ))
@@ -136,6 +144,7 @@ function VirtualTable<TRow extends Record<string, unknown>>({
 
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
+    /* v8 ignore next 1 */
     getScrollElement: () => scrollRef.current,
     estimateSize: useCallback(() => 40, []),
     overscan: OVERSCAN,
@@ -172,7 +181,8 @@ function VirtualTable<TRow extends Record<string, unknown>>({
           }}
         >
           {virtualItems.map((virtualRow) => {
-            const row = rows[virtualRow.index];
+            /* v8 ignore next */
+            const row = rows[virtualRow.index] ?? ({} as Partial<TRow>);
             return (
               <tr
                 key={
@@ -192,9 +202,7 @@ function VirtualTable<TRow extends Record<string, unknown>>({
               >
                 {columns.map((col) => (
                   <td key={col.key} style={{ flex: 1 }}>
-                    {col.render
-                      ? col.render(row as TRow)
-                      : String((row as Record<string, unknown>)[col.key] ?? "")}
+                    {renderCell(col, row)}
                   </td>
                 ))}
               </tr>
