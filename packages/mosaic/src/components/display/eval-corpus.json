@@ -1,0 +1,39 @@
+[
+  {
+    "case": "happy",
+    "input": {
+      "columns": [
+        { "key": "id", "header": "ID" },
+        { "key": "name", "header": "Name" }
+      ],
+      "virtualizeThreshold": 100,
+      "ariaLabel": "Users table",
+      "locale": "en"
+    },
+    "rowCount": 200,
+    "expect": "renders table with 200 rows, aria-rowcount=200, no virtualization below threshold"
+  },
+  {
+    "case": "edge",
+    "input": {
+      "columns": [
+        { "key": "id", "header": "ID" }
+      ],
+      "virtualizeThreshold": 100,
+      "ariaLabel": "Empty table",
+      "locale": "fr"
+    },
+    "rowCount": 0,
+    "expect": "renders empty state message, aria-rowcount=0"
+  },
+  {
+    "case": "failure",
+    "input": {
+      "columns": [],
+      "ariaLabel": "Bad table",
+      "locale": "en"
+    },
+    "rowCount": 0,
+    "expect": "renders role=alert error fallback — columns array is empty, fails Zod min(1)"
+  }
+]

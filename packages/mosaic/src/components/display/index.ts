@@ -1,3 +1,9 @@
 // @vantageos/mosaic — display category barrel
-// Components land here in sub-tasks 2-5.
-export {};
+export { TableView } from "./TableView";
+export type {
+  ColumnDef,
+  TableViewProps,
+  TableViewSchemaInput,
+  TableViewSchemaOutput,
+} from "./TableView.schema";
+export { TableViewSchema, validateTableViewProps } from "./TableView.schema";
