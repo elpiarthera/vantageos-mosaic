@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { ErrorDisplay } from "../../../runtimes/react/components/forms/ErrorDisplay";
 import { formatErrorMessage } from "../ErrorDisplay.logic";
 import { ErrorDisplayPropsSchema } from "../ErrorDisplay.schema";
-import { ErrorDisplay } from "../../../runtimes/react/components/forms/ErrorDisplay";
 
 // ─── Schema tests ───────────────────────────────────────────────────────────
 

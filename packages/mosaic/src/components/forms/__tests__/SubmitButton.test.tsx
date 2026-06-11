@@ -1,11 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { computeSubmitButtonState } from "../SubmitButton.logic";
-import { SubmitButtonPropsSchema } from "../SubmitButton.schema";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
 import { SubmitButton } from "../../../runtimes/react/components/forms/SubmitButton";
 import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
+import { computeSubmitButtonState } from "../SubmitButton.logic";
+import { SubmitButtonPropsSchema } from "../SubmitButton.schema";
 
 // ─── Schema tests ───────────────────────────────────────────────────────────
 
@@ -56,9 +56,20 @@ describe("computeSubmitButtonState", () => {
 
 // ─── Integration tests ─────────────────────────────────────────────────────
 
-function Harness({ onSubmit }: { onSubmit?: (data: { email: string }) => void }) {
+function Harness({
+  onSubmit,
+  formRef,
+}: {
+  onSubmit?: (data: { email: string }) => void;
+  formRef?: { current: ReturnType<typeof useMosaicForm> | null };
+}) {
   const schema = z.object({ email: z.string().email() });
-  const form = useMosaicForm({ schema, defaultValues: { email: "ok@example.com" } });
+  const form = useMosaicForm({
+    schema,
+    defaultValues: { email: "ok@example.com" },
+    mode: "onChange",
+  });
+  if (formRef) formRef.current = form;
   return (
     <FormProvider form={form}>
       <form onSubmit={form.handleSubmit((data) => onSubmit?.(data))}>
@@ -90,15 +101,21 @@ describe("SubmitButton component", () => {
     expect(screen.getByRole("button").textContent).toBe("Send");
   });
 
-  it("submits form when clicked with valid data", () => {
+  it("submits form when clicked with valid data", async () => {
     const spy = vi.fn();
-    render(<Harness onSubmit={spy} />);
+    const formRef = { current: null as ReturnType<typeof useMosaicForm> | null };
+    render(<Harness onSubmit={spy} formRef={formRef} />);
+    // RHF computes isValid lazily; trigger() forces a validation pass so the
+    // button becomes enabled before we click it.
+    await act(async () => {
+      await formRef.current?.trigger();
+    });
+    await waitFor(() => {
+      expect((screen.getByRole("button") as HTMLButtonElement).disabled).toBe(false);
+    });
     fireEvent.click(screen.getByRole("button"));
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        expect(spy).toHaveBeenCalledWith({ email: "ok@example.com" });
-        resolve();
-      }, 50);
+    await waitFor(() => {
+      expect(spy).toHaveBeenCalledWith({ email: "ok@example.com" });
     });
   });
 

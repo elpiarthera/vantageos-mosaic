@@ -1,12 +1,12 @@
 import { render, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { FormProviderPropsSchema } from "../FormProvider.schema";
 import {
   FormProvider,
   useMosaicFormContext,
 } from "../../../runtimes/react/components/forms/FormProvider";
 import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
+import { FormProviderPropsSchema } from "../FormProvider.schema";
 
 // ─── Schema tests ───────────────────────────────────────────────────────────
 

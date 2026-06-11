@@ -1,4 +1,4 @@
-version: "0.2.2"
+version: "0.3.0-alpha.1"
 components:
   - name: ProgressBar
     category: progress
@@ -41,4 +41,43 @@ components:
     zodExport: StatusBadgePropsSchema
     i18nKeys: ["StatusBadge.aria.status", "StatusBadge.error.invalidProps"]
     sizeLimit: "15KB"
+    a11yLevel: WCAG-AA
+  # ─── Forms category (NEW 7th category — v0.3.0-alpha.1 scaffold T10) ────────
+  # Wrapper around react-hook-form + @hookform/resolvers/zod. Field primitives
+  # (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray)
+  # land in T11-T20 per docs/v0.3.0-plan.md §7.
+  - name: useMosaicForm
+    category: forms
+    schema: src/components/forms/useMosaicForm.schema.ts
+    zodExport: UseMosaicFormOptionsSchema
+    i18nKeys: []
+    sizeLimit: "20KB"
+    a11yLevel: WCAG-AA
+  - name: FormProvider
+    category: forms
+    schema: src/components/forms/FormProvider.schema.ts
+    zodExport: FormProviderPropsSchema
+    i18nKeys: []
+    sizeLimit: "10KB"
+    a11yLevel: WCAG-AA
+  - name: FormField
+    category: forms
+    schema: src/components/forms/FormField.schema.ts
+    zodExport: FormFieldPropsSchema
+    i18nKeys: []
+    sizeLimit: "10KB"
+    a11yLevel: WCAG-AA
+  - name: ErrorDisplay
+    category: forms
+    schema: src/components/forms/ErrorDisplay.schema.ts
+    zodExport: ErrorDisplayPropsSchema
+    i18nKeys: []
+    sizeLimit: "5KB"
+    a11yLevel: WCAG-AA
+  - name: SubmitButton
+    category: forms
+    schema: src/components/forms/SubmitButton.schema.ts
+    zodExport: SubmitButtonPropsSchema
+    i18nKeys: []
+    sizeLimit: "10KB"
     a11yLevel: WCAG-AA

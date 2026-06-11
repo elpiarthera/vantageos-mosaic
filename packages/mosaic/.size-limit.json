@@ -3,5 +3,15 @@
     "path": "dist/index.js",
     "limit": "250 KB",
     "gzip": true
+  },
+  {
+    "path": "dist/react/forms.js",
+    "limit": "50 KB",
+    "gzip": true
+  },
+  {
+    "path": "dist/preact/forms.js",
+    "limit": "50 KB",
+    "gzip": true
   }
 ]

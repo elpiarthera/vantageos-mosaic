@@ -160,10 +160,7 @@ describe("no-hardcode-strings", () => {
     if (allViolations.length > 0) {
       const report = allViolations.map((v) => `  ${v.file}:${v.line} — "${v.text}"`).join("\n");
       throw new Error(
-        `Found ${allViolations.length} hardcoded JSX string literal(s):\n${report}\n\n` +
-          "Fix: pass string as a prop from the host app, or add:\n" +
-          "  same-line:  {/* allow-hardcode-i18n: <reason> */}\n" +
-          "  file-level: // allow-hardcode-i18n-file: <reason>  (first 5 lines)",
+        `Found ${allViolations.length} hardcoded JSX string literal(s):\n${report}\n\nFix: pass string as a prop from the host app, or add:\n  same-line:  {/* allow-hardcode-i18n: <reason> */}\n  file-level: // allow-hardcode-i18n-file: <reason>  (first 5 lines)`,
       );
     }
 

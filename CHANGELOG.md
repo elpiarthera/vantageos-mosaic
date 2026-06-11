@@ -2,6 +2,53 @@
 
 All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are documented here.
 
+## v0.3.0-alpha.1 — 2026-06-11
+
+### Added — `forms` category (NEW 7th top-level category, Wave 2 T10)
+- **New category** `forms` introduced as the 7th top-level taxonomy bucket per `docs/v0.3.0-plan.md` §4 + mosaic-architecture-standard-v1.x amendment (forthcoming v1.2). Sits alongside `progress | input | display | artifacts | confirmation | media`.
+- **5 scaffold primitives** wrapping `react-hook-form` + `@hookform/resolvers/zod`:
+  - `useMosaicForm({ schema, defaultValues, mode? })` — cross-runtime hook. Returns RHF `UseFormReturn` extended with `mosaicSchema` + `mosaicMode` metadata. FieldArray-compatible (T16).
+  - `FormProvider` — wraps RHF's native `FormProvider` AND a Mosaic-specific context exposing the extended return. `useMosaicFormContext()` throws if used outside.
+  - `FormField` — render-prop wrapper around RHF's `Controller`. Reads `control` from the surrounding `FormProvider`.
+  - `ErrorDisplay` — single-field error formatter. Renders nothing when no error. Priority: explicit `error.message` → `messageMap[type]` → generic fallback ("Invalid value"). Emits `role="alert"`.
+  - `SubmitButton` — bound to the surrounding `FormProvider`. Disabled while `formState.isValid` is false OR `formState.isSubmitting` is true. Loading label swaps in during submit. `aria-busy` toggles.
+- **Validation timing**: default `mode = "onBlur"` (Chi co-validated decision, Day 102 DM `jn72twbrdx67ajbqk6vgrrx8jn88ff3g`). Consumers may override to `"onChange"` or `"onSubmit"`.
+- **Cross-runtime parity**: identical JSX shipped for React 19 (`@vantageos/mosaic/react/forms`) and Preact 10 (`@vantageos/mosaic/preact/forms`). Preact pass aliases `react`/`react-dom` to `preact/compat` at tsup build time per Standard §18.2.
+- **Back-compat root subpath**: `@vantageos/mosaic/forms` re-exports the React surface for v0.1.x-style category imports.
+- **Shared schema + logic layer** (`src/components/forms/`): `useMosaicForm.schema.ts`, `useMosaicForm.logic.ts`, `FormProvider.schema.ts`, `FormProvider.logic.ts`, `FormField.schema.ts`, `FormField.logic.ts`, `ErrorDisplay.schema.ts`, `ErrorDisplay.logic.ts`, `SubmitButton.schema.ts`, `SubmitButton.logic.ts`. Runtime-agnostic Zod schemas + pure functions (validation timing mapping, error formatting, submit button state machine).
+
+### Added — `package.json` peer dependencies
+- `react-hook-form: ^7.54.0` (optional per `peerDependenciesMeta`).
+- `@hookform/resolvers: ^3.10.0` (optional per `peerDependenciesMeta`).
+- Both externalised in `tsup.config.ts` react + preact passes — never bundled.
+
+### Added — `registry.yaml` entries
+- 5 new entries under category `forms`: `useMosaicForm`, `FormProvider`, `FormField`, `ErrorDisplay`, `SubmitButton`. Size limits per entry.
+
+### Added — exports surface
+- `./forms` (root, back-compat) + `./react/forms` + `./preact/forms` subpaths. Types-first export ordering applied across the entire `exports` field (fixes esbuild WARN about condition order).
+
+### Added — Storybook
+- 5 story files under `src/components/forms/*.stories.tsx` documenting each primitive with at least one canonical state. `Forms/useMosaicForm`, `Forms/FormProvider`, `Forms/FormField`, `Forms/ErrorDisplay`, `Forms/SubmitButton`.
+
+### Added — tests (TDD RED→GREEN)
+- 5 React test files under `src/components/forms/__tests__/` covering Zod schema parsing, hook integration with zodResolver, FormProvider context, FormField render-prop + onBlur timing assertion (validation does NOT fire on keystroke, FIRES on blur), ErrorDisplay priority logic, SubmitButton state machine. Real Zod schemas in tests, not mocked.
+- 5 Preact parity smoke tests under `src/runtimes/preact/components/forms/__tests__/` verifying module-import shape parity with the React runtime. JSX runs via React testing library because vitest does not apply the preact/compat alias (alias is build-time-only). State-machine + formatter logic shared by reference across both runtimes via the `src/components/forms/*.logic.ts` files.
+
+### Added — vitest config
+- `testTimeout: 15_000` raised from default 5s. Forms tests pay a 1-2s RHF/zodResolver boot cost on the first test of each file inside the slow jsdom + transform pipeline.
+
+### Added — tsup config
+- Forms entries in both react + preact passes. `REACT_EXTERNAL` and `PREACT_EXTERNAL` arrays now include `react-hook-form` + `@hookform/resolvers` + `@hookform/resolvers/zod`.
+
+### Why minor-alpha bump
+Strict additive: introduces a new top-level subpath and an optional peer set. No breaking change to v0.2.x consumers (root + react + preact existing subpaths untouched). Pre-release tag `alpha.1` while T11-T20 field primitives are produced.
+
+### Mission
+Wave 2 T10 — task ID `k1728w4hs4y69zzt05sb9815jh88fh52` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES NON-NEGOTIABLE applied (TDD, docs, no bypass, task-structure).
+
+---
+
 ## v0.2.2 — 2026-06-11
 
 ### Fixed (CRITICAL — §18.5 type surface contract)

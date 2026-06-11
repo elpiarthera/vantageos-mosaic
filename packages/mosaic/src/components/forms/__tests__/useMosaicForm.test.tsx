@@ -1,11 +1,8 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import {
-  UseMosaicFormOptionsSchema,
-  validateOptions,
-} from "../useMosaicForm.schema";
 import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
+import { UseMosaicFormOptionsSchema, validateOptions } from "../useMosaicForm.schema";
 
 // ─── Schema tests ───────────────────────────────────────────────────────────
 
@@ -72,16 +69,24 @@ describe("useMosaicForm hook", () => {
       useMosaicForm({ schema, defaultValues: { email: "invalid", age: 5 } }),
     );
 
+    // Trigger validation — RHF runs the resolver and the resulting errors are
+    // also returned by handleSubmit's onInvalid callback. We use the onInvalid
+    // path because formState reactive snapshot in renderHook can lag re-renders.
+    const errorsCapture: Record<string, { message?: string } | undefined> = {};
     await act(async () => {
-      await result.current.trigger();
+      await result.current.handleSubmit(
+        () => undefined,
+        (errs) => {
+          errorsCapture.email = errs.email as { message?: string } | undefined;
+          errorsCapture.age = errs.age as { message?: string } | undefined;
+        },
+      )();
     });
 
-    await waitFor(() => {
-      expect(result.current.formState.errors.email).toBeDefined();
-      expect(result.current.formState.errors.age).toBeDefined();
-    });
-    expect(result.current.formState.errors.email?.message).toBe("invalid_email");
-    expect(result.current.formState.errors.age?.message).toBe("min_18");
+    expect(errorsCapture.email).toBeDefined();
+    expect(errorsCapture.age).toBeDefined();
+    expect(errorsCapture.email?.message).toBe("invalid_email");
+    expect(errorsCapture.age?.message).toBe("min_18");
   });
 
   it("validates successfully when data is valid", async () => {
