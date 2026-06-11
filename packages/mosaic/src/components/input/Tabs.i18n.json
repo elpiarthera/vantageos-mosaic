@@ -1,0 +1,12 @@
+{
+  "en": {
+    "Tabs": {
+      "error": { "invalidProps": "Tabs: invalid props — component will not render." }
+    }
+  },
+  "fr": {
+    "Tabs": {
+      "error": { "invalidProps": "Tabs : propriétés invalides — le composant ne s'affichera pas." }
+    }
+  }
+}

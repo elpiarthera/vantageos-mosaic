@@ -108,3 +108,20 @@ components:
       - dismiss button aria-label localized (EN + FR)
       - dismiss button focus-visible ring
       - PERSISTENT inline (no auto-dismiss)
+  - name: Tabs
+    category: input
+    schema: src/components/input/Tabs.schema.ts
+    zodExport: TabsPropsSchema
+    i18nKeys: ["Tabs.error.invalidProps"]
+    sizeLimit: "30KB"
+    a11yLevel: WCAG-AA
+    runtimes: ["react", "preact"]
+    convergence: ["hermes"]
+    wcag:
+      - role=tablist on container
+      - role=tab + aria-selected + aria-controls on each tab button
+      - role=tabpanel + aria-labelledby on each panel
+      - roving tabindex (active tab = 0, others = -1)
+      - ArrowLeft/Right (horizontal) or ArrowUp/Down (vertical)
+      - Home/End keyboard navigation
+      - disabled tabs skipped in keyboard nav
