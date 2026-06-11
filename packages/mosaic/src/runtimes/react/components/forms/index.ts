@@ -40,6 +40,8 @@ export { Checkbox, type CheckboxProps } from "./Checkbox.js";
 export { MultiSelect, type MultiSelectProps } from "./MultiSelect.js";
 export { RadioGroup, type RadioGroupProps } from "./RadioGroup.js";
 
+export { Select, type SelectProps } from "./Select.js";
+
 
 
 // Shared schemas + logic re-export for type access
@@ -120,5 +122,12 @@ export {
   isActivationKey,
   type RadioOrientation,
 } from "../../../../components/forms/RadioGroup.logic.js";
+
+  SelectPropsSchema,
+  SelectOptionSchema,
+  validateSelectProps,
+  type SelectOption,
+  type SelectPropsValidated,
+} from "../../../../components/forms/Select.schema.js";
 
 

@@ -166,6 +166,16 @@ components:
     schema: src/components/forms/RadioGroup.schema.ts
     zodExport: RadioGroupPropsSchema
     i18nKeys: ["RadioGroup.error.invalidProps"]
+  # ─── Forms field primitives (Wave 2 T11-T20) ────────────────────────────────
+  - name: Select
+    category: forms
+    schema: src/components/forms/Select.schema.ts
+    zodExport: SelectPropsSchema
+    i18nKeys:
+      - Select.placeholder
+      - Select.search.placeholder
+      - Select.empty
+
     sizeLimit: "15KB"
   # ─── Forms field primitives (Wave 2 T11-T20) ────────────────────────────────
   - name: Textarea

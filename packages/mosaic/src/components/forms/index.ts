@@ -27,6 +27,8 @@ export { Checkbox } from "../../runtimes/react/components/forms/Checkbox.js";
 export { MultiSelect } from "../../runtimes/react/components/forms/MultiSelect.js";
 export { RadioGroup } from "../../runtimes/react/components/forms/RadioGroup.js";
 
+export { Select } from "../../runtimes/react/components/forms/Select.js";
+
 
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
@@ -128,5 +130,21 @@ export {
   isActivationKey,
   type RadioOrientation,
 } from "./RadioGroup.logic.js";
+
+  SelectPropsSchema,
+  SelectOptionSchema,
+  validateSelectProps,
+  type SelectOption,
+  type SelectPropsValidated,
+} from "./Select.schema.js";
+export {
+  filterOptions,
+  findByTypeAhead,
+  findFirstEnabledIndex,
+  findLastEnabledIndex,
+  findNextEnabledIndex,
+  indexOfValue,
+  resolveSelectedLabel,
+} from "./Select.logic.js";
 
 
