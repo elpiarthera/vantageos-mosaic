@@ -81,3 +81,11 @@ components:
     i18nKeys: []
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
+  # ─── Forms field primitives (Wave 2 T11-T20) ────────────────────────────────
+  - name: MultiSelect
+    category: forms
+    schema: src/components/forms/MultiSelect.schema.ts
+    zodExport: MultiSelectPropsSchema
+    i18nKeys: []
+    sizeLimit: "20KB"
+    a11yLevel: WCAG-AA

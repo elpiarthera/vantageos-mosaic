@@ -4,6 +4,17 @@ All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are do
 
 ## v0.3.0-alpha.1 — 2026-06-11
 
+### Added — `MultiSelect` form primitive (Wave 2 T15)
+- **`MultiSelect`** — multi-value dropdown with removable chips. API: `name` (RHF binds `string[]`), `label`, `options: [{value,label}]`, `placeholder?`, `disabled?`, `searchable?`, `maxItems?`. Cross-runtime React + Preact, ships under `@vantageos/mosaic/{react,preact,/}forms`.
+- **WCAG-AA combobox**: `role=combobox aria-multiselectable=true aria-expanded`, `aria-controls` → listbox `id`, `aria-labelledby` → label `id`. Per-chip remove button has `aria-label="Remove {label}"`.
+- **Keyboard nav**: Trigger — Enter/Space/ArrowDown open + focus first option; Backspace/Delete remove last chip; Escape close. Listbox — ArrowUp/ArrowDown move active, Enter select, Escape close + return focus to trigger.
+- **Pure logic** (`MultiSelect.logic.ts`): `getAvailableOptions`, `getSelectedOptions`, `filterBySearch` (case-insensitive label OR value substring), `addValue` (dedupe + maxItems gate, identity-stable no-op), `removeValue`, `isAtMaxItems`. Shared by reference across runtimes per Standard §18.2.
+- **Tests** — React: 20+ assertions covering schema parse rejection, all logic helpers, render + open + chip add/remove (click + Backspace + close icon), `maxItems` gate, ArrowDown+Enter keyboard select, Escape close, search filter. Preact parity smoke verifying logic reference identity + exported component.
+- **Stories** — `Default`, `Searchable`, `MaxItemsReached` (cap = 2).
+- **registry.yaml**: `MultiSelect` entry (`category: forms`, `sizeLimit: 20KB`, WCAG-AA).
+- **Reuse** — wraps `FormField` (RHF Controller) from T10; outer `onBlur` → `field.onBlur` for `mode=onBlur` validation timing.
+- **Mission**: Wave 2 T15 — task ID `k172cs9m5smj6t6feqcshzehk188feb6` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES applied (TDD, docs, no bypass, task-structure).
+
 ### Added — `forms` category (NEW 7th top-level category, Wave 2 T10)
 - **New category** `forms` introduced as the 7th top-level taxonomy bucket per `docs/v0.3.0-plan.md` §4 + mosaic-architecture-standard-v1.x amendment (forthcoming v1.2). Sits alongside `progress | input | display | artifacts | confirmation | media`.
 - **5 scaffold primitives** wrapping `react-hook-form` + `@hookform/resolvers/zod`:

@@ -116,8 +116,9 @@ export function SignupForm({ onSubmit }: { onSubmit: (data: z.infer<typeof schem
 | `<FormField name="...">{({ field, fieldState, formState }) => ...}</FormField>` | Render-prop wrapper around RHF's `Controller`. |
 | `<ErrorDisplay error={...} messageMap={...} />` | Single-field error formatter. Renders nothing when no error. Priority: `error.message` → `messageMap[type]` → generic fallback. |
 | `<SubmitButton label="..." loadingLabel="..." />` | Bound to the surrounding `FormProvider`. Disabled while invalid OR submitting. |
+| `<MultiSelect name="..." label="..." options={...} placeholder? disabled? searchable? maxItems? />` | Multi-value dropdown. RHF value is `string[]`. Selected items render as removable chips (Backspace/Delete on trigger removes last, per-chip × removes specific). WCAG-AA combobox (`role=combobox aria-multiselectable=true`), Arrow/Enter keyboard nav, optional case-insensitive search, optional `maxItems` cap. |
 
-Field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11-T20 — see `docs/v0.3.0-plan.md` §7.
+Remaining field primitives (Input + Textarea + MultiSelect shipped T11/T12/T15; Select, Checkbox, RadioGroup, FieldArray) land in T13-T20 — see `docs/v0.3.0-plan.md` §7.
 
 ## Server (MCP UI)
 
