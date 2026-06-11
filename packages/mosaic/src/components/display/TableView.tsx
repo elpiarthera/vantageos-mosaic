@@ -45,6 +45,7 @@ export function TableView<TRow extends Record<string, unknown> = Record<string, 
         columns={props.columns}
         ariaLabel={props.ariaLabel}
         locale={resolvedLocale}
+        onRowClick={props.onRowClick}
       />
     );
   }
@@ -55,6 +56,7 @@ export function TableView<TRow extends Record<string, unknown> = Record<string, 
       columns={props.columns}
       ariaLabel={props.ariaLabel}
       locale={resolvedLocale}
+      onRowClick={props.onRowClick}
     />
   );
 }
@@ -87,7 +89,13 @@ export function StreamingTableView<TRow extends Record<string, unknown> = Record
     return <div role="alert">{t("TableView.error.invalidProps", locale)}</div>;
   }
 
-  return <StreamingTableViewInner<TRow> {...props} virtualizeThreshold={validatedThreshold} />;
+  return (
+    <StreamingTableViewInner<TRow>
+      {...props}
+      virtualizeThreshold={validatedThreshold}
+      onRowClick={props.onRowClick}
+    />
+  );
 }
 
 // ── Inner implementation for streaming (rendered only after validation passes) ──
@@ -98,6 +106,7 @@ function StreamingTableViewInner<TRow extends Record<string, unknown> = Record<s
   virtualizeThreshold = 100,
   ariaLabel,
   locale,
+  onRowClick,
 }: StreamingTableViewProps<TRow> & { virtualizeThreshold: number }) {
   const resolvedLocale: MosaicLocale = locale === "fr" ? "fr" : "en";
   const [rows, setRows] = useState<Partial<TRow>[]>([]);
@@ -122,6 +131,7 @@ function StreamingTableViewInner<TRow extends Record<string, unknown> = Record<s
         columns={columns}
         ariaLabel={ariaLabel}
         locale={resolvedLocale}
+        onRowClick={onRowClick}
       />
     );
   }
@@ -132,6 +142,7 @@ function StreamingTableViewInner<TRow extends Record<string, unknown> = Record<s
       columns={columns}
       ariaLabel={ariaLabel}
       locale={resolvedLocale}
+      onRowClick={onRowClick}
     />
   );
 }
@@ -143,6 +154,7 @@ type TableContentProps<TRow extends Record<string, unknown>> = {
   columns: TableViewProps<TRow>["columns"];
   ariaLabel: string;
   locale: MosaicLocale;
+  onRowClick?: (row: TRow, index: number) => void;
 };
 
 /** Renders a single cell — uses col.render if provided, else converts to string */
@@ -161,6 +173,7 @@ function StaticTable<TRow extends Record<string, unknown>>({
   columns,
   ariaLabel,
   locale,
+  onRowClick,
 }: TableContentProps<TRow>) {
   const emptyMsg = t("TableView.empty.message", locale);
   return (
@@ -194,6 +207,20 @@ function StaticTable<TRow extends Record<string, unknown>>({
                   : `row-${rowIndex}`
               }
               aria-rowindex={rowIndex + 2}
+              {...(onRowClick
+                ? {
+                    role: "button",
+                    tabIndex: 0,
+                    style: { cursor: "pointer" },
+                    onClick: () => onRowClick(row as TRow, rowIndex),
+                    onKeyDown: (e: React.KeyboardEvent<HTMLTableRowElement>) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onRowClick(row as TRow, rowIndex);
+                      }
+                    },
+                  }
+                : {})}
             >
               {columns.map((col) => (
                 <td key={col.key}>{renderCell(col, row)}</td>
@@ -214,6 +241,7 @@ function VirtualTable<TRow extends Record<string, unknown>>({
   ariaLabel,
   // locale reserved for future virtual-mode empty/pagination strings
   locale: _locale,
+  onRowClick,
 }: TableContentProps<TRow>) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -273,7 +301,21 @@ function VirtualTable<TRow extends Record<string, unknown>>({
                   width: "100%",
                   transform: `translateY(${virtualRow.start}px)`,
                   display: "flex",
+                  ...(onRowClick ? { cursor: "pointer" } : {}),
                 }}
+                {...(onRowClick
+                  ? {
+                      role: "button",
+                      tabIndex: 0,
+                      onClick: () => onRowClick(row as TRow, virtualRow.index),
+                      onKeyDown: (e: React.KeyboardEvent<HTMLTableRowElement>) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          onRowClick(row as TRow, virtualRow.index);
+                        }
+                      },
+                    }
+                  : {})}
               >
                 {columns.map((col) => (
                   <td key={col.key} style={{ flex: 1 }}>

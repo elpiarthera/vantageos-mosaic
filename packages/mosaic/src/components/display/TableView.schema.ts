@@ -41,6 +41,8 @@ export type TableViewProps<TRow extends Record<string, unknown> = Record<string,
   virtualizeThreshold?: number;
   ariaLabel: string;
   locale?: "en" | "fr";
+  /** v0.2.1+: when provided, rows become keyboard-activable (role=button + tabIndex=0 + Enter/Space). 5-BU ABSOLUTE blocker fix. */
+  onRowClick?: (row: TRow, index: number) => void;
 };
 
 /**
@@ -55,6 +57,8 @@ export type StreamingTableViewProps<
   virtualizeThreshold?: number;
   ariaLabel: string;
   locale?: "en" | "fr";
+  /** v0.2.1+: same semantics as static TableView. */
+  onRowClick?: (row: TRow, index: number) => void;
 };
 
 export function validateTableViewProps(raw: unknown): TableViewPropsSchemaOutput {
