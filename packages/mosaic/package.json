@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -124,6 +124,7 @@
   ],
   "sideEffects": false,
   "scripts": {
+    "prebuild": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",

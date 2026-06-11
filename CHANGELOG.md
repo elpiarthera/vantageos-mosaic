@@ -2,6 +2,27 @@
 
 All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are documented here.
 
+## v0.2.2 — 2026-06-11
+
+### Fixed (CRITICAL — §18.5 type surface contract)
+- `tsup.config.ts` react pass — change `clean: true` → `clean: false`. The three sibling tsup configs (react / preact / tokens re-export) run their DTS phases in parallel; the react DTS pass finishes last (~35s on cold cache) and previously wiped `dist/preact/*.d.ts` and `dist/tokens.d.ts` written earlier by the sibling passes. Result on v0.2.0+v0.2.1: tsup log claimed all DTS files emitted, but only the react pass output persisted on disk — every other DTS file was silently deleted.
+- `package.json` — add `prebuild` script (`node -e "fs.rmSync('dist',{recursive:true,force:true})"`) so a clean dist is guaranteed before tsup runs, replacing the racy in-pass clean.
+- **Result**: `dist/preact/{index,progress,input,display,artifacts,confirmation,media}.d.ts` and `dist/tokens.d.ts` now persist on disk. Preact consumers regain typed `@vantageos/mosaic/preact/*` imports (IntelliSense + compile-time validation). `@vantageos/mosaic/tokens` is typed. Includes the v0.2.1 `onRowClick` prop in the typed surface.
+
+### Note on `peer/compat` externalization (§18.4)
+- The `PREACT_EXTERNAL` array on `main` already includes `preact`, `preact/compat`, `preact/hooks`, `preact/compat/client`. No change required to externals — peerDependenciesMeta optionality contract was already structurally honored at the config level. The Gate 2 failure on PR #13 was a downstream effect of the missing DTS files (no `.d.ts` → consumer fixtures could not type-check imports correctly, which the smoke harness conflated with bundling). Gate 2 should re-run green once v0.2.2 is published.
+
+### Why patch (not minor)
+Fixes documented type surface contract (§18.5) without changing API. Strict additive: existing consumers get typed Preact + typed tokens shim with zero code changes on their side.
+
+### Discovery
+Bug caught by PR #13 CI Gate 1 (build parity) running retro on `main` post-v0.2.0 publish. Doctrine fix-pattern candidate `ci-gates-as-discovery-tool-not-just-enforcement` capitalized via Pi friction harvest. Root cause (parallel-pass DTS race vs in-config `clean: true`) only became visible by inspecting on-disk dist vs tsup log output — log alone showed all files "emitted".
+
+### Mission
+- Day 102 fast-patch per Laurent direct GO Option A. Pi blanket `laurent-direct-go-merge-2026-06-11`. Built on top of v0.2.1 (onRowClick) — rebased post-PR #12 merge per Eta REVISE doctrine `PR-staleness-true-conflict-vs-trailing-diff-illusion`.
+
+---
+
 ## v0.2.1 — 2026-06-11
 
 ### Added — `@vantageos/mosaic`
