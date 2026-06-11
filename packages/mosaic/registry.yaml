@@ -135,3 +135,13 @@ components:
     crossRuntime: true
     runtimes: ["react", "preact"]
     convergence: ["Hermes", "Mu", "future-BUs"]
+  - name: ConfirmModal
+    category: confirmation
+    alias: true
+    aliasOf: ConfirmDialog
+    schema: src/components/input/ConfirmDialog.schema.ts
+    zodExport: ConfirmDialogPropsSchema
+    i18nKeys: ["ConfirmDialog.button.confirm", "ConfirmDialog.button.cancel", "ConfirmDialog.aria.dialog"]
+    sizeLimit: "30KB"
+    a11yLevel: WCAG-AA
+    note: "v0.3.0-alpha.0 T9 — thin re-export of ConfirmDialog under the ConfirmModal name for Chi gptpowerups-extension naming bridge. Referential identity invariant. Exposed on @vantageos/mosaic/{react,preact}/confirmation."
