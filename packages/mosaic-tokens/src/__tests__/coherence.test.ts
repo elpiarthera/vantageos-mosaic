@@ -51,13 +51,15 @@ function mapMotionKey(k: string): { cssPrefix: string; cssKey: string } {
 describe("mosaic-tokens / coherence", () => {
   it("colors — every JS key has a matching --mosaic-color-<key> CSS var", () => {
     const css = collectCssVars("color");
-    for (const k of Object.keys(colors)) expect(css.has(k), `missing CSS --mosaic-color-${k}`).toBe(true);
+    for (const k of Object.keys(colors))
+      expect(css.has(k), `missing CSS --mosaic-color-${k}`).toBe(true);
     expect(css.size).toBe(Object.keys(colors).length);
   });
 
   it("spacing — every JS key has a matching --mosaic-space-<key> CSS var", () => {
     const css = collectCssVars("space");
-    for (const k of Object.keys(spacing)) expect(css.has(k), `missing CSS --mosaic-space-${k}`).toBe(true);
+    for (const k of Object.keys(spacing))
+      expect(css.has(k), `missing CSS --mosaic-space-${k}`).toBe(true);
     expect(css.size).toBe(Object.keys(spacing).length);
   });
 
@@ -75,13 +77,15 @@ describe("mosaic-tokens / coherence", () => {
 
   it("shadows — every JS key has a matching --mosaic-shadow-<key> CSS var", () => {
     const css = collectCssVars("shadow");
-    for (const k of Object.keys(shadows)) expect(css.has(k), `missing CSS --mosaic-shadow-${k}`).toBe(true);
+    for (const k of Object.keys(shadows))
+      expect(css.has(k), `missing CSS --mosaic-shadow-${k}`).toBe(true);
     expect(css.size).toBe(Object.keys(shadows).length);
   });
 
   it("radii — every JS key has a matching --mosaic-radius-<key> CSS var", () => {
     const css = collectCssVars("radius");
-    for (const k of Object.keys(radii)) expect(css.has(k), `missing CSS --mosaic-radius-${k}`).toBe(true);
+    for (const k of Object.keys(radii))
+      expect(css.has(k), `missing CSS --mosaic-radius-${k}`).toBe(true);
     expect(css.size).toBe(Object.keys(radii).length);
   });
 
@@ -108,7 +112,8 @@ describe("mosaic-tokens / scale invariants", () => {
     for (let i = 1; i < values.length; i++) {
       const cur = values[i];
       const prev = values[i - 1];
-      if (cur === undefined || prev === undefined) throw new Error(`unexpected undefined at index ${i}`);
+      if (cur === undefined || prev === undefined)
+        throw new Error(`unexpected undefined at index ${i}`);
       expect(cur).toBeGreaterThan(prev);
     }
   }
@@ -124,7 +129,15 @@ describe("mosaic-tokens / scale invariants", () => {
   });
 
   it("typography size — strictly ascending (xs → 3xl)", () => {
-    const sizeKeys = ["size-xs", "size-sm", "size-base", "size-lg", "size-xl", "size-2xl", "size-3xl"] as const;
+    const sizeKeys = [
+      "size-xs",
+      "size-sm",
+      "size-base",
+      "size-lg",
+      "size-xl",
+      "size-2xl",
+      "size-3xl",
+    ] as const;
     assertAscending(sizeKeys.map((k) => pxToNumber(requireToken(typography, k))));
   });
 
