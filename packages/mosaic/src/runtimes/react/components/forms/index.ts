@@ -63,6 +63,7 @@ export {
   InputTypeSchema,
   type InputType,
 } from "../../../../components/forms/Input.schema.js";
+export {
   TextareaPropsSchema,
   validateTextareaProps,
   type TextareaPropsValidated,
@@ -73,6 +74,7 @@ export {
   computeAutoResizeHeight,
   resolveRows,
 } from "../../../../components/forms/Textarea.logic.js";
+export {
   FieldArrayPropsSchema,
   UseFieldArrayOptionsSchema,
 } from "../../../../components/forms/FieldArray.schema.js";
@@ -82,6 +84,7 @@ export {
   buildAddAriaLabel,
   nextFocusIndexAfterRemove,
 } from "../../../../components/forms/FieldArray.logic.js";
+export {
   CheckboxPropsSchema,
   validateCheckboxProps,
   type CheckboxPropsValidated,
@@ -90,15 +93,11 @@ export {
   resolveAriaChecked,
   resolveDescribedBy,
 } from "../../../../components/forms/Checkbox.logic.js";
+export {
   MultiSelectPropsSchema,
   MultiSelectOptionSchema,
   type MultiSelectOption,
 } from "../../../../components/forms/MultiSelect.schema.js";
-} from "../../../../components/forms/Checkbox.schema.js";
-export {
-  computeAriaChecked,
-  buildDescriptionId,
-} from "../../../../components/forms/Checkbox.logic.js";
 export {
   RadioGroupPropsSchema,
   RadioGroupOptionSchema,
@@ -123,6 +122,7 @@ export {
   type RadioOrientation,
 } from "../../../../components/forms/RadioGroup.logic.js";
 
+export {
   SelectPropsSchema,
   SelectOptionSchema,
   validateSelectProps,

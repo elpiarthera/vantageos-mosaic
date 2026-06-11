@@ -66,6 +66,7 @@ export {
   buildErrorDescribedBy,
   resolveHtmlType,
 } from "./Input.logic.js";
+export {
   TextareaPropsSchema,
   validateTextareaProps,
   type TextareaPropsValidated,
@@ -76,6 +77,7 @@ export {
   computeAutoResizeHeight,
   resolveRows,
 } from "./Textarea.logic.js";
+export {
   FieldArrayPropsSchema,
   UseFieldArrayOptionsSchema,
 } from "./FieldArray.schema.js";
@@ -85,11 +87,13 @@ export {
   buildAddAriaLabel,
   nextFocusIndexAfterRemove,
 } from "./FieldArray.logic.js";
+export {
   CheckboxPropsSchema,
   validateCheckboxProps,
   type CheckboxPropsValidated,
 } from "./Checkbox.schema.js";
 export { resolveAriaChecked, resolveDescribedBy } from "./Checkbox.logic.js";
+export {
   MultiSelectPropsSchema,
   MultiSelectOptionSchema,
   type MultiSelectOption,
@@ -102,11 +106,6 @@ export {
   isAtMaxItems,
   removeValue,
 } from "./MultiSelect.logic.js";
-} from "./Checkbox.schema.js";
-export {
-  computeAriaChecked,
-  buildDescriptionId,
-} from "./Checkbox.logic.js";
 export {
   RadioGroupPropsSchema,
   RadioGroupOptionSchema,
@@ -130,7 +129,7 @@ export {
   isActivationKey,
   type RadioOrientation,
 } from "./RadioGroup.logic.js";
-
+export {
   SelectPropsSchema,
   SelectOptionSchema,
   validateSelectProps,
@@ -140,9 +139,6 @@ export {
 export {
   filterOptions,
   findByTypeAhead,
-  findFirstEnabledIndex,
-  findLastEnabledIndex,
-  findNextEnabledIndex,
   indexOfValue,
   resolveSelectedLabel,
 } from "./Select.logic.js";

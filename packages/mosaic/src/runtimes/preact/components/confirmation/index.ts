@@ -9,6 +9,7 @@ export {
   AlertPropsSchema,
   validateAlertProps,
 } from "../../../../components/confirmation/Alert.schema.js";
+/**
  * v0.3.0-alpha.0 T9 — preact mirror of the react alias. Exposes
  * `ConfirmModal` as a re-export of the shared `ConfirmDialog`
  * implementation. Referential identity invariant is asserted by

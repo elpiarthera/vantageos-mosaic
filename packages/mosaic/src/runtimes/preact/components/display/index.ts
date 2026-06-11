@@ -7,9 +7,6 @@ export {
   EmptyStatePropsSchema,
   validateEmptyStateProps,
 } from "../../../../components/display/EmptyState.schema.js";
-  BadgePropsSchema,
-  validateBadgeProps,
-} from "../../../../components/display/Badge.schema.js";
 export { Skeleton } from "./Skeleton.js";
 export type { SkeletonProps } from "../../../../components/display/Skeleton.schema.js";
 export {
@@ -17,7 +14,7 @@ export {
   validateSkeletonProps,
   resolveSkeletonDimensions,
 } from "../../../../components/display/Skeleton.schema.js";
- *
+/**
  * v0.3.0-alpha.0: VirtualList (virtualized list, cross-runtime, display category)
  */
 export { VirtualList } from "./VirtualList.js";
