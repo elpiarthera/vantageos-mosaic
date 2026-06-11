@@ -15,6 +15,16 @@ All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are do
 - **Registry**: `Textarea` entry under `forms` (sizeLimit 10KB, WCAG-AA).
 - **Storybook**: 3 stories — `Default (rows=3)`, `With maxLength (cap 50 chars)`, `Auto-resize (grows with content)`. Bilingual placeholder + label (FR + EN) in stories.
 - **Tests (TDD RED→GREEN)**: React test file covers Zod schema (7 cases), pure logic (clamp + resolveRows + computeAutoResizeHeight), runtime (rows default, custom rows, label, placeholder, RHF binding, change, `aria-invalid` AFTER blur with `too_short` Zod error — Standard §18 T10 lesson #4/#5 applied via FormProvider+useMosaicForm harness, maxLength clamp, autoResize style application without crash). Preact parity smoke verifies module export + shared logic by reference.
+### Added — `MultiSelect` form primitive (Wave 2 T15)
+- **`MultiSelect`** — multi-value dropdown with removable chips. API: `name` (RHF binds `string[]`), `label`, `options: [{value,label}]`, `placeholder?`, `disabled?`, `searchable?`, `maxItems?`. Cross-runtime React + Preact, ships under `@vantageos/mosaic/{react,preact,/}forms`.
+- **WCAG-AA combobox**: `role=combobox aria-multiselectable=true aria-expanded`, `aria-controls` → listbox `id`, `aria-labelledby` → label `id`. Per-chip remove button has `aria-label="Remove {label}"`.
+- **Keyboard nav**: Trigger — Enter/Space/ArrowDown open + focus first option; Backspace/Delete remove last chip; Escape close. Listbox — ArrowUp/ArrowDown move active, Enter select, Escape close + return focus to trigger.
+- **Pure logic** (`MultiSelect.logic.ts`): `getAvailableOptions`, `getSelectedOptions`, `filterBySearch` (case-insensitive label OR value substring), `addValue` (dedupe + maxItems gate, identity-stable no-op), `removeValue`, `isAtMaxItems`. Shared by reference across runtimes per Standard §18.2.
+- **Tests** — React: 20+ assertions covering schema parse rejection, all logic helpers, render + open + chip add/remove (click + Backspace + close icon), `maxItems` gate, ArrowDown+Enter keyboard select, Escape close, search filter. Preact parity smoke verifying logic reference identity + exported component.
+- **Stories** — `Default`, `Searchable`, `MaxItemsReached` (cap = 2).
+- **registry.yaml**: `MultiSelect` entry (`category: forms`, `sizeLimit: 20KB`, WCAG-AA).
+- **Reuse** — wraps `FormField` (RHF Controller) from T10; outer `onBlur` → `field.onBlur` for `mode=onBlur` validation timing.
+- **Mission**: Wave 2 T15 — task ID `k172cs9m5smj6t6feqcshzehk188feb6` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES applied (TDD, docs, no bypass, task-structure).
 
 ### Added — `forms` category (NEW 7th top-level category, Wave 2 T10)
 - **New category** `forms` introduced as the 7th top-level taxonomy bucket per `docs/v0.3.0-plan.md` §4 + mosaic-architecture-standard-v1.x amendment (forthcoming v1.2). Sits alongside `progress | input | display | artifacts | confirmation | media`.

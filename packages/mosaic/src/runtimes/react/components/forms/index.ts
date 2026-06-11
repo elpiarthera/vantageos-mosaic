@@ -37,6 +37,7 @@ export {
   type UseFieldArrayReturn,
 } from "./FieldArray.js";
 export { Checkbox, type CheckboxProps } from "./Checkbox.js";
+export { MultiSelect, type MultiSelectProps } from "./MultiSelect.js";
 
 // Shared schemas + logic re-export for type access
 export {
@@ -84,3 +85,7 @@ export {
   resolveAriaChecked,
   resolveDescribedBy,
 } from "../../../../components/forms/Checkbox.logic.js";
+  MultiSelectPropsSchema,
+  MultiSelectOptionSchema,
+  type MultiSelectOption,
+} from "../../../../components/forms/MultiSelect.schema.js";
