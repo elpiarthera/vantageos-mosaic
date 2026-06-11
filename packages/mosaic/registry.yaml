@@ -92,3 +92,19 @@ components:
     a11yLevel: WCAG-AA
     runtimes: ["react", "preact"]
     convergence: ["hermes", "chi"]
+  - name: Alert
+    category: confirmation
+    schema: src/components/confirmation/Alert.schema.ts
+    zodExport: AlertPropsSchema
+    i18nKeys: ["Alert.aria.dismiss", "Alert.error.invalidProps"]
+    sizeLimit: "30KB"
+    a11yLevel: WCAG-AA
+    runtimes: ["react", "preact"]
+    convergence: ["hermes", "demeter"]
+    wcag:
+      - variant=error → role=alert + aria-live=assertive
+      - all others → role=status + aria-live=polite
+      - aria-atomic=true on container
+      - dismiss button aria-label localized (EN + FR)
+      - dismiss button focus-visible ring
+      - PERSISTENT inline (no auto-dismiss)
