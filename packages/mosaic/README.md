@@ -116,8 +116,9 @@ export function SignupForm({ onSubmit }: { onSubmit: (data: z.infer<typeof schem
 | `<FormField name="...">{({ field, fieldState, formState }) => ...}</FormField>` | Render-prop wrapper around RHF's `Controller`. |
 | `<ErrorDisplay error={...} messageMap={...} />` | Single-field error formatter. Renders nothing when no error. Priority: `error.message` → `messageMap[type]` → generic fallback. |
 | `<SubmitButton label="..." loadingLabel="..." />` | Bound to the surrounding `FormProvider`. Disabled while invalid OR submitting. |
+| `<Textarea name="..." rows? maxLength? autoResize? placeholder? disabled? label?  />` | Multi-line text input field primitive. `rows` default 3, `maxLength` enforced via shared logic gate, optional `autoResize` grows to content. `aria-invalid` + `aria-describedby` on error. |
 
-Field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11-T20 — see `docs/v0.3.0-plan.md` §7.
+Remaining field primitives (Input shipped T11, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T13-T20 — see `docs/v0.3.0-plan.md` §7.
 
 ## Server (MCP UI)
 

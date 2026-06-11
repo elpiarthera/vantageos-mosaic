@@ -25,6 +25,7 @@ export {
 } from "./FormField.js";
 export { ErrorDisplay, type ErrorDisplayProps } from "./ErrorDisplay.js";
 export { SubmitButton, type SubmitButtonProps } from "./SubmitButton.js";
+export { Textarea, type TextareaProps } from "./Textarea.js";
 
 // Shared schemas + logic re-export for type access
 export {
@@ -40,3 +41,14 @@ export {
 export { SubmitButtonPropsSchema } from "../../../../components/forms/SubmitButton.schema.js";
 export { FormFieldPropsSchema } from "../../../../components/forms/FormField.schema.js";
 export { FormProviderPropsSchema } from "../../../../components/forms/FormProvider.schema.js";
+export {
+  TextareaPropsSchema,
+  validateTextareaProps,
+  type TextareaPropsValidated,
+} from "../../../../components/forms/Textarea.schema.js";
+export {
+  DEFAULT_TEXTAREA_ROWS,
+  clampToMaxLength,
+  computeAutoResizeHeight,
+  resolveRows,
+} from "../../../../components/forms/Textarea.logic.js";

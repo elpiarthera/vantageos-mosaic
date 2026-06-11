@@ -81,3 +81,11 @@ components:
     i18nKeys: []
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
+  # ─── Forms field primitives (Wave 2 T11-T20) ────────────────────────────────
+  - name: Textarea
+    category: forms
+    schema: src/components/forms/Textarea.schema.ts
+    zodExport: TextareaPropsSchema
+    i18nKeys: []
+    sizeLimit: "10KB"
+    a11yLevel: WCAG-AA
