@@ -1,0 +1,27 @@
+[
+  {
+    "case": "happy-rect",
+    "input": { "variant": "rect", "width": "100%", "height": 80, "animation": "pulse", "locale": "en" },
+    "expect": "renders rect skeleton with animate-pulse class and aria-busy=true"
+  },
+  {
+    "case": "happy-circle",
+    "input": { "variant": "circle", "width": 48, "animation": "pulse", "locale": "en" },
+    "expect": "renders circle skeleton with rounded-full, equal width and height"
+  },
+  {
+    "case": "happy-text-3lines",
+    "input": { "variant": "text", "count": 3, "animation": "pulse", "locale": "fr" },
+    "expect": "renders 3 text line spans, last line narrowed to 75%, aria-label in French"
+  },
+  {
+    "case": "animation-none",
+    "input": { "variant": "rect", "animation": "none", "locale": "en" },
+    "expect": "renders without animate-pulse or skeleton-wave class"
+  },
+  {
+    "case": "failure",
+    "input": { "variant": "hexagon", "locale": "en" },
+    "expect": "renders role=alert error fallback — variant is not valid enum value"
+  }
+]

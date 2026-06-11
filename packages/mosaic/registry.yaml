@@ -81,3 +81,14 @@ components:
     i18nKeys: []
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
+    runtimes: ["react", "preact"]
+    convergence: ["chi", "hermes"]
+  - name: Skeleton
+    category: display
+    schema: src/components/display/Skeleton.schema.ts
+    zodExport: SkeletonPropsSchema
+    i18nKeys: ["Skeleton.aria.label", "Skeleton.error.invalidProps"]
+    sizeLimit: "80KB"
+    a11yLevel: WCAG-AA
+    runtimes: ["react", "preact"]
+    convergence: ["hermes", "chi"]
