@@ -5,14 +5,10 @@ import { z } from "zod";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
 import { Input } from "../../../runtimes/react/components/forms/Input";
 import {
-  useMosaicForm,
   type UseMosaicFormReturn,
+  useMosaicForm,
 } from "../../../runtimes/react/components/forms/useMosaicForm";
-import {
-  buildErrorDescribedBy,
-  buildInputId,
-  resolveHtmlType,
-} from "../Input.logic";
+import { buildErrorDescribedBy, buildInputId, resolveHtmlType } from "../Input.logic";
 import { InputPropsSchema, InputTypeSchema } from "../Input.schema";
 
 // ─── Schema tests ───────────────────────────────────────────────────────────
@@ -28,13 +24,10 @@ describe("InputPropsSchema", () => {
     expect(r.success).toBe(false);
   });
 
-  it.each(["text", "email", "password", "number", "url"] as const)(
-    "accepts type = %s",
-    (type) => {
-      const r = InputPropsSchema.safeParse({ name: "f", label: "F", type });
-      expect(r.success).toBe(true);
-    },
-  );
+  it.each(["text", "email", "password", "number", "url"] as const)("accepts type = %s", (type) => {
+    const r = InputPropsSchema.safeParse({ name: "f", label: "F", type });
+    expect(r.success).toBe(true);
+  });
 
   it("rejects unknown type", () => {
     const r = InputTypeSchema.safeParse("checkbox");
@@ -152,9 +145,7 @@ describe("Input (runtime)", () => {
   });
 
   it("passes through placeholder, disabled, autoComplete to the DOM", () => {
-    render(
-      <Harness placeholder="you@example.com" disabled autoComplete="email" />,
-    );
+    render(<Harness placeholder="you@example.com" disabled autoComplete="email" />);
     const input = screen.getByLabelText("Email") as HTMLInputElement;
     expect(input.placeholder).toBe("you@example.com");
     expect(input.disabled).toBe(true);
@@ -163,7 +154,10 @@ describe("Input (runtime)", () => {
 
   it("integrates with FormProvider — typing updates form values", async () => {
     let formRef: UseMosaicFormReturn<{ email: string }> | undefined;
-    render(<Harness type="email" onForm={(f) => (formRef = f)} />);
+    const capture = (f: UseMosaicFormReturn<{ email: string }>) => {
+      formRef = f;
+    };
+    render(<Harness type="email" onForm={capture} />);
     const input = screen.getByLabelText("Email") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "abc@def.gh" } });
     await waitFor(() => {
@@ -181,12 +175,12 @@ describe("Input (runtime)", () => {
   });
 
   it("validation FIRES on blur — emits aria-invalid=true + aria-describedby + error element", async () => {
-    let formRef: UseMosaicFormReturn<{ email: string }> | undefined;
+    // T10 lesson #5 — inspect errors via onInvalid handler (formState.errors is
+    // a lazy Proxy; checking via submit-onInvalid is the doctrine pattern).
     const onInvalid = vi.fn();
     function Inner() {
       const schema = z.object({ email: z.string().email("invalid_email") });
       const form = useMosaicForm({ schema, defaultValues: { email: "" } });
-      formRef = form;
       return (
         <FormProvider form={form}>
           <form onSubmit={form.handleSubmit(() => undefined, onInvalid)} noValidate>
@@ -209,11 +203,13 @@ describe("Input (runtime)", () => {
     expect(errEl).not.toBeNull();
     expect(errEl?.getAttribute("role")).toBe("alert");
     expect(errEl?.textContent).toBe("invalid_email");
-    // formState surface (T10 lesson #4 — formRef + trigger to inspect)
-    if (formRef) {
-      await formRef.trigger("email");
-      expect(formRef.formState.errors.email?.message).toBe("invalid_email");
-    }
+    // Confirm RHF onInvalid receives a populated errors object after submit
+    fireEvent.click(screen.getByText("submit"));
+    await waitFor(() => {
+      expect(onInvalid).toHaveBeenCalled();
+    });
+    const errors = onInvalid.mock.calls[0]?.[0] as { email?: { message?: string } };
+    expect(errors.email?.message).toBe("invalid_email");
   });
 
   it("clears aria-invalid + error after blur with valid value", async () => {

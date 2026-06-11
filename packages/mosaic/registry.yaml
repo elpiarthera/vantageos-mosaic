@@ -81,3 +81,10 @@ components:
     i18nKeys: []
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
+  - name: Input
+    category: forms
+    schema: src/components/forms/Input.schema.ts
+    zodExport: InputPropsSchema
+    i18nKeys: []
+    sizeLimit: "15KB"
+    a11yLevel: WCAG-AA

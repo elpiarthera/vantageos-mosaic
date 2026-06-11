@@ -47,6 +47,18 @@ Strict additive: introduces a new top-level subpath and an optional peer set. No
 ### Mission
 Wave 2 T10 — task ID `k1728w4hs4y69zzt05sb9815jh88fh52` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES NON-NEGOTIABLE applied (TDD, docs, no bypass, task-structure).
 
+### Added — Input field primitive (Wave 2 T11)
+- **Input** — first field primitive of the `forms` category. Binds an `<input>` to the surrounding `<FormProvider>` via RHF's `Controller`. Cross-runtime React 19 + Preact 10.
+- **API**: `name` (RHF path), `type` (`"text" | "email" | "password" | "number" | "url"`, default `"text"`), `placeholder?`, `disabled?`, `autoComplete?`, `label` (required — consumer-driven i18n), plus optional `id`, `messageMap` (error code → localized string), `className`, `inputClassName`, `errorClassName`.
+- **a11y**: `<label htmlFor>` wired automatically, `aria-invalid` toggled by validation state, `aria-describedby` links the error element when present. Error renders as `role="alert"`.
+- **Validation timing**: inherits the form's `mode` (default `"onBlur"`, Day 102 DM).
+- **Files**: `src/components/forms/Input.schema.ts` + `Input.logic.ts` + `Input.stories.tsx` (3 stories: Text default / Email with autoComplete / Password disabled), `src/runtimes/{react,preact}/components/forms/Input.tsx` + barrels updated, tests under `src/components/forms/__tests__/Input.test.tsx` (Zod props + 5 HTML types + RHF integration + onBlur timing assertion + aria-invalid/describedby + clear-on-fix) and Preact parity smoke under `src/runtimes/preact/components/forms/__tests__/Input.test.tsx`.
+- **registry.yaml**: new entry `Input` under `forms` category, sizeLimit `15KB`.
+- **size-limit**: `dist/{react,preact}/forms.js` gate `≤ 50KB gz` (unchanged from T10 scaffold).
+
+### Mission (T11)
+Wave 2 T11 — task ID `k1782ad24mxhrgvnwp1j5gnc2s88ejsh` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES NON-NEGOTIABLE applied (TDD RED→GREEN, docs update, no bypass, task-structure).
+
 ---
 
 ## v0.2.2 — 2026-06-11

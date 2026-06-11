@@ -17,6 +17,7 @@ export {
 export { FormField } from "../../runtimes/react/components/forms/FormField.js";
 export { ErrorDisplay } from "../../runtimes/react/components/forms/ErrorDisplay.js";
 export { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";
+export { Input } from "../../runtimes/react/components/forms/Input.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -42,3 +43,14 @@ export {
   validateSubmitButtonProps,
 } from "./SubmitButton.schema.js";
 export { computeSubmitButtonState } from "./SubmitButton.logic.js";
+export {
+  InputPropsSchema,
+  InputTypeSchema,
+  type InputType,
+  type InputPropsValidated,
+} from "./Input.schema.js";
+export {
+  buildInputId,
+  buildErrorDescribedBy,
+  resolveHtmlType,
+} from "./Input.logic.js";
