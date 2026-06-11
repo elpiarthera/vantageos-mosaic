@@ -25,6 +25,7 @@ export {
 } from "./FormField.js";
 export { ErrorDisplay, type ErrorDisplayProps } from "./ErrorDisplay.js";
 export { SubmitButton, type SubmitButtonProps } from "./SubmitButton.js";
+export { Checkbox, type CheckboxProps } from "./Checkbox.js";
 
 // Shared schemas + logic re-export for type access
 export {
@@ -40,3 +41,12 @@ export {
 export { SubmitButtonPropsSchema } from "../../../../components/forms/SubmitButton.schema.js";
 export { FormFieldPropsSchema } from "../../../../components/forms/FormField.schema.js";
 export { FormProviderPropsSchema } from "../../../../components/forms/FormProvider.schema.js";
+export {
+  CheckboxPropsSchema,
+  validateCheckboxProps,
+  type CheckboxPropsValidated,
+} from "../../../../components/forms/Checkbox.schema.js";
+export {
+  resolveAriaChecked,
+  resolveDescribedBy,
+} from "../../../../components/forms/Checkbox.logic.js";

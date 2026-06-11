@@ -17,6 +17,7 @@ export {
 export { FormField } from "../../runtimes/react/components/forms/FormField.js";
 export { ErrorDisplay } from "../../runtimes/react/components/forms/ErrorDisplay.js";
 export { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";
+export { Checkbox } from "../../runtimes/react/components/forms/Checkbox.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -42,3 +43,9 @@ export {
   validateSubmitButtonProps,
 } from "./SubmitButton.schema.js";
 export { computeSubmitButtonState } from "./SubmitButton.logic.js";
+export {
+  CheckboxPropsSchema,
+  validateCheckboxProps,
+  type CheckboxPropsValidated,
+} from "./Checkbox.schema.js";
+export { resolveAriaChecked, resolveDescribedBy } from "./Checkbox.logic.js";
