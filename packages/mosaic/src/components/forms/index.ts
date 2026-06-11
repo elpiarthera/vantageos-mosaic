@@ -18,6 +18,7 @@ export { FormField } from "../../runtimes/react/components/forms/FormField.js";
 export { ErrorDisplay } from "../../runtimes/react/components/forms/ErrorDisplay.js";
 export { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";
 export { Input } from "../../runtimes/react/components/forms/Input.js";
+export { Textarea } from "../../runtimes/react/components/forms/Textarea.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -54,3 +55,13 @@ export {
   buildErrorDescribedBy,
   resolveHtmlType,
 } from "./Input.logic.js";
+  TextareaPropsSchema,
+  validateTextareaProps,
+  type TextareaPropsValidated,
+} from "./Textarea.schema.js";
+export {
+  DEFAULT_TEXTAREA_ROWS,
+  clampToMaxLength,
+  computeAutoResizeHeight,
+  resolveRows,
+} from "./Textarea.logic.js";

@@ -4,6 +4,18 @@ All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are do
 
 ## v0.3.0-alpha.1 — 2026-06-11
 
+### Added — Wave 2 T12 — `Textarea` field primitive (forms)
+- **New field primitive** `Textarea` in `forms` category. Multi-line text input wrapping `FormField` (RHF `Controller`) with a native `<textarea>`.
+- **API**: `name` (required, non-empty), `rows` (default 3), `maxLength` (optional cap), `autoResize` (default false), `placeholder?`, `disabled?`, `label?`, `className?`, `errorMessageMap?`.
+- **Shared pure logic** (`Textarea.logic.ts`): `clampToMaxLength`, `resolveRows`, `computeAutoResizeHeight`, `DEFAULT_TEXTAREA_ROWS`. Runtime-agnostic — both runtimes import-by-reference for parity (Standard §18 contract).
+- **maxLength gate**: enforced at the `onChange` boundary via `clampToMaxLength` BEFORE RHF receives the value, AND as the native `maxLength` attribute (defence in depth — DOM caps typed input, logic gate covers paste / programmatic writes).
+- **autoResize**: when true, runtime grows the textarea to fit content on each input event (`height = auto` reset → `scrollHeight` measure → `Math.max(scrollHeight, minPx)`). Pure math in `computeAutoResizeHeight` is jsdom-friendly (returns min when scrollHeight ≤ 0).
+- **a11y**: `aria-invalid` toggles on error, `aria-describedby` links to the error region. `<label htmlFor>` when `label` provided.
+- **Cross-runtime**: React 19 at `@vantageos/mosaic/react/forms`, Preact 10 at `@vantageos/mosaic/preact/forms`, back-compat re-export at `@vantageos/mosaic/forms`. JSX shape byte-equivalent between runtimes; logic file is the parity contract.
+- **Registry**: `Textarea` entry under `forms` (sizeLimit 10KB, WCAG-AA).
+- **Storybook**: 3 stories — `Default (rows=3)`, `With maxLength (cap 50 chars)`, `Auto-resize (grows with content)`. Bilingual placeholder + label (FR + EN) in stories.
+- **Tests (TDD RED→GREEN)**: React test file covers Zod schema (7 cases), pure logic (clamp + resolveRows + computeAutoResizeHeight), runtime (rows default, custom rows, label, placeholder, RHF binding, change, `aria-invalid` AFTER blur with `too_short` Zod error — Standard §18 T10 lesson #4/#5 applied via FormProvider+useMosaicForm harness, maxLength clamp, autoResize style application without crash). Preact parity smoke verifies module export + shared logic by reference.
+
 ### Added — `forms` category (NEW 7th top-level category, Wave 2 T10)
 - **New category** `forms` introduced as the 7th top-level taxonomy bucket per `docs/v0.3.0-plan.md` §4 + mosaic-architecture-standard-v1.x amendment (forthcoming v1.2). Sits alongside `progress | input | display | artifacts | confirmation | media`.
 - **5 scaffold primitives** wrapping `react-hook-form` + `@hookform/resolvers/zod`:
