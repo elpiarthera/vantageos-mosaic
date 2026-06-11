@@ -145,3 +145,10 @@ components:
     sizeLimit: "30KB"
     a11yLevel: WCAG-AA
     note: "v0.3.0-alpha.0 T9 — thin re-export of ConfirmDialog under the ConfirmModal name for Chi gptpowerups-extension naming bridge. Referential identity invariant. Exposed on @vantageos/mosaic/{react,preact}/confirmation."
+  - name: Input
+    category: forms
+    schema: src/components/forms/Input.schema.ts
+    zodExport: InputPropsSchema
+    i18nKeys: []
+    sizeLimit: "15KB"
+    a11yLevel: WCAG-AA
