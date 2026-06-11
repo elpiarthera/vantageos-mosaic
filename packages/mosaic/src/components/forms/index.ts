@@ -24,6 +24,7 @@ export {
   useFieldArray,
 } from "../../runtimes/react/components/forms/FieldArray.js";
 export { Checkbox } from "../../runtimes/react/components/forms/Checkbox.js";
+export { MultiSelect } from "../../runtimes/react/components/forms/MultiSelect.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -84,3 +85,15 @@ export {
   type CheckboxPropsValidated,
 } from "./Checkbox.schema.js";
 export { resolveAriaChecked, resolveDescribedBy } from "./Checkbox.logic.js";
+  MultiSelectPropsSchema,
+  MultiSelectOptionSchema,
+  type MultiSelectOption,
+} from "./MultiSelect.schema.js";
+export {
+  addValue,
+  filterBySearch,
+  getAvailableOptions,
+  getSelectedOptions,
+  isAtMaxItems,
+  removeValue,
+} from "./MultiSelect.logic.js";
