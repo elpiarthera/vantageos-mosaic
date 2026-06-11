@@ -125,3 +125,13 @@ components:
       - ArrowLeft/Right (horizontal) or ArrowUp/Down (vertical)
       - Home/End keyboard navigation
       - disabled tabs skipped in keyboard nav
+  - name: VirtualList
+    category: display
+    schema: src/components/display/VirtualList.schema.ts
+    zodExport: VirtualListPropsSchema
+    i18nKeys: ["VirtualList.empty.message", "VirtualList.error.invalidProps"]
+    sizeLimit: "80KB"
+    a11yLevel: WCAG-AA
+    crossRuntime: true
+    runtimes: ["react", "preact"]
+    convergence: ["Hermes", "Mu", "future-BUs"]

@@ -36,6 +36,8 @@ const EN = {
   "Toast.error.invalidProps": "Toast: invalid props",
   "Alert.aria.dismiss": "Dismiss alert",
   "Alert.error.invalidProps": "Alert: invalid props",
+  "VirtualList.empty.message": "No items to display",
+  "VirtualList.error.invalidProps": "VirtualList: invalid props",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -64,6 +66,8 @@ const FR: Record<keyof typeof EN, string> = {
   "Toast.error.invalidProps": "Toast : propriétés invalides",
   "Alert.aria.dismiss": "Fermer l'alerte",
   "Alert.error.invalidProps": "Alert : propriétés invalides",
+  "VirtualList.empty.message": "Aucun élément à afficher",
+  "VirtualList.error.invalidProps": "VirtualList : propriétés invalides",
 };
 
 export type MosaicI18nKey = keyof typeof EN;

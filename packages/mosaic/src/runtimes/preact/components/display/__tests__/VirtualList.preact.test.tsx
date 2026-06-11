@@ -91,15 +91,16 @@ describe("VirtualList — Preact runtime parity", () => {
     expect(screen.getByTestId("preact-item-100")).toBeDefined();
   });
 
-  it("data-virtual attribute present for large lists — parity", () => {
+  it("data-virtual attribute present for non-empty lists — parity", () => {
+    // Use small count to avoid DOM thrash in jsdom; data-virtual marker confirms virtualizer engaged
     const { container } = render(
       <VirtualList
-        items={makeItems(10000)}
+        items={makeItems(50)}
         itemHeight={40}
         renderItem={renderItem}
       />,
     );
-    expect(container.querySelector("[data-virtual=\"true\"]")).toBeDefined();
+    expect(container.querySelector("[data-virtual=\"true\"]")).not.toBeNull();
   });
 
   it("role=button + tabIndex=0 when onRowClick defined — parity", () => {
@@ -141,7 +142,7 @@ describe("VirtualList — Preact runtime parity", () => {
       />,
     );
     const rows = screen.getAllByRole("button");
-    fireEvent.click(rows[0]);
+    fireEvent.click(rows[0]!);
     expect(handler).toHaveBeenCalledWith(items[0], 0);
   });
 
@@ -157,7 +158,7 @@ describe("VirtualList — Preact runtime parity", () => {
       />,
     );
     const rows = screen.getAllByRole("button");
-    fireEvent.keyDown(rows[1], { key: "Enter" });
+    fireEvent.keyDown(rows[1]!, { key: "Enter" });
     expect(handler).toHaveBeenCalledWith(items[1], 1);
   });
 
@@ -173,7 +174,7 @@ describe("VirtualList — Preact runtime parity", () => {
       />,
     );
     const rows = screen.getAllByRole("button");
-    fireEvent.keyDown(rows[0], { key: " " });
+    fireEvent.keyDown(rows[0]!, { key: " " });
     expect(handler).toHaveBeenCalledWith(items[0], 0);
   });
 
