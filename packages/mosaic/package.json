@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.2.2",
+  "version": "0.3.0-alpha.1",
   "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -42,6 +42,11 @@
       "require": "./dist/media.cjs",
       "types": "./dist/media.d.ts"
     },
+    "./forms": {
+      "import": "./dist/forms.js",
+      "require": "./dist/forms.cjs",
+      "types": "./dist/forms.d.ts"
+    },
     "./react": {
       "import": "./dist/react/index.js",
       "require": "./dist/react/index.cjs",
@@ -77,6 +82,11 @@
       "require": "./dist/react/media.cjs",
       "types": "./dist/react/media.d.ts"
     },
+    "./react/forms": {
+      "import": "./dist/react/forms.js",
+      "require": "./dist/react/forms.cjs",
+      "types": "./dist/react/forms.d.ts"
+    },
     "./preact": {
       "import": "./dist/preact/index.js",
       "types": "./dist/preact/index.d.ts"
@@ -104,6 +114,10 @@
     "./preact/media": {
       "import": "./dist/preact/media.js",
       "types": "./dist/preact/media.d.ts"
+    },
+    "./preact/forms": {
+      "import": "./dist/preact/forms.js",
+      "types": "./dist/preact/forms.d.ts"
     },
     "./tokens": {
       "import": "./dist/tokens.js",
@@ -134,14 +148,19 @@
     "prepublishOnly": "pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js"
   },
   "peerDependencies": {
+    "@hookform/resolvers": "^3.10.0",
     "@mcp-ui/client": "7.1.1",
     "preact": "^10.25.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.54.0",
     "react-i18next": "15.5.2",
     "rxjs": "^7.8.0"
   },
   "peerDependenciesMeta": {
+    "@hookform/resolvers": {
+      "optional": true
+    },
     "@mcp-ui/client": {
       "optional": true
     },
@@ -152,6 +171,9 @@
       "optional": true
     },
     "react-dom": {
+      "optional": true
+    },
+    "react-hook-form": {
       "optional": true
     },
     "react-i18next": {
@@ -171,11 +193,11 @@
     "zod": "3.25.28"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.10.1",
     "@babel/parser": "7.29.7",
     "@babel/traverse": "7.29.7",
-    "@types/babel__traverse": "7.28.0",
-    "@axe-core/playwright": "4.10.1",
     "@biomejs/biome": "1.9.4",
+    "@hookform/resolvers": "^3.10.0",
     "@playwright/test": "1.50.1",
     "@size-limit/preset-small-lib": "11.2.0",
     "@storybook/builder-vite": "8.6.18",
@@ -185,6 +207,7 @@
     "@tailwindcss/vite": "4.1.8",
     "@testing-library/react": "16.3.0",
     "@testing-library/user-event": "14.6.1",
+    "@types/babel__traverse": "7.28.0",
     "@types/dompurify": "3.0.5",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.0",
@@ -194,6 +217,7 @@
     "preact": "10.27.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hook-form": "^7.78.0",
     "size-limit": "11.2.0",
     "storybook": "8.6.18",
     "tailwindcss": "4.1.8",
