@@ -154,6 +154,18 @@ components:
     schema: src/components/forms/FieldArray.schema.ts
     zodExport: FieldArrayPropsSchema
     i18nKeys: []
+  - name: Checkbox
+    category: forms
+    schema: src/components/forms/Checkbox.schema.ts
+    zodExport: CheckboxPropsSchema
+    i18nKeys: []
+    sizeLimit: "10KB"
+    a11yLevel: WCAG-AA
+  - name: RadioGroup
+    category: forms
+    schema: src/components/forms/RadioGroup.schema.ts
+    zodExport: RadioGroupPropsSchema
+    i18nKeys: ["RadioGroup.error.invalidProps"]
     sizeLimit: "15KB"
   # ─── Forms field primitives (Wave 2 T11-T20) ────────────────────────────────
   - name: Textarea
