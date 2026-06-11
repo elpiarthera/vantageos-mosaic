@@ -125,13 +125,65 @@ Remaining field primitives (Input shipped T11, Select, Checkbox, MultiSelect, Ra
 | `useFieldArray({ name, control? })` | Thin wrapper around RHF's `useFieldArray`. Returns `{ fields, append, remove, move, swap }` + the rest of RHF's native return for advanced cases. Reads `control` from `FormProvider` when omitted. |
 | `<FieldArray name="...">{({ field, index }, { append, remove, move, swap, fields }) => ...}</FieldArray>` | Render-prop wrapper around `useFieldArray`. Emits `role="list"` shell + `role="listitem"` per row, keyed by RHF's stable `field.id` (NOT array index). Powers PromptForm Add Variable, Hermes variable mappings, Demeter filter chips. |
 
-Remaining field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup) land in T11-T15 + T17-T20 — see `docs/v0.3.0-plan.md` §7.
 | `<Checkbox name="..." label="..." indeterminate? description? disabled? />` | Boolean checkbox primitive. `indeterminate=true` → `aria-checked="mixed"` + DOM `.indeterminate=true` via ref. `description` wired via `aria-describedby`. `aria-invalid` + `aria-describedby` on error. |
+| `<RadioGroup name="..." label="..." options={[...]} orientation? disabled? />` | WCAG-AA radiogroup. Roving tabIndex, Arrow key selection sync, Home/End, Space/Enter. |
+
+Remaining field primitives (Input, Textarea, Select, MultiSelect) land in T11-T15 + T18-T20 — see `docs/v0.3.0-plan.md` §7.
+
+### RadioGroup
+
+Mutually exclusive single-choice field. Keyboard navigation follows WAI-ARIA radiogroup pattern (§3.10): Arrow keys move focus AND select simultaneously (roving tabindex). Disabled options are skipped during navigation.
+
+```tsx
+import { z } from "zod";
+import {
+  useMosaicForm,
+  FormProvider,
+  RadioGroup,
+} from "@vantageos/mosaic/react/forms";
+
+const schema = z.object({
+  plan: z.string().min(1, "Please select a plan"),
+});
+
+export function PlanSelector() {
+  const form = useMosaicForm({
+    schema,
+    defaultValues: { plan: "" },
+  });
+
+  return (
+    <FormProvider form={form}>
+      <form onSubmit={form.handleSubmit(console.log)}>
+        <RadioGroup
+          name="plan"
+          label="Select a plan"
+          options={[
+            { value: "free", label: "Free", description: "Up to 3 projects" },
+            { value: "pro", label: "Pro", description: "Unlimited projects" },
+            { value: "team", label: "Team", description: "Multi-user", disabled: false },
+          ]}
+          orientation="vertical"
+        />
+      </form>
+    </FormProvider>
+  );
+}
+```
+
+**WCAG-AA contract:**
+- `role="radiogroup"` + `aria-labelledby` on container
+- `role="radio"` + `aria-checked` + roving `tabIndex` per option
+- `aria-labelledby` per option → its visible label span
+- `aria-describedby` per option → its description span (when present)
+- `aria-disabled` on disabled options; disabled options skipped in arrow nav
+- `aria-orientation` reflects `orientation` prop
 
 Field primitives (Textarea, Select, MultiSelect, RadioGroup, FieldArray) land in T12-T20 — see `docs/v0.3.0-plan.md` §7.
 | `<MultiSelect name="..." label="..." options={...} placeholder? disabled? searchable? maxItems? />` | Multi-value dropdown. RHF value is `string[]`. Selected items render as removable chips (Backspace/Delete on trigger removes last, per-chip × removes specific). WCAG-AA combobox (`role=combobox aria-multiselectable=true`), Arrow/Enter keyboard nav, optional case-insensitive search, optional `maxItems` cap. |
 
 Remaining field primitives (Input + Textarea + MultiSelect shipped T11/T12/T15; Select, Checkbox, RadioGroup, FieldArray) land in T13-T20 — see `docs/v0.3.0-plan.md` §7.
+
 
 ## Server (MCP UI)
 

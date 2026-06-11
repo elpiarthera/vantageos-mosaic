@@ -34,6 +34,9 @@ export {
 } from "./FieldArray.js";
 export { Checkbox, type CheckboxProps } from "./Checkbox.js";
 export { MultiSelect, type MultiSelectProps } from "./MultiSelect.js";
+export { RadioGroup, type RadioGroupProps } from "./RadioGroup.js";
+
+
 
 // Shared schemas + logic re-export for type access
 export {
@@ -85,3 +88,33 @@ export {
   MultiSelectOptionSchema,
   type MultiSelectOption,
 } from "../../../../components/forms/MultiSelect.schema.js";
+} from "../../../../components/forms/Checkbox.schema.js";
+export {
+  computeAriaChecked,
+  buildDescriptionId,
+} from "../../../../components/forms/Checkbox.logic.js";
+export {
+  RadioGroupPropsSchema,
+  RadioGroupOptionSchema,
+  validateRadioGroupProps,
+  type RadioGroupOption,
+  type RadioGroupPropsValidated,
+} from "../../../../components/forms/RadioGroup.schema.js";
+export {
+  getNavKeys,
+  findNextEnabledIndex,
+  findFirstEnabledIndex,
+  findLastEnabledIndex,
+  findSelectedIndex,
+  getRovingTabIndex,
+  getGroupLabelId,
+  getOptionLabelId,
+  getOptionDescriptionId,
+  getGroupClasses,
+  getOptionRowClasses,
+  getRadioControlClasses,
+  isActivationKey,
+  type RadioOrientation,
+} from "../../../../components/forms/RadioGroup.logic.js";
+
+

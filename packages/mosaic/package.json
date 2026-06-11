@@ -1,7 +1,7 @@
 {
   "name": "@vantageos/mosaic",
   "version": "0.3.0-alpha.1",
-  "description": "Fleet-wide MCP UI design system \u2014 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
+  "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -217,7 +217,7 @@
     "preact": "10.27.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-hook-form": "^7.78.0",
+    "react-hook-form": "^7.54.0",
     "size-limit": "11.2.0",
     "storybook": "8.6.18",
     "tailwindcss": "4.1.8",
