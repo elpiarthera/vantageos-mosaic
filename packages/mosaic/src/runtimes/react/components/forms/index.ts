@@ -25,6 +25,7 @@ export {
 } from "./FormField.js";
 export { ErrorDisplay, type ErrorDisplayProps } from "./ErrorDisplay.js";
 export { SubmitButton, type SubmitButtonProps } from "./SubmitButton.js";
+export { Select, type SelectProps } from "./Select.js";
 
 // Shared schemas + logic re-export for type access
 export {
@@ -40,3 +41,10 @@ export {
 export { SubmitButtonPropsSchema } from "../../../../components/forms/SubmitButton.schema.js";
 export { FormFieldPropsSchema } from "../../../../components/forms/FormField.schema.js";
 export { FormProviderPropsSchema } from "../../../../components/forms/FormProvider.schema.js";
+export {
+  SelectPropsSchema,
+  SelectOptionSchema,
+  validateSelectProps,
+  type SelectOption,
+  type SelectPropsValidated,
+} from "../../../../components/forms/Select.schema.js";

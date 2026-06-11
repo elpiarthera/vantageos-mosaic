@@ -17,6 +17,7 @@ export {
 export { FormField } from "../../runtimes/react/components/forms/FormField.js";
 export { ErrorDisplay } from "../../runtimes/react/components/forms/ErrorDisplay.js";
 export { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";
+export { Select } from "../../runtimes/react/components/forms/Select.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -42,3 +43,19 @@ export {
   validateSubmitButtonProps,
 } from "./SubmitButton.schema.js";
 export { computeSubmitButtonState } from "./SubmitButton.logic.js";
+export {
+  SelectPropsSchema,
+  SelectOptionSchema,
+  validateSelectProps,
+  type SelectOption,
+  type SelectPropsValidated,
+} from "./Select.schema.js";
+export {
+  filterOptions,
+  findByTypeAhead,
+  findFirstEnabledIndex,
+  findLastEnabledIndex,
+  findNextEnabledIndex,
+  indexOfValue,
+  resolveSelectedLabel,
+} from "./Select.logic.js";

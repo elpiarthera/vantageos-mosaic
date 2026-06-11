@@ -116,8 +116,9 @@ export function SignupForm({ onSubmit }: { onSubmit: (data: z.infer<typeof schem
 | `<FormField name="...">{({ field, fieldState, formState }) => ...}</FormField>` | Render-prop wrapper around RHF's `Controller`. |
 | `<ErrorDisplay error={...} messageMap={...} />` | Single-field error formatter. Renders nothing when no error. Priority: `error.message` → `messageMap[type]` → generic fallback. |
 | `<SubmitButton label="..." loadingLabel="..." />` | Bound to the surrounding `FormProvider`. Disabled while invalid OR submitting. |
+| `<Select name="..." label="..." options={[...]} />` | Single-select dropdown (combobox+listbox APG). Optional `searchable` prop enables in-popup filter. Full keyboard nav + type-ahead. WCAG-AA strict. |
 
-Field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11-T20 — see `docs/v0.3.0-plan.md` §7.
+Field primitives (Input, Textarea, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11, T14-T20 — see `docs/v0.3.0-plan.md` §7.
 
 ## Server (MCP UI)
 
