@@ -7,3 +7,13 @@ export {
   EmptyStatePropsSchema,
   validateEmptyStateProps,
 } from "../../../../components/display/EmptyState.schema.js";
+  BadgePropsSchema,
+  validateBadgeProps,
+} from "../../../../components/display/Badge.schema.js";
+export { Skeleton } from "./Skeleton.js";
+export type { SkeletonProps } from "../../../../components/display/Skeleton.schema.js";
+export {
+  SkeletonPropsSchema,
+  validateSkeletonProps,
+  resolveSkeletonDimensions,
+} from "../../../../components/display/Skeleton.schema.js";
