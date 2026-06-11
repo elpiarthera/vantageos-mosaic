@@ -47,6 +47,26 @@ Strict additive: introduces a new top-level subpath and an optional peer set. No
 ### Mission
 Wave 2 T10 — task ID `k1728w4hs4y69zzt05sb9815jh88fh52` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES NON-NEGOTIABLE applied (TDD, docs, no bypass, task-structure).
 
+### Added — `FieldArray` DYNAMIQUE primitive (Wave 2 T16)
+- **`useFieldArray<TValues, TName>({ name, control? })`** — thin cross-runtime wrapper around RHF's `useFieldArray`. Reads `control` from the surrounding `FormProvider` when not provided, mirroring `FormField`'s contract. Returns RHF's full native bag (`fields`, `append`, `remove`, `move`, `swap`, `insert`, `prepend`, `replace`, `update`).
+- **`<FieldArray name="...">{({ field, index }, { append, remove, move, swap, fields }) => ReactElement}</FieldArray>`** — render-prop wrapper around `useFieldArray`. Reads `control` from the surrounding `FormProvider`. Emits an a11y-compliant `role="list"` container with `role="listitem"` rows keyed by **RHF's stable `field.id`** (NOT array index — required for correct React reconciliation across move/remove). Default `aria-label` builds from the array name (overridable via the `ariaLabel` prop).
+- **Pure logic helpers** (`FieldArray.logic.ts`, runtime-agnostic): `buildListAriaLabel(name)`, `buildRemoveAriaLabel(name, index)`, `buildAddAriaLabel(name)`, `nextFocusIndexAfterRemove(previousLength, removedIndex)` — clamps focus to the next sibling, or returns `-1` when the list becomes empty.
+- **Use cases co-validated with Chi (DM `jn7fc9q5`)**: PromptForm "Add variable", Hermes variable mappings, Demeter filter chips — confirms DYNAMIQUE (append/remove/move at runtime), not just static repeating rows.
+- **Cross-runtime parity**: identical JSX shipped for React 19 + Preact 10 via the runtimes' `index.ts` re-exports. Shared `FieldArray.{schema,logic}.ts` live once under `src/components/forms/` and are referenced by both runtime files.
+
+### Added — tests (T16)
+- **21 React tests** in `src/components/forms/__tests__/FieldArray.test.tsx`: schema parsing (props + hook options), pure logic helpers, render-prop contract (1 row per default entry, default `aria-label`, `role=list` + `role=listitem`, append/remove/move/swap each invokable, **key stability via `field.id`**, remove button `aria-label`, value bound to RHF state), standalone `useFieldArray` hook integration via `FormProvider`.
+- **3 Preact parity smoke tests** in `src/runtimes/preact/components/forms/__tests__/FieldArray.preact.test.tsx`: module exports + shared-logic reference parity.
+
+### Added — Storybook (T16)
+- 3 stories under `src/components/forms/FieldArray.stories.tsx`: `Minimal — append + remove`, `Ordered — with move buttons`, `PromptForm-clone — variable substitution` (full RHF `handleSubmit` + `SubmitButton` integration).
+
+### Added — `registry.yaml` (T16)
+- New entry `FieldArray` under category `forms` (sizeLimit `15KB`, WCAG-AA).
+
+### Mission (T16)
+Wave 2 T16 — task ID `k17azjhvf9yp75a69fc4c4f9c988etwz` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES applied. PR shipped on top of T10 `gamma/wave-2-t10-forms-scaffold` branch; rebases onto `main` once Wave 2 lands.
+
 ---
 
 ## v0.2.2 — 2026-06-11

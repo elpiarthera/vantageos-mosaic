@@ -81,3 +81,10 @@ components:
     i18nKeys: []
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
+  - name: FieldArray
+    category: forms
+    schema: src/components/forms/FieldArray.schema.ts
+    zodExport: FieldArrayPropsSchema
+    i18nKeys: []
+    sizeLimit: "15KB"
+    a11yLevel: WCAG-AA

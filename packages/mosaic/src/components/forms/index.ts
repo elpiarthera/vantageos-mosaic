@@ -17,6 +17,10 @@ export {
 export { FormField } from "../../runtimes/react/components/forms/FormField.js";
 export { ErrorDisplay } from "../../runtimes/react/components/forms/ErrorDisplay.js";
 export { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";
+export {
+  FieldArray,
+  useFieldArray,
+} from "../../runtimes/react/components/forms/FieldArray.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -42,3 +46,13 @@ export {
   validateSubmitButtonProps,
 } from "./SubmitButton.schema.js";
 export { computeSubmitButtonState } from "./SubmitButton.logic.js";
+export {
+  FieldArrayPropsSchema,
+  UseFieldArrayOptionsSchema,
+} from "./FieldArray.schema.js";
+export {
+  buildListAriaLabel,
+  buildRemoveAriaLabel,
+  buildAddAriaLabel,
+  nextFocusIndexAfterRemove,
+} from "./FieldArray.logic.js";

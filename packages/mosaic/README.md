@@ -116,8 +116,10 @@ export function SignupForm({ onSubmit }: { onSubmit: (data: z.infer<typeof schem
 | `<FormField name="...">{({ field, fieldState, formState }) => ...}</FormField>` | Render-prop wrapper around RHF's `Controller`. |
 | `<ErrorDisplay error={...} messageMap={...} />` | Single-field error formatter. Renders nothing when no error. Priority: `error.message` → `messageMap[type]` → generic fallback. |
 | `<SubmitButton label="..." loadingLabel="..." />` | Bound to the surrounding `FormProvider`. Disabled while invalid OR submitting. |
+| `useFieldArray({ name, control? })` | Thin wrapper around RHF's `useFieldArray`. Returns `{ fields, append, remove, move, swap }` + the rest of RHF's native return for advanced cases. Reads `control` from `FormProvider` when omitted. |
+| `<FieldArray name="...">{({ field, index }, { append, remove, move, swap, fields }) => ...}</FieldArray>` | Render-prop wrapper around `useFieldArray`. Emits `role="list"` shell + `role="listitem"` per row, keyed by RHF's stable `field.id` (NOT array index). Powers PromptForm Add Variable, Hermes variable mappings, Demeter filter chips. |
 
-Field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11-T20 — see `docs/v0.3.0-plan.md` §7.
+Remaining field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup) land in T11-T15 + T17-T20 — see `docs/v0.3.0-plan.md` §7.
 
 ## Server (MCP UI)
 
