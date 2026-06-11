@@ -42,3 +42,12 @@ components:
     i18nKeys: ["StatusBadge.aria.status", "StatusBadge.error.invalidProps"]
     sizeLimit: "15KB"
     a11yLevel: WCAG-AA
+  - name: Badge
+    category: display
+    schema: src/components/display/Badge.schema.ts
+    zodExport: BadgePropsSchema
+    i18nKeys: ["Badge.error.invalidProps"]
+    sizeLimit: "80KB"
+    a11yLevel: WCAG-AA
+    runtimes: ["react", "preact"]
+    convergence: ["chi", "hermes"]

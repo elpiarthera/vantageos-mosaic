@@ -31,6 +31,16 @@ const EN = {
   "TokenDisplayOnceModal.copied": "Copied",
   "StatusBadge.aria.status": "Status",
   "StatusBadge.error.invalidProps": "StatusBadge: invalid props",
+  "Badge.error.invalidProps": "Badge: invalid props",
+  "EmptyState.error.invalidProps": "EmptyState: invalid props",
+  "Toast.aria.close": "Close notification",
+  "Toast.error.invalidProps": "Toast: invalid props",
+  "VirtualList.empty.message": "No items to display",
+  "VirtualList.error.invalidProps": "VirtualList: invalid props",
+  "Alert.aria.dismiss": "Dismiss alert",
+  "Alert.error.invalidProps": "Alert: invalid props",
+  "Skeleton.aria.label": "Loading…",
+  "Skeleton.error.invalidProps": "Skeleton: invalid props",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -54,6 +64,16 @@ const FR: Record<keyof typeof EN, string> = {
   "TokenDisplayOnceModal.copied": "Copié",
   "StatusBadge.aria.status": "Statut",
   "StatusBadge.error.invalidProps": "StatusBadge : propriétés invalides",
+  "Badge.error.invalidProps": "Badge : propriétés invalides",
+  "EmptyState.error.invalidProps": "EmptyState : propriétés invalides",
+  "Toast.aria.close": "Fermer la notification",
+  "Toast.error.invalidProps": "Toast : propriétés invalides",
+  "VirtualList.empty.message": "Aucun élément à afficher",
+  "VirtualList.error.invalidProps": "VirtualList : propriétés invalides",
+  "Alert.aria.dismiss": "Fermer l'alerte",
+  "Alert.error.invalidProps": "Alert : propriétés invalides",
+  "Skeleton.aria.label": "Chargement…",
+  "Skeleton.error.invalidProps": "Skeleton : propriétés invalides",
 };
 
 export type MosaicI18nKey = keyof typeof EN;
