@@ -2,6 +2,15 @@
 
 Fleet-wide MCP UI design system for VantageOS. Zod-validated, taxonomy-organized (6 categories: progress, input, display, artifacts, confirmation, media), registry-gated, streaming-hydration ready, **cross-runtime React 19 + Preact 10**. Bilingual FR+EN by design. Built for MCP Apps (SEP-1865 extension) and consumed across ElPi Corp BUs (Sigma, Theta, Mu, Chi, Athena, Hermes, Demeter).
 
+## CI gates (v0.3.x pre-ship)
+
+Three gates enforce the v0.2.0 architecture:
+- **Gate 1** Cross-runtime build parity — `scripts/verify-build-parity.sh`
+- **Gate 2** PeerDeps optionality smoke — `e2e/peer-resolution/run-smoke.sh`
+- **Gate 3** Coherence dedicated — `pnpm --filter @vantageos/mosaic-tokens test`
+
+See [Standard v1.2 §20](https://github.com/elpiarthera/ElPi-Corp/blob/main/resources/references/mosaic-architecture-standard-v1.md#20-ci-gates-v03x-pre-ship-infrastructure).
+
 ## Packages
 
 | Package | Latest | Surface |
