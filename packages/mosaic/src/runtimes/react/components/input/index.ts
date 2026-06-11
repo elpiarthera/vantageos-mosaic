@@ -1,8 +1,6 @@
 /**
- * @vantageos/mosaic/react/input — runtime subpath barrel (skeleton).
- *
- * Populated in T3-C (react: migrate v0.1.2) / T3-D (preact: port) and
- * T3-E/F/G/H/I (Batch 1 cross-BU additions). T3-A only scaffolds the
- * subpath surface so tsup multi-entry build resolves cleanly.
+ * @vantageos/mosaic/react/input — React 19 runtime subpath barrel.
  */
-export {};
+export { Tabs } from "./Tabs.js";
+export type { TabItem, TabsProps } from "../../../../components/input/Tabs.schema.js";
+export { TabsPropsSchema, validateTabsProps } from "../../../../components/input/Tabs.schema.js";
