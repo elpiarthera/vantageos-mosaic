@@ -31,6 +31,7 @@ const EN = {
   "TokenDisplayOnceModal.copied": "Copied",
   "StatusBadge.aria.status": "Status",
   "StatusBadge.error.invalidProps": "StatusBadge: invalid props",
+  "EmptyState.error.invalidProps": "EmptyState: invalid props",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -54,6 +55,7 @@ const FR: Record<keyof typeof EN, string> = {
   "TokenDisplayOnceModal.copied": "Copié",
   "StatusBadge.aria.status": "Statut",
   "StatusBadge.error.invalidProps": "StatusBadge : propriétés invalides",
+  "EmptyState.error.invalidProps": "EmptyState : propriétés invalides",
 };
 
 export type MosaicI18nKey = keyof typeof EN;
