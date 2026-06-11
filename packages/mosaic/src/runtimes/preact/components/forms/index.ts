@@ -24,6 +24,14 @@ export { ErrorDisplay, type ErrorDisplayProps } from "./ErrorDisplay.js";
 export { SubmitButton, type SubmitButtonProps } from "./SubmitButton.js";
 export { Input, type InputProps } from "./Input.js";
 export { Textarea, type TextareaProps } from "./Textarea.js";
+export {
+  FieldArray,
+  useFieldArray,
+  type FieldArrayProps,
+  type FieldArrayRenderItemArgs,
+  type FieldArrayControls,
+  type UseFieldArrayOptions,
+} from "./FieldArray.js";
 
 // Shared schemas + logic re-export for type access
 export {
@@ -54,3 +62,12 @@ export {
   computeAutoResizeHeight,
   resolveRows,
 } from "../../../../components/forms/Textarea.logic.js";
+  FieldArrayPropsSchema,
+  UseFieldArrayOptionsSchema,
+} from "../../../../components/forms/FieldArray.schema.js";
+export {
+  buildListAriaLabel,
+  buildRemoveAriaLabel,
+  buildAddAriaLabel,
+  nextFocusIndexAfterRemove,
+} from "../../../../components/forms/FieldArray.logic.js";

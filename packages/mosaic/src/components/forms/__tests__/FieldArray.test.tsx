@@ -2,10 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { useRef } from "react";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import {
-  FieldArray,
-  useFieldArray,
-} from "../../../runtimes/react/components/forms/FieldArray";
+import { FieldArray, useFieldArray } from "../../../runtimes/react/components/forms/FieldArray";
 import { FormField } from "../../../runtimes/react/components/forms/FormField";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
 import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
@@ -15,10 +12,7 @@ import {
   buildRemoveAriaLabel,
   nextFocusIndexAfterRemove,
 } from "../FieldArray.logic";
-import {
-  FieldArrayPropsSchema,
-  UseFieldArrayOptionsSchema,
-} from "../FieldArray.schema";
+import { FieldArrayPropsSchema, UseFieldArrayOptionsSchema } from "../FieldArray.schema";
 
 // ─── Schema tests ───────────────────────────────────────────────────────────
 
@@ -83,7 +77,7 @@ function Harness({
   const schema = z.object({
     vars: z.array(z.object({ value: z.string().min(1, "required") })),
   });
-  const form = useMosaicForm<Vars>({
+  const form = useMosaicForm({
     schema,
     defaultValues: defaultValues ?? { vars: [{ value: "first" }] },
   });
@@ -146,11 +140,7 @@ function Harness({
 
 describe("FieldArray render-prop", () => {
   it("renders one row per default entry", () => {
-    render(
-      <Harness
-        defaultValues={{ vars: [{ value: "a" }, { value: "b" }, { value: "c" }] }}
-      />,
-    );
+    render(<Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }, { value: "c" }] }} />);
     expect(screen.getByTestId("row-0")).toBeTruthy();
     expect(screen.getByTestId("row-1")).toBeTruthy();
     expect(screen.getByTestId("row-2")).toBeTruthy();
@@ -164,9 +154,7 @@ describe("FieldArray render-prop", () => {
   });
 
   it("emits role=listitem per row", () => {
-    render(
-      <Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }] }} />,
-    );
+    render(<Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }] }} />);
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
   });
 
@@ -188,45 +176,27 @@ describe("FieldArray render-prop", () => {
   });
 
   it("move reorders rows", async () => {
-    render(
-      <Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }] }} />,
-    );
-    const idBeforeRow0 = screen
-      .getByTestId("row-0")
-      .getAttribute("data-field-id");
-    const idBeforeRow1 = screen
-      .getByTestId("row-1")
-      .getAttribute("data-field-id");
+    render(<Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }] }} />);
+    const idBeforeRow0 = screen.getByTestId("row-0").getAttribute("data-field-id");
+    const idBeforeRow1 = screen.getByTestId("row-1").getAttribute("data-field-id");
     fireEvent.click(screen.getByTestId("up-1"));
     await waitFor(() => {
-      expect(screen.getByTestId("row-0").getAttribute("data-field-id")).toBe(
-        idBeforeRow1,
-      );
-      expect(screen.getByTestId("row-1").getAttribute("data-field-id")).toBe(
-        idBeforeRow0,
-      );
+      expect(screen.getByTestId("row-0").getAttribute("data-field-id")).toBe(idBeforeRow1);
+      expect(screen.getByTestId("row-1").getAttribute("data-field-id")).toBe(idBeforeRow0);
     });
   });
 
   it("swap exchanges two rows", async () => {
-    render(
-      <Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }] }} />,
-    );
-    const idBeforeRow0 = screen
-      .getByTestId("row-0")
-      .getAttribute("data-field-id");
+    render(<Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }] }} />);
+    const idBeforeRow0 = screen.getByTestId("row-0").getAttribute("data-field-id");
     fireEvent.click(screen.getByTestId("swap-0"));
     await waitFor(() => {
-      expect(screen.getByTestId("row-1").getAttribute("data-field-id")).toBe(
-        idBeforeRow0,
-      );
+      expect(screen.getByTestId("row-1").getAttribute("data-field-id")).toBe(idBeforeRow0);
     });
   });
 
   it("key stability — uses RHF field.id (not index) → ids stable after move", async () => {
-    render(
-      <Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }] }} />,
-    );
+    render(<Harness defaultValues={{ vars: [{ value: "a" }, { value: "b" }] }} />);
     const idA = screen.getByTestId("row-0").getAttribute("data-field-id");
     const idB = screen.getByTestId("row-1").getAttribute("data-field-id");
     expect(idA).toBeTruthy();
@@ -251,9 +221,7 @@ describe("FieldArray render-prop", () => {
   });
 
   it("renders correct input value bound to RHF state", () => {
-    render(
-      <Harness defaultValues={{ vars: [{ value: "alpha" }, { value: "beta" }] }} />,
-    );
+    render(<Harness defaultValues={{ vars: [{ value: "alpha" }, { value: "beta" }] }} />);
     expect((screen.getByTestId("input-0") as HTMLInputElement).value).toBe("alpha");
     expect((screen.getByTestId("input-1") as HTMLInputElement).value).toBe("beta");
   });
@@ -266,7 +234,7 @@ describe("useFieldArray hook", () => {
     const schema = z.object({
       vars: z.array(z.object({ value: z.string() })),
     });
-    const form = useMosaicForm<Vars>({
+    const form = useMosaicForm({
       schema,
       defaultValues: { vars: [{ value: "seed" }] },
     });
@@ -324,24 +292,16 @@ describe("useFieldArray hook", () => {
     expect(screen.getByTestId("hook-len").textContent).toBe("1");
     // append
     fireEvent.click(screen.getByTestId("hook-append"));
-    await waitFor(() =>
-      expect(screen.getByTestId("hook-len").textContent).toBe("2"),
-    );
+    await waitFor(() => expect(screen.getByTestId("hook-len").textContent).toBe("2"));
     // move
     const idBefore0 = screen.getByTestId("hook-item-0").textContent;
     fireEvent.click(screen.getByTestId("hook-move"));
-    await waitFor(() =>
-      expect(screen.getByTestId("hook-item-1").textContent).toBe(idBefore0),
-    );
+    await waitFor(() => expect(screen.getByTestId("hook-item-1").textContent).toBe(idBefore0));
     // swap back
     fireEvent.click(screen.getByTestId("hook-swap"));
-    await waitFor(() =>
-      expect(screen.getByTestId("hook-item-0").textContent).toBe(idBefore0),
-    );
+    await waitFor(() => expect(screen.getByTestId("hook-item-0").textContent).toBe(idBefore0));
     // remove
     fireEvent.click(screen.getByTestId("hook-remove"));
-    await waitFor(() =>
-      expect(screen.getByTestId("hook-len").textContent).toBe("1"),
-    );
+    await waitFor(() => expect(screen.getByTestId("hook-len").textContent).toBe("1"));
   });
 });
