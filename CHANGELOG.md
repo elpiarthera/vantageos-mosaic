@@ -64,6 +64,17 @@ Wave 2 T10 — task ID `k1728w4hs4y69zzt05sb9815jh88fh52` (mission `k57aavem8ye9
 
 ### Mission
 - Day 102 Wave 1 T2 — VirtualList cross-runtime. TDD: RED commit b13e819 -> GREEN. Strict 18.21 onRowClick doctrine. 39 tests (27 React + 12 Preact parity).
+## v0.3.0-alpha.0 — Wave 1 (in progress)
+
+### Added — T9 `ConfirmModal` alias of `ConfirmDialog`
+- New thin re-export `ConfirmModal` exposed on `@vantageos/mosaic/react/confirmation` and `@vantageos/mosaic/preact/confirmation` runtime barrels. Resolves the Chi gptpowerups-extension naming contract (Day 89 lift-and-shift list) without duplicating implementation, schema, i18n, or tests.
+- Referential identity invariant: `ConfirmModal === ConfirmDialog` enforced by `runtimes/{react,preact}/components/confirmation/__tests__/ConfirmModal*.test.tsx`.
+- `ConfirmModalProps` type alias of `ConfirmDialogProps` exported from the same barrels for typed consumers.
+- Storybook documentation added under `Confirmation/ConfirmModal (alias of ConfirmDialog)` pointing to the canonical `Input/ConfirmDialog` for behaviour reference.
+- `registry.yaml` entry with `alias: true`, `aliasOf: ConfirmDialog`, sharing the source schema, zod export, and i18n keys.
+
+### Why a re-export, not a new component
+The behaviour, props, schema, i18n keys, and a11y contract are identical to `ConfirmDialog`. A re-export keeps a single source of truth, zero runtime cost, no DTS drift, and structurally guarantees that bug fixes / a11y improvements propagate to both names.
 
 ---
 
