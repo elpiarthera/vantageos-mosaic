@@ -183,6 +183,10 @@ Field primitives (Textarea, Select, MultiSelect, RadioGroup, FieldArray) land in
 | `<MultiSelect name="..." label="..." options={...} placeholder? disabled? searchable? maxItems? />` | Multi-value dropdown. RHF value is `string[]`. Selected items render as removable chips (Backspace/Delete on trigger removes last, per-chip × removes specific). WCAG-AA combobox (`role=combobox aria-multiselectable=true`), Arrow/Enter keyboard nav, optional case-insensitive search, optional `maxItems` cap. |
 
 Remaining field primitives (Input + Textarea + MultiSelect shipped T11/T12/T15; Select, Checkbox, RadioGroup, FieldArray) land in T13-T20 — see `docs/v0.3.0-plan.md` §7.
+| `<Select name="..." label="..." options={[...]} />` | Single-select dropdown (combobox+listbox APG). Optional `searchable` prop enables in-popup filter. Full keyboard nav + type-ahead. WCAG-AA strict. |
+
+Field primitives (Input, Textarea, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11, T14-T20 — see `docs/v0.3.0-plan.md` §7.
+
 
 
 ## Server (MCP UI)
