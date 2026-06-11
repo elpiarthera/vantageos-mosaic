@@ -2,6 +2,19 @@
 
 All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are documented here.
 
+## v0.2.1 — 2026-06-11
+
+### Added — `@vantageos/mosaic`
+- `TableView.onRowClick(row, index)` + `StreamingTableView.onRowClick` — when provided, rows render with `role="button"`, `tabIndex={0}`, and Enter/Space keyboard handlers for full a11y compliance. Fixes 5-BU ABSOLUTE blocker (Phi + Chi + Theta + Hermes + Demeter).
+
+### Mission
+- Day 102 fast-patch per Laurent direct GO. Pi blanket `laurent-direct-go-merge-2026-06-11`.
+
+### Back-compat
+- 100% back-compat with v0.2.0: when `onRowClick` is undefined, row rendering is byte-identical to v0.2.0 (no role, no tabIndex, no handlers).
+
+---
+
 ## v0.2.0 — 2026-06-02
 
 ### Added — `@vantageos/mosaic`

@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import { Subject } from "rxjs";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -445,6 +445,110 @@ describe("TableView — custom col.render callback (virtual)", () => {
     // At least one custom-rendered cell should be present
     const firstCustomCell = document.querySelector("[data-testid='virt-id-1']");
     expect(firstCustomCell).not.toBeNull();
+  });
+});
+
+// ─── (l) onRowClick prop — v0.2.1 ────────────────────────────────────────────
+
+describe("TableView.onRowClick (v0.2.1)", () => {
+  it("onRowClick is called with (row, index) when a row is clicked", () => {
+    const spy = vi.fn();
+    const rows = makeRows(3);
+
+    render(
+      <TableView
+        columns={defaultColumns}
+        rows={rows}
+        ariaLabel="Clickable table"
+        locale="en"
+        onRowClick={spy}
+      />,
+    );
+
+    fireEvent.click(screen.getByText("Row 2"));
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith({ id: 2, name: "Row 2" }, 1);
+  });
+
+  it("onRowClick is called when Enter is pressed on a focused row", () => {
+    const spy = vi.fn();
+    const rows = makeRows(2);
+
+    render(
+      <TableView
+        columns={defaultColumns}
+        rows={rows}
+        ariaLabel="Keyboard table"
+        locale="en"
+        onRowClick={spy}
+      />,
+    );
+
+    const dataRows = screen.getAllByRole("button");
+    // biome-ignore lint/style/noNonNullAssertion: test array — length guaranteed by makeRows(2)
+    fireEvent.keyDown(dataRows[0]!, { key: "Enter" });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith({ id: 1, name: "Row 1" }, 0);
+  });
+
+  it("onRowClick is called when Space is pressed on a focused row", () => {
+    const spy = vi.fn();
+    const rows = makeRows(2);
+
+    render(
+      <TableView
+        columns={defaultColumns}
+        rows={rows}
+        ariaLabel="Space key table"
+        locale="en"
+        onRowClick={spy}
+      />,
+    );
+
+    const dataRows = screen.getAllByRole("button");
+    // biome-ignore lint/style/noNonNullAssertion: test array — length guaranteed by makeRows(2)
+    fireEvent.keyDown(dataRows[1]!, { key: " " });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith({ id: 2, name: "Row 2" }, 1);
+  });
+
+  it("rows have role='button' and tabIndex={0} when onRowClick is provided", () => {
+    const spy = vi.fn();
+
+    render(
+      <TableView
+        columns={defaultColumns}
+        rows={makeRows(3)}
+        ariaLabel="Role button table"
+        locale="en"
+        onRowClick={spy}
+      />,
+    );
+
+    const buttons = screen.getAllByRole("button");
+    expect(buttons.length).toBe(3);
+    for (const btn of buttons) {
+      expect(btn.getAttribute("tabindex")).toBe("0");
+    }
+  });
+
+  it("rows do NOT have role='button' or tabIndex when onRowClick is undefined (v0.2.0 back-compat)", () => {
+    render(
+      <TableView
+        columns={defaultColumns}
+        rows={makeRows(3)}
+        ariaLabel="No-click table"
+        locale="en"
+      />,
+    );
+
+    // All rows are plain <tr> — no role=button
+    expect(screen.queryAllByRole("button").length).toBe(0);
+    // Data rows have no tabIndex
+    const dataRows = screen.getAllByRole("row").slice(1); // skip header
+    for (const row of dataRows) {
+      expect(row.getAttribute("tabindex")).toBeNull();
+    }
   });
 });
 
