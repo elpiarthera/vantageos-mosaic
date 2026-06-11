@@ -38,6 +38,8 @@ const EN = {
   "Alert.error.invalidProps": "Alert: invalid props",
   "VirtualList.empty.message": "No items to display",
   "VirtualList.error.invalidProps": "VirtualList: invalid props",
+  "Skeleton.aria.label": "Loading",
+  "Skeleton.error.invalidProps": "Skeleton: invalid props",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -68,6 +70,8 @@ const FR: Record<keyof typeof EN, string> = {
   "Alert.error.invalidProps": "Alert : propriétés invalides",
   "VirtualList.empty.message": "Aucun élément à afficher",
   "VirtualList.error.invalidProps": "VirtualList : propriétés invalides",
+  "Skeleton.aria.label": "Chargement",
+  "Skeleton.error.invalidProps": "Skeleton : propriétés invalides",
 };
 
 export type MosaicI18nKey = keyof typeof EN;
