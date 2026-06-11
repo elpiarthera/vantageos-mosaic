@@ -68,7 +68,12 @@ const reactPass: Options = {
   format: ["esm", "cjs"],
   dts: true,
   sourcemap: true,
-  clean: true,
+  // v0.2.2 fix: `clean: true` here races with sibling passes (preact + tokens)
+  // when tsup runs them in parallel. The react DTS pass finishes last (~35s)
+  // and previously wiped `dist/preact/*.d.ts` + `dist/tokens.d.ts` written
+  // by the earlier passes. Pre-build cleaning is now handled by the
+  // `prebuild` script in package.json (`rimraf dist`). See §18.5 contract.
+  clean: false,
   treeshake: true,
   splitting: false,
   external: REACT_EXTERNAL,
