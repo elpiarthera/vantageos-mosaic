@@ -17,6 +17,8 @@ export {
 export { FormField } from "../../runtimes/react/components/forms/FormField.js";
 export { ErrorDisplay } from "../../runtimes/react/components/forms/ErrorDisplay.js";
 export { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";
+export { Checkbox } from "../../runtimes/react/components/forms/Checkbox.js";
+export { RadioGroup } from "../../runtimes/react/components/forms/RadioGroup.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -42,3 +44,34 @@ export {
   validateSubmitButtonProps,
 } from "./SubmitButton.schema.js";
 export { computeSubmitButtonState } from "./SubmitButton.logic.js";
+export {
+  CheckboxPropsSchema,
+  validateCheckboxProps,
+} from "./Checkbox.schema.js";
+export {
+  computeAriaChecked,
+  buildDescriptionId,
+} from "./Checkbox.logic.js";
+export {
+  RadioGroupPropsSchema,
+  RadioGroupOptionSchema,
+  validateRadioGroupProps,
+  type RadioGroupOption,
+  type RadioGroupPropsValidated,
+} from "./RadioGroup.schema.js";
+export {
+  getNavKeys,
+  findNextEnabledIndex,
+  findFirstEnabledIndex,
+  findLastEnabledIndex,
+  findSelectedIndex,
+  getRovingTabIndex,
+  getGroupLabelId,
+  getOptionLabelId,
+  getOptionDescriptionId,
+  getGroupClasses,
+  getOptionRowClasses,
+  getRadioControlClasses,
+  isActivationKey,
+  type RadioOrientation,
+} from "./RadioGroup.logic.js";

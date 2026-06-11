@@ -2,7 +2,28 @@
 
 All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are documented here.
 
-## v0.3.0-alpha.1 — 2026-06-11
+## v0.3.0-alpha.1 — 2026-06-11 (T17 RadioGroup)
+
+### Added — `RadioGroup` primitive (Wave 2 T17)
+- **`RadioGroup`** — WCAG-AA mutually exclusive single-choice form primitive. Cross-runtime: `@vantageos/mosaic/react/forms` + `@vantageos/mosaic/preact/forms`.
+- **ARIA contract**: `role="radiogroup"` + `aria-labelledby` on container; `role="radio"` + `aria-checked` + roving `tabIndex` per option; `aria-labelledby` per option points to its own label span; `aria-describedby` per option points to its description span when present; `aria-disabled` on disabled options; `aria-orientation` reflects `orientation` prop.
+- **Keyboard navigation** (WAI-ARIA §3.10 radiogroup pattern): Arrow keys move focus AND select simultaneously (roving tabindex — Radix-style); Home/End jump to first/last enabled option; Space/Enter activate the focused option; disabled options are skipped during arrow navigation.
+- **API**: `name` (RHF field name, required), `label` (group label, required), `options` (Array with `value`, `label`, optional `description` + `disabled`), `orientation` (`"vertical"` | `"horizontal"`, default `"vertical"`), `disabled` (group-level, default `false`).
+- **Logic layer** (`RadioGroup.logic.ts`): `getNavKeys`, `findNextEnabledIndex`, `findFirstEnabledIndex`, `findLastEnabledIndex`, `findSelectedIndex`, `getRovingTabIndex`, `getGroupLabelId`, `getOptionLabelId`, `getOptionDescriptionId`, `getGroupClasses`, `getOptionRowClasses`, `getRadioControlClasses`, `isActivationKey` — all pure, runtime-agnostic.
+- **Schema layer** (`RadioGroup.schema.ts`): `RadioGroupPropsSchema` (Zod, validates options.length ≥ 1, orientation enum, name/label non-empty), `RadioGroupOptionSchema`, `validateRadioGroupProps`.
+- **Tests**: 50+ assertions in `src/components/forms/__tests__/RadioGroup.test.tsx` covering schema validation, logic unit tests, rendering, ARIA wiring, Arrow/Home/End keyboard nav, Space/Enter activation, disabled-skip behavior, roving tabIndex, group-level disabled, onBlur timing.
+- **Preact parity test**: `src/runtimes/preact/components/forms/__tests__/RadioGroup.test.tsx`.
+- **Stories**: 5 Storybook stories (Vertical, Horizontal, WithDescriptions, PartialDisabled, GroupDisabled).
+- **Barrel updates**: exported from `react/forms`, `preact/forms`, and `forms` (back-compat root) subpaths.
+- **Registry**: `RadioGroup` entry added to `registry.yaml` under category `forms`, `sizeLimit: "15KB"`, `a11yLevel: WCAG-AA`.
+- **`Checkbox` registry entry** also added (was missing from T10 initial scaffold).
+
+### Mission
+Wave 2 T17 — task ID `k172yqjtccwx7csfzgn8nys9m188etbs` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES NON-NEGOTIABLE applied.
+
+---
+
+## v0.3.0-alpha.1 — 2026-06-11 (T10 forms scaffold)
 
 ### Added — `forms` category (NEW 7th top-level category, Wave 2 T10)
 - **New category** `forms` introduced as the 7th top-level taxonomy bucket per `docs/v0.3.0-plan.md` §4 + mosaic-architecture-standard-v1.x amendment (forthcoming v1.2). Sits alongside `progress | input | display | artifacts | confirmation | media`.

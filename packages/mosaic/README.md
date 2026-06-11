@@ -116,8 +116,59 @@ export function SignupForm({ onSubmit }: { onSubmit: (data: z.infer<typeof schem
 | `<FormField name="...">{({ field, fieldState, formState }) => ...}</FormField>` | Render-prop wrapper around RHF's `Controller`. |
 | `<ErrorDisplay error={...} messageMap={...} />` | Single-field error formatter. Renders nothing when no error. Priority: `error.message` → `messageMap[type]` → generic fallback. |
 | `<SubmitButton label="..." loadingLabel="..." />` | Bound to the surrounding `FormProvider`. Disabled while invalid OR submitting. |
+| `<Checkbox name="..." label="..." description? indeterminate? disabled? />` | Native HTML checkbox. Supports tri-state indeterminate via `aria-checked="mixed"`. |
+| `<RadioGroup name="..." label="..." options={[...]} orientation? disabled? />` | WCAG-AA radiogroup. Roving tabIndex, Arrow key selection sync, Home/End, Space/Enter. |
 
-Field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11-T20 — see `docs/v0.3.0-plan.md` §7.
+Field primitives (Input, Textarea, Select, MultiSelect, FieldArray) land in T18-T20 — see `docs/v0.3.0-plan.md` §7.
+
+### RadioGroup
+
+Mutually exclusive single-choice field. Keyboard navigation follows WAI-ARIA radiogroup pattern (§3.10): Arrow keys move focus AND select simultaneously (roving tabindex). Disabled options are skipped during navigation.
+
+```tsx
+import { z } from "zod";
+import {
+  useMosaicForm,
+  FormProvider,
+  RadioGroup,
+} from "@vantageos/mosaic/react/forms";
+
+const schema = z.object({
+  plan: z.string().min(1, "Please select a plan"),
+});
+
+export function PlanSelector() {
+  const form = useMosaicForm({
+    schema,
+    defaultValues: { plan: "" },
+  });
+
+  return (
+    <FormProvider form={form}>
+      <form onSubmit={form.handleSubmit(console.log)}>
+        <RadioGroup
+          name="plan"
+          label="Select a plan"
+          options={[
+            { value: "free", label: "Free", description: "Up to 3 projects" },
+            { value: "pro", label: "Pro", description: "Unlimited projects" },
+            { value: "team", label: "Team", description: "Multi-user", disabled: false },
+          ]}
+          orientation="vertical"
+        />
+      </form>
+    </FormProvider>
+  );
+}
+```
+
+**WCAG-AA contract:**
+- `role="radiogroup"` + `aria-labelledby` on container
+- `role="radio"` + `aria-checked` + roving `tabIndex` per option
+- `aria-labelledby` per option → its visible label span
+- `aria-describedby` per option → its description span (when present)
+- `aria-disabled` on disabled options; disabled options skipped in arrow nav
+- `aria-orientation` reflects `orientation` prop
 
 ## Server (MCP UI)
 
