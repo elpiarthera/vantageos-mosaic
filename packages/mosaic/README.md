@@ -126,6 +126,9 @@ Remaining field primitives (Input shipped T11, Select, Checkbox, MultiSelect, Ra
 | `<FieldArray name="...">{({ field, index }, { append, remove, move, swap, fields }) => ...}</FieldArray>` | Render-prop wrapper around `useFieldArray`. Emits `role="list"` shell + `role="listitem"` per row, keyed by RHF's stable `field.id` (NOT array index). Powers PromptForm Add Variable, Hermes variable mappings, Demeter filter chips. |
 
 Remaining field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup) land in T11-T15 + T17-T20 — see `docs/v0.3.0-plan.md` §7.
+| `<Checkbox name="..." label="..." indeterminate? description? disabled? />` | Boolean checkbox primitive. `indeterminate=true` → `aria-checked="mixed"` + DOM `.indeterminate=true` via ref. `description` wired via `aria-describedby`. `aria-invalid` + `aria-describedby` on error. |
+
+Field primitives (Textarea, Select, MultiSelect, RadioGroup, FieldArray) land in T12-T20 — see `docs/v0.3.0-plan.md` §7.
 
 ## Server (MCP UI)
 

@@ -32,6 +32,7 @@ export {
   type FieldArrayControls,
   type UseFieldArrayOptions,
 } from "./FieldArray.js";
+export { Checkbox, type CheckboxProps } from "./Checkbox.js";
 
 // Shared schemas + logic re-export for type access
 export {
@@ -71,3 +72,11 @@ export {
   buildAddAriaLabel,
   nextFocusIndexAfterRemove,
 } from "../../../../components/forms/FieldArray.logic.js";
+  CheckboxPropsSchema,
+  validateCheckboxProps,
+  type CheckboxPropsValidated,
+} from "../../../../components/forms/Checkbox.schema.js";
+export {
+  resolveAriaChecked,
+  resolveDescribedBy,
+} from "../../../../components/forms/Checkbox.logic.js";

@@ -160,6 +160,10 @@ components:
     category: forms
     schema: src/components/forms/Textarea.schema.ts
     zodExport: TextareaPropsSchema
+  - name: Checkbox
+    category: forms
+    schema: src/components/forms/Checkbox.schema.ts
+    zodExport: CheckboxPropsSchema
     i18nKeys: []
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA

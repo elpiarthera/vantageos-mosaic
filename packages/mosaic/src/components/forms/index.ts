@@ -23,6 +23,7 @@ export {
   FieldArray,
   useFieldArray,
 } from "../../runtimes/react/components/forms/FieldArray.js";
+export { Checkbox } from "../../runtimes/react/components/forms/Checkbox.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -78,3 +79,8 @@ export {
   buildAddAriaLabel,
   nextFocusIndexAfterRemove,
 } from "./FieldArray.logic.js";
+  CheckboxPropsSchema,
+  validateCheckboxProps,
+  type CheckboxPropsValidated,
+} from "./Checkbox.schema.js";
+export { resolveAriaChecked, resolveDescribedBy } from "./Checkbox.logic.js";
