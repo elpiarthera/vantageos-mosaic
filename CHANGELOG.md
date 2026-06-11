@@ -53,6 +53,19 @@ All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are do
 ### Added — tsup config
 - Forms entries in both react + preact passes. `REACT_EXTERNAL` and `PREACT_EXTERNAL` arrays now include `react-hook-form` + `@hookform/resolvers` + `@hookform/resolvers/zod`.
 
+### Added — `Checkbox` field primitive (T14)
+- **`Checkbox`** (`src/components/forms/Checkbox.{schema,logic}.ts` + `runtimes/{react,preact}/components/forms/Checkbox.tsx`) — boolean checkbox primitive with indeterminate state:
+  - `indeterminate=true` → sets DOM `.indeterminate = true` via `useRef` + `useEffect` AND `aria-checked="mixed"`. Controlled externally.
+  - `description` prop — rendered in a `<span>` and wired to `aria-describedby` alongside the error ID when both are present.
+  - `aria-invalid` + `aria-describedby` (error ID) emitted when field has a validation error (onBlur timing per Mosaic doctrine).
+  - Shared pure logic: `resolveAriaChecked(checked, indeterminate)` + `resolveDescribedBy(descriptionId, description, hasError, errorId)` in `Checkbox.logic.ts` — no DOM, no framework imports, identical contract for both runtimes.
+  - React runtime at `@vantageos/mosaic/react/forms`, Preact runtime at `@vantageos/mosaic/preact/forms`.
+  - Back-compat root re-export at `@vantageos/mosaic/forms`.
+  - `Checkbox.stories.tsx` — 4 stories: Unchecked, Checked, Indeterminate, WithDescription.
+  - `registry.yaml` — Checkbox entry added under `forms` category (`sizeLimit: "10KB"`, `a11yLevel: WCAG-AA`).
+  - TDD: schema + logic + runtime tests in `__tests__/Checkbox.test.tsx` (React) and `runtimes/preact/.../forms/__tests__/Checkbox.test.tsx` (parity smoke).
+- **Mission**: Wave 2 T14 — task ID `k17f4ym72rzm2y4n003n5rp39n88f7qh` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`).
+
 ### Why minor-alpha bump
 Strict additive: introduces a new top-level subpath and an optional peer set. No breaking change to v0.2.x consumers (root + react + preact existing subpaths untouched). Pre-release tag `alpha.1` while T11-T20 field primitives are produced.
 
