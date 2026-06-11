@@ -131,6 +131,50 @@ const resource = createMosaicResource({
 // returns a SEP-1865-compliant MCP UI resource with text/html;profile=mcp-app MIME
 ```
 
+
+## Components
+
+### Display
+
+#### VirtualList
+
+Generic virtualized list for large datasets. Uses @tanstack/react-virtual v3 (already bundled via TableView). Cross-runtime: React 19 + Preact 10.
+
+```tsx
+import { VirtualList } from "@vantageos/mosaic/react/display";
+// Preact: import { VirtualList } from "@vantageos/mosaic/preact/display";
+
+type Task = { id: string; title: string; status: string };
+
+<VirtualList<Task>
+  items={tasks}
+  itemHeight={56}               // fixed px height
+  renderItem={(task, index) => (
+    <div key={task.id}>
+      <span>{task.title}</span>
+      <span>{task.status}</span>
+    </div>
+  )}
+  onRowClick={(task, index) => router.push('/tasks/' + task.id)}
+  overscan={5}                  // rows outside viewport (default 5)
+  className="task-list"
+  locale="en"                   // "en" | "fr"
+/>
+```
+
+**Props**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `T[]` | required | Items to render |
+| `itemHeight` | `number` | -- | Fixed row height px (mutually exclusive with `estimateSize`) |
+| `estimateSize` | `(index) => number` | -- | Variable height estimator |
+| `renderItem` | `(item: T, index: number) => ReactNode` | required | Row renderer |
+| `onRowClick` | `(item: T, index: number) => void` | `undefined` | Click handler — triggers WCAG-AA a11y (role=button + tabIndex=0 + Enter/Space) |
+| `overscan` | `number` | `5` | Rows outside visible area |
+| `className` | `string` | `undefined` | CSS class on scroll container |
+| `locale` | `"en" or "fr"` | `"en"` | Built-in string locale |
+
 ## Doctrine
 
 - **Pattern 1 (Zod runtime validation)** — every component validates props at the MCP host boundary; invalid props render an a11y fallback (`role="alert"`), never white-screen.

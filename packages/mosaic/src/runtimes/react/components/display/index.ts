@@ -17,3 +17,12 @@ export {
   validateSkeletonProps,
   resolveSkeletonDimensions,
 } from "../../../../components/display/Skeleton.schema.js";
+ *
+ * v0.3.0-alpha.0: VirtualList (virtualized list, cross-runtime, display category)
+ */
+export { VirtualList } from "./VirtualList.js";
+export type { VirtualListProps } from "../../../../components/display/VirtualList.schema.js";
+export {
+  VirtualListPropsSchema,
+  validateVirtualListProps,
+} from "../../../../components/display/VirtualList.schema.js";

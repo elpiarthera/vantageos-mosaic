@@ -46,6 +46,24 @@ Strict additive: introduces a new top-level subpath and an optional peer set. No
 
 ### Mission
 Wave 2 T10 — task ID `k1728w4hs4y69zzt05sb9815jh88fh52` (mission `k57aavem8ye9k1ndkkpzrh52cn87w6kp`). DOCTRINE 4 RULES NON-NEGOTIABLE applied (TDD, docs, no bypass, task-structure).
+## v0.3.0-alpha.0 — 2026-06-11
+
+### Added — `@vantageos/mosaic`
+- `VirtualList<T>` — generic virtualized list component (display category). Cross-runtime: React 19 + Preact 10 via preact/compat alias. Uses @tanstack/react-virtual v3 (already in deps via TableView). API: `items: T[]` + `itemHeight?: number` + `estimateSize?: (i) => number` + `renderItem: (item, index) => ReactNode` + `onRowClick?: (item, index) => void` + `overscan?: number` (default 5) + `className?: string` + `locale?: "en" | "fr"`.
+- `onRowClick` a11y: when provided, rows render with `role="button"`, `tabIndex={0}`, Enter/Space keyboard handlers — WCAG-AA compliant. Back-compat: undefined means no role/tabIndex/handlers (byte-identical to no-interaction mode).
+- Bilingual empty state: EN "No items to display" / FR "Aucun element a afficher" via `t()` resolver.
+- Error fallback: `role="alert"` when Zod validation fails (guards against invalid MCP postMessage injection).
+- 4 Storybook stories: Minimal / Clickable / LargeDataset (10000 items) / Empty (EN + FR).
+- `VirtualListPropsSchema` Zod export — serialisable props validated; runtime functions excluded per 18.5.
+- `registry.yaml` entry with `crossRuntime: true` + convergence metadata (Hermes + Mu + future BUs).
+
+### Convergence
+- Hermes (vantage-peers-extension): VirtualList MUST (Day 89 demand list)
+- Mu (vantage-bridge): display primitives
+- Future BUs: generic list abstraction
+
+### Mission
+- Day 102 Wave 1 T2 — VirtualList cross-runtime. TDD: RED commit b13e819 -> GREEN. Strict 18.21 onRowClick doctrine. 39 tests (27 React + 12 Preact parity).
 
 ---
 
