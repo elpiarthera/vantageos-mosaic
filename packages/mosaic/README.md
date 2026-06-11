@@ -52,6 +52,73 @@ export function MyComponent({ progress, label }: { progress: number; label: stri
 }
 ```
 
+## Forms (v0.3.0-alpha.1)
+
+`@vantageos/mosaic/{react,preact}/forms` — composite form primitives wrapping `react-hook-form` + `@hookform/resolvers/zod`. Default validation mode is `onBlur` (Chi co-validated, Day 102 DM). Cross-runtime: same imports, React 19 path or Preact 10 path.
+
+### Install peers
+
+```sh
+npm install react-hook-form@^7.54.0 @hookform/resolvers@^3.10.0
+```
+
+Both peers are declared optional in `peerDependenciesMeta` — only install them if you use the forms surface.
+
+### Quick start
+
+```tsx
+import { z } from "zod";
+import {
+  useMosaicForm,
+  FormProvider,
+  FormField,
+  ErrorDisplay,
+  SubmitButton,
+} from "@vantageos/mosaic/react/forms";
+
+const schema = z.object({
+  email: z.string().email("Invalid email"),
+  age: z.number().min(18, "Must be 18+"),
+});
+
+export function SignupForm({ onSubmit }: { onSubmit: (data: z.infer<typeof schema>) => void }) {
+  const form = useMosaicForm({
+    schema,
+    defaultValues: { email: "", age: 0 },
+    // mode defaults to "onBlur" — Mosaic doctrine
+  });
+
+  return (
+    <FormProvider form={form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField name="email">
+          {({ field, fieldState }) => (
+            <label>
+              Email
+              <input {...field} value={(field.value as string) ?? ""} />
+              <ErrorDisplay error={fieldState.error} />
+            </label>
+          )}
+        </FormField>
+        <SubmitButton label="Sign up" />
+      </form>
+    </FormProvider>
+  );
+}
+```
+
+### Surface
+
+| Export | Purpose |
+|---|---|
+| `useMosaicForm({ schema, defaultValues, mode? })` | Wrapper around `useForm` + `zodResolver`. Returns RHF's `UseFormReturn` extended with `mosaicSchema` + `mosaicMode`. |
+| `<FormProvider form={...}>` | Wraps RHF's `FormProvider` AND a Mosaic-specific context. Use `useMosaicFormContext()` inside descendants. |
+| `<FormField name="...">{({ field, fieldState, formState }) => ...}</FormField>` | Render-prop wrapper around RHF's `Controller`. |
+| `<ErrorDisplay error={...} messageMap={...} />` | Single-field error formatter. Renders nothing when no error. Priority: `error.message` → `messageMap[type]` → generic fallback. |
+| `<SubmitButton label="..." loadingLabel="..." />` | Bound to the surrounding `FormProvider`. Disabled while invalid OR submitting. |
+
+Field primitives (Input, Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11-T20 — see `docs/v0.3.0-plan.md` §7.
+
 ## Server (MCP UI)
 
 ```ts

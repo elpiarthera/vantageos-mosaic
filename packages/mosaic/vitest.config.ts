@@ -6,6 +6,9 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
+    // 15s test timeout — Forms tests pay a 1-2s RHF/zodResolver boot cost on
+    // the first test of each file inside the slow jsdom + transform pipeline.
+    testTimeout: 15_000,
     // Exclude Playwright a11y specs — those run via `playwright test`, not vitest
     exclude: ["tests/a11y/**", "**/node_modules/**"],
     coverage: {

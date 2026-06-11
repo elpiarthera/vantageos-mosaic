@@ -31,6 +31,9 @@ const REACT_EXTERNAL = [
   "react-dom",
   "react-dom/client",
   "react-i18next",
+  "react-hook-form",
+  "@hookform/resolvers",
+  "@hookform/resolvers/zod",
   "@mcp-ui/client",
   "rxjs",
 ];
@@ -41,6 +44,9 @@ const PREACT_EXTERNAL = [
   "preact/compat",
   "preact/compat/client",
   "react-i18next",
+  "react-hook-form",
+  "@hookform/resolvers",
+  "@hookform/resolvers/zod",
   "@mcp-ui/client",
   "rxjs",
 ];
@@ -55,6 +61,7 @@ const reactPass: Options = {
     artifacts: "src/components/artifacts/index.ts",
     confirmation: "src/components/confirmation/index.ts",
     media: "src/components/media/index.ts",
+    forms: "src/components/forms/index.ts",
     server: "src/server/create-mosaic-resource.ts",
     // v0.2.0 react runtime subpaths
     "react/index": "src/runtimes/react/index.ts",
@@ -64,6 +71,7 @@ const reactPass: Options = {
     "react/artifacts": "src/runtimes/react/components/artifacts/index.ts",
     "react/confirmation": "src/runtimes/react/components/confirmation/index.ts",
     "react/media": "src/runtimes/react/components/media/index.ts",
+    "react/forms": "src/runtimes/react/components/forms/index.ts",
   },
   format: ["esm", "cjs"],
   dts: true,
@@ -88,6 +96,7 @@ const preactPass: Options = {
     "preact/artifacts": "src/runtimes/preact/components/artifacts/index.ts",
     "preact/confirmation": "src/runtimes/preact/components/confirmation/index.ts",
     "preact/media": "src/runtimes/preact/components/media/index.ts",
+    "preact/forms": "src/runtimes/preact/components/forms/index.ts",
   },
   format: ["esm"],
   dts: true,

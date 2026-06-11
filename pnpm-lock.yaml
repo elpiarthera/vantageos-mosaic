@@ -63,6 +63,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
+      '@hookform/resolvers':
+        specifier: ^3.10.0
+        version: 3.10.0(react-hook-form@7.78.0(react@19.1.0))
       '@playwright/test':
         specifier: 1.50.1
         version: 1.50.1
@@ -120,6 +123,9 @@ importers:
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
+      react-hook-form:
+        specifier: ^7.78.0
+        version: 7.78.0(react@19.1.0)
       size-limit:
         specifier: 11.2.0
         version: 11.2.0
@@ -155,7 +161,7 @@ importers:
         version: 25.0.0(typescript@5.8.3)
       react-i18next:
         specifier: 15.5.2
-        version: 15.5.2(i18next@25.0.0(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        version: 15.5.2(i18next@25.0.0(typescript@5.8.3))(react@19.1.0)(typescript@5.8.3)
       tsup:
         specifier: 8.4.0
         version: 8.4.0(@swc/core@1.15.40)(jiti@2.7.0)(postcss@8.5.15)(typescript@5.8.3)
@@ -644,6 +650,11 @@ packages:
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
+
+  '@hookform/resolvers@3.10.0':
+    resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -3243,6 +3254,12 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
+  react-hook-form@7.78.0:
+    resolution: {integrity: sha512-EEZqc+N23moyzTlz61Pj+JvcXo76ICkpfOZo8JZw+sM4+wLQGh6nI2Ms+PdMOYNluFu0ghlM7B8mCzhRYtJCnA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+
   react-i18next@15.5.2:
     resolution: {integrity: sha512-ePODyXgmZQAOYTbZXQn5rRsSBu3Gszo69jxW6aKmlSgxKAI1fOhDwSu6bT4EKHciWPKQ7v7lPrjeiadR6Gi+1A==}
     peerDependencies:
@@ -4369,6 +4386,10 @@ snapshots:
   '@hono/node-server@1.19.14(hono@4.12.23)':
     dependencies:
       hono: 4.12.23
+
+  '@hookform/resolvers@3.10.0(react-hook-form@7.78.0(react@19.1.0))':
+    dependencies:
+      react-hook-form: 7.78.0(react@19.1.0)
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -7227,6 +7248,10 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
+  react-hook-form@7.78.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+
   react-i18next@15.5.2(i18next@25.0.0(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3):
     dependencies:
       '@babel/runtime': 7.29.7
@@ -7235,6 +7260,15 @@ snapshots:
       react: 19.1.0
     optionalDependencies:
       react-dom: 19.1.0(react@19.1.0)
+      typescript: 5.8.3
+
+  react-i18next@15.5.2(i18next@25.0.0(typescript@5.8.3))(react@19.1.0)(typescript@5.8.3):
+    dependencies:
+      '@babel/runtime': 7.29.7
+      html-parse-stringify: 3.0.1
+      i18next: 25.0.0(typescript@5.8.3)
+      react: 19.1.0
+    optionalDependencies:
       typescript: 5.8.3
 
   react-is@17.0.2: {}

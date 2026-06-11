@@ -1,0 +1,5 @@
+{
+  "id": "forms",
+  "label": { "en": "Forms", "fr": "Formulaires" },
+  "description": "Composite form primitives — react-hook-form + Zod wrapper with onBlur validation, FormProvider context, FormField render-prop, ErrorDisplay, SubmitButton state machine."
+}

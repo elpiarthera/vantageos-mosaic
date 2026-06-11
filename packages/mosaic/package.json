@@ -1,119 +1,133 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.2.2",
-  "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
+  "version": "0.3.0-alpha.1",
+  "description": "Fleet-wide MCP UI design system \u2014 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     },
     "./progress": {
+      "types": "./dist/progress.d.ts",
       "import": "./dist/progress.js",
-      "require": "./dist/progress.cjs",
-      "types": "./dist/progress.d.ts"
+      "require": "./dist/progress.cjs"
     },
     "./input": {
+      "types": "./dist/input.d.ts",
       "import": "./dist/input.js",
-      "require": "./dist/input.cjs",
-      "types": "./dist/input.d.ts"
+      "require": "./dist/input.cjs"
     },
     "./display": {
+      "types": "./dist/display.d.ts",
       "import": "./dist/display.js",
-      "require": "./dist/display.cjs",
-      "types": "./dist/display.d.ts"
+      "require": "./dist/display.cjs"
     },
     "./artifacts": {
+      "types": "./dist/artifacts.d.ts",
       "import": "./dist/artifacts.js",
-      "require": "./dist/artifacts.cjs",
-      "types": "./dist/artifacts.d.ts"
+      "require": "./dist/artifacts.cjs"
     },
     "./confirmation": {
+      "types": "./dist/confirmation.d.ts",
       "import": "./dist/confirmation.js",
-      "require": "./dist/confirmation.cjs",
-      "types": "./dist/confirmation.d.ts"
+      "require": "./dist/confirmation.cjs"
     },
     "./media": {
+      "types": "./dist/media.d.ts",
       "import": "./dist/media.js",
-      "require": "./dist/media.cjs",
-      "types": "./dist/media.d.ts"
+      "require": "./dist/media.cjs"
+    },
+    "./forms": {
+      "types": "./dist/forms.d.ts",
+      "import": "./dist/forms.js",
+      "require": "./dist/forms.cjs"
     },
     "./react": {
+      "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js",
-      "require": "./dist/react/index.cjs",
-      "types": "./dist/react/index.d.ts"
+      "require": "./dist/react/index.cjs"
     },
     "./react/progress": {
+      "types": "./dist/react/progress.d.ts",
       "import": "./dist/react/progress.js",
-      "require": "./dist/react/progress.cjs",
-      "types": "./dist/react/progress.d.ts"
+      "require": "./dist/react/progress.cjs"
     },
     "./react/input": {
+      "types": "./dist/react/input.d.ts",
       "import": "./dist/react/input.js",
-      "require": "./dist/react/input.cjs",
-      "types": "./dist/react/input.d.ts"
+      "require": "./dist/react/input.cjs"
     },
     "./react/display": {
+      "types": "./dist/react/display.d.ts",
       "import": "./dist/react/display.js",
-      "require": "./dist/react/display.cjs",
-      "types": "./dist/react/display.d.ts"
+      "require": "./dist/react/display.cjs"
     },
     "./react/artifacts": {
+      "types": "./dist/react/artifacts.d.ts",
       "import": "./dist/react/artifacts.js",
-      "require": "./dist/react/artifacts.cjs",
-      "types": "./dist/react/artifacts.d.ts"
+      "require": "./dist/react/artifacts.cjs"
     },
     "./react/confirmation": {
+      "types": "./dist/react/confirmation.d.ts",
       "import": "./dist/react/confirmation.js",
-      "require": "./dist/react/confirmation.cjs",
-      "types": "./dist/react/confirmation.d.ts"
+      "require": "./dist/react/confirmation.cjs"
     },
     "./react/media": {
+      "types": "./dist/react/media.d.ts",
       "import": "./dist/react/media.js",
-      "require": "./dist/react/media.cjs",
-      "types": "./dist/react/media.d.ts"
+      "require": "./dist/react/media.cjs"
+    },
+    "./react/forms": {
+      "types": "./dist/react/forms.d.ts",
+      "import": "./dist/react/forms.js",
+      "require": "./dist/react/forms.cjs"
     },
     "./preact": {
-      "import": "./dist/preact/index.js",
-      "types": "./dist/preact/index.d.ts"
+      "types": "./dist/preact/index.d.ts",
+      "import": "./dist/preact/index.js"
     },
     "./preact/progress": {
-      "import": "./dist/preact/progress.js",
-      "types": "./dist/preact/progress.d.ts"
+      "types": "./dist/preact/progress.d.ts",
+      "import": "./dist/preact/progress.js"
     },
     "./preact/input": {
-      "import": "./dist/preact/input.js",
-      "types": "./dist/preact/input.d.ts"
+      "types": "./dist/preact/input.d.ts",
+      "import": "./dist/preact/input.js"
     },
     "./preact/display": {
-      "import": "./dist/preact/display.js",
-      "types": "./dist/preact/display.d.ts"
+      "types": "./dist/preact/display.d.ts",
+      "import": "./dist/preact/display.js"
     },
     "./preact/artifacts": {
-      "import": "./dist/preact/artifacts.js",
-      "types": "./dist/preact/artifacts.d.ts"
+      "types": "./dist/preact/artifacts.d.ts",
+      "import": "./dist/preact/artifacts.js"
     },
     "./preact/confirmation": {
-      "import": "./dist/preact/confirmation.js",
-      "types": "./dist/preact/confirmation.d.ts"
+      "types": "./dist/preact/confirmation.d.ts",
+      "import": "./dist/preact/confirmation.js"
     },
     "./preact/media": {
-      "import": "./dist/preact/media.js",
-      "types": "./dist/preact/media.d.ts"
+      "types": "./dist/preact/media.d.ts",
+      "import": "./dist/preact/media.js"
+    },
+    "./preact/forms": {
+      "types": "./dist/preact/forms.d.ts",
+      "import": "./dist/preact/forms.js"
     },
     "./tokens": {
+      "types": "./dist/tokens.d.ts",
       "import": "./dist/tokens.js",
-      "require": "./dist/tokens.cjs",
-      "types": "./dist/tokens.d.ts"
+      "require": "./dist/tokens.cjs"
     },
     "./server": {
+      "types": "./dist/server.d.ts",
       "import": "./dist/server.js",
-      "require": "./dist/server.cjs",
-      "types": "./dist/server.d.ts"
+      "require": "./dist/server.cjs"
     },
     "./registry.yaml": "./registry.yaml"
   },
@@ -134,14 +148,19 @@
     "prepublishOnly": "pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js"
   },
   "peerDependencies": {
+    "@hookform/resolvers": "^3.10.0",
     "@mcp-ui/client": "7.1.1",
     "preact": "^10.25.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.54.0",
     "react-i18next": "15.5.2",
     "rxjs": "^7.8.0"
   },
   "peerDependenciesMeta": {
+    "@hookform/resolvers": {
+      "optional": true
+    },
     "@mcp-ui/client": {
       "optional": true
     },
@@ -152,6 +171,9 @@
       "optional": true
     },
     "react-dom": {
+      "optional": true
+    },
+    "react-hook-form": {
       "optional": true
     },
     "react-i18next": {
@@ -171,11 +193,11 @@
     "zod": "3.25.28"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.10.1",
     "@babel/parser": "7.29.7",
     "@babel/traverse": "7.29.7",
-    "@types/babel__traverse": "7.28.0",
-    "@axe-core/playwright": "4.10.1",
     "@biomejs/biome": "1.9.4",
+    "@hookform/resolvers": "^3.10.0",
     "@playwright/test": "1.50.1",
     "@size-limit/preset-small-lib": "11.2.0",
     "@storybook/builder-vite": "8.6.18",
@@ -185,6 +207,7 @@
     "@tailwindcss/vite": "4.1.8",
     "@testing-library/react": "16.3.0",
     "@testing-library/user-event": "14.6.1",
+    "@types/babel__traverse": "7.28.0",
     "@types/dompurify": "3.0.5",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.0",
@@ -194,6 +217,7 @@
     "preact": "10.27.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hook-form": "^7.78.0",
     "size-limit": "11.2.0",
     "storybook": "8.6.18",
     "tailwindcss": "4.1.8",
