@@ -119,6 +119,9 @@ export function SignupForm({ onSubmit }: { onSubmit: (data: z.infer<typeof schem
 | `<Input name="..." type="text\|email\|password\|number\|url" label="..." placeholder? disabled? autoComplete? />` | Single-field `<input>` bound to the surrounding `FormProvider`. `label` is required (consumer-driven i18n). Emits `aria-invalid` + `aria-describedby` on validation error. |
 
 Field primitives (Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T12-T20 — see `docs/v0.3.0-plan.md` §7.
+| `<Textarea name="..." rows? maxLength? autoResize? placeholder? disabled? label?  />` | Multi-line text input field primitive. `rows` default 3, `maxLength` enforced via shared logic gate, optional `autoResize` grows to content. `aria-invalid` + `aria-describedby` on error. |
+
+Remaining field primitives (Input shipped T11, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T13-T20 — see `docs/v0.3.0-plan.md` §7.
 
 ## Server (MCP UI)
 
