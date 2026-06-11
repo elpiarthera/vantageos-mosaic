@@ -19,6 +19,10 @@ export { ErrorDisplay } from "../../runtimes/react/components/forms/ErrorDisplay
 export { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";
 export { Input } from "../../runtimes/react/components/forms/Input.js";
 export { Textarea } from "../../runtimes/react/components/forms/Textarea.js";
+export {
+  FieldArray,
+  useFieldArray,
+} from "../../runtimes/react/components/forms/FieldArray.js";
 
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
@@ -65,3 +69,12 @@ export {
   computeAutoResizeHeight,
   resolveRows,
 } from "./Textarea.logic.js";
+  FieldArrayPropsSchema,
+  UseFieldArrayOptionsSchema,
+} from "./FieldArray.schema.js";
+export {
+  buildListAriaLabel,
+  buildRemoveAriaLabel,
+  buildAddAriaLabel,
+  nextFocusIndexAfterRemove,
+} from "./FieldArray.logic.js";

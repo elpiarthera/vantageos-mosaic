@@ -149,6 +149,10 @@ components:
     category: forms
     schema: src/components/forms/Input.schema.ts
     zodExport: InputPropsSchema
+  - name: FieldArray
+    category: forms
+    schema: src/components/forms/FieldArray.schema.ts
+    zodExport: FieldArrayPropsSchema
     i18nKeys: []
     sizeLimit: "15KB"
   # ─── Forms field primitives (Wave 2 T11-T20) ────────────────────────────────
