@@ -32,3 +32,18 @@ export {
   StatusBadgePropsSchema,
   validateProps as validateStatusBadgeProps,
 } from "../../../../components/media/StatusBadge.schema.js";
+/**
+ * v0.3.0: TableView — static + streaming table with TanStack Virtual v3 windowing.
+ * Accepts rows array (static) or RxJS Observable<Row[]> (streaming).
+ * Zod-validated, bilingue FR+EN, aria-rowcount + role=alert on invalid props.
+ * tsup preact pass aliases react → preact/compat — no source duplication required.
+ */
+export { StreamingTableView, TableView } from "./TableView.preact.js";
+export type {
+  StreamingTableViewProps,
+  TableViewProps,
+} from "../../../../components/display/TableView.schema.js";
+export {
+  TableViewPropsSchema,
+  validateTableViewProps,
+} from "../../../../components/display/TableView.schema.js";
