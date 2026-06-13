@@ -33,6 +33,15 @@ export {
   validateProps as validateStatusBadgeProps,
 } from "../../../../components/media/StatusBadge.schema.js";
 /**
+ * v0.3.2: Badge (generic visual label primitive, cross-runtime, display category)
+ */
+export { Badge } from "./Badge.js";
+export type { BadgeProps } from "../../../../components/display/Badge.schema.js";
+export {
+  BadgePropsSchema,
+  validateBadgeProps,
+} from "../../../../components/display/Badge.schema.js";
+/**
  * v0.3.0: TableView — static + streaming table with TanStack Virtual v3 windowing.
  * Accepts rows array (static) or RxJS Observable<Row[]> (streaming).
  * Zod-validated, bilingue FR+EN, aria-rowcount + role=alert on invalid props.
