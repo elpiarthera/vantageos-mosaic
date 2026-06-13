@@ -146,7 +146,8 @@
     "lint": "biome check --error-on-warnings src",
     "size-limit": "size-limit",
     "build-storybook": "storybook build -o storybook-static",
-    "prepublishOnly": "pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js"
+    "prepublishOnly": "node scripts/rewrite-workspace-deps.mjs && pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js",
+    "postpublish": "git checkout HEAD -- package.json && echo '[postpublish] reverted package.json — workspace:* refs restored for monorepo dev'"
   },
   "peerDependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -188,7 +189,7 @@
     "@lit-labs/react": "1.0.6",
     "@mcp-ui/server": "6.1.0",
     "@tanstack/react-virtual": "3.13.6",
-    "@vantageos/mosaic-tokens": "^0.2.0",
+    "@vantageos/mosaic-tokens": "workspace:*",
     "dompurify": "3.2.4",
     "marked": "15.0.7",
     "zod": "3.25.28"
