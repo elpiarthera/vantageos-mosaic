@@ -2,6 +2,17 @@
 
 All notable changes to `@vantageos/mosaic` and `@vantageos/mosaic-tokens` are documented here.
 
+## Changed — CI pipeline green for v0.3.0 GA (PR #54)
+
+### `ci.yml` — full `ci` job now passes end-to-end (unblocks `npm-publish` gate)
+PR #54 fixed the `playwright-axe` step; running the remaining `ci`-job steps locally surfaced two further pre-existing gaps that each blocked `npm-publish (needs: ci)`:
+- **`size-limit` had no preceding build** — `size-limit` reads `dist/index.js`, `dist/react/forms.js`, `dist/preact/forms.js`, but no step ran the build, so it failed with "Size Limit can't find files at dist/index.js". Added a **`build`** step (`pnpm --filter @vantageos/mosaic run build`) after `playwright-axe` and before `size-limit`. Post-build budgets: `dist/index.js` 133.19 kB gz (limit 250 kB), `dist/{react,preact}/forms.js` 20.79 kB gz (limit 50 kB) — all green, no gate weakened.
+- **`storybook-test` was misconfigured** — the step called a non-existent binary (`storybook-test-runner`; the real binary is `test-storybook`) and no Storybook was running (`@storybook/test-runner` drives a headless Chromium against `http://127.0.0.1:6006` but does not serve Storybook itself). Replaced with: a **`build-storybook`** step, then `storybook-test` serves the static build via `npx http-server` on :6006, waits for readiness, and runs `test-storybook --url http://127.0.0.1:6006` (Chromium reused from the existing `playwright-install-chromium` step). 103 story tests across 26 suites pass.
+- `registry-drift` verified green unchanged (no drift).
+- Changes are additive/config-only; no test, coverage, a11y, size, or drift gate was relaxed.
+
+Mission task `k17bjdj68e09`.
+
 ## v0.3.0-alpha.1 — 2026-06-11 (T17 RadioGroup)
 
 ### Added — `RadioGroup` primitive (Wave 2 T17)
