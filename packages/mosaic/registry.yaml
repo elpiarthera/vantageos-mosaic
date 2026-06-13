@@ -50,35 +50,35 @@ components:
     category: forms
     schema: src/components/forms/useMosaicForm.schema.ts
     zodExport: UseMosaicFormOptionsSchema
-    i18nKeys: []
+    i18nKeys: ["useMosaicForm.error.invalidProps"]
     sizeLimit: "20KB"
     a11yLevel: WCAG-AA
   - name: FormProvider
     category: forms
     schema: src/components/forms/FormProvider.schema.ts
     zodExport: FormProviderPropsSchema
-    i18nKeys: []
+    i18nKeys: ["FormProvider.error.invalidProps"]
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
   - name: FormField
     category: forms
     schema: src/components/forms/FormField.schema.ts
     zodExport: FormFieldPropsSchema
-    i18nKeys: []
+    i18nKeys: ["FormField.error.invalidProps"]
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
   - name: ErrorDisplay
     category: forms
     schema: src/components/forms/ErrorDisplay.schema.ts
     zodExport: ErrorDisplayPropsSchema
-    i18nKeys: []
+    i18nKeys: ["ErrorDisplay.error.required", "ErrorDisplay.error.min", "ErrorDisplay.error.max", "ErrorDisplay.error.minLength", "ErrorDisplay.error.maxLength", "ErrorDisplay.error.pattern", "ErrorDisplay.error.email", "ErrorDisplay.error.url", "ErrorDisplay.error.generic"]
     sizeLimit: "5KB"
     a11yLevel: WCAG-AA
   - name: SubmitButton
     category: forms
     schema: src/components/forms/SubmitButton.schema.ts
     zodExport: SubmitButtonPropsSchema
-    i18nKeys: []
+    i18nKeys: ["SubmitButton.aria.submit", "SubmitButton.state.loading", "SubmitButton.error.invalidProps"]
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
     runtimes: ["react", "preact"]
@@ -92,6 +92,20 @@ components:
     a11yLevel: WCAG-AA
     runtimes: ["react", "preact"]
     convergence: ["hermes", "chi"]
+  - name: EmptyState
+    category: display
+    schema: src/components/display/EmptyState.schema.ts
+    zodExport: EmptyStatePropsSchema
+    i18nKeys: ["EmptyState.error.invalidProps"]
+    sizeLimit: "15KB"
+    a11yLevel: WCAG-AA
+  - name: Toast
+    category: confirmation
+    schema: src/components/confirmation/Toast.schema.ts
+    zodExport: ToastPropsSchema
+    i18nKeys: ["Toast.aria.close", "Toast.error.invalidProps"]
+    sizeLimit: "20KB"
+    a11yLevel: WCAG-AA
   - name: Alert
     category: confirmation
     schema: src/components/confirmation/Alert.schema.ts
@@ -149,49 +163,48 @@ components:
     category: forms
     schema: src/components/forms/Input.schema.ts
     zodExport: InputPropsSchema
+    i18nKeys: ["Input.aria.label", "Input.error.required", "Input.error.invalid", "Input.error.tooLong", "Input.error.tooShort", "Input.error.invalidProps"]
+    sizeLimit: "10KB"
+    a11yLevel: WCAG-AA
   - name: FieldArray
     category: forms
     schema: src/components/forms/FieldArray.schema.ts
     zodExport: FieldArrayPropsSchema
-    i18nKeys: []
+    i18nKeys: ["FieldArray.aria.list", "FieldArray.aria.addItem", "FieldArray.aria.removeItem", "FieldArray.error.invalidProps"]
+    sizeLimit: "10KB"
+    a11yLevel: WCAG-AA
   - name: Checkbox
     category: forms
     schema: src/components/forms/Checkbox.schema.ts
     zodExport: CheckboxPropsSchema
-    i18nKeys: []
+    i18nKeys: ["Checkbox.aria.label", "Checkbox.error.required", "Checkbox.error.invalidProps"]
     sizeLimit: "10KB"
     a11yLevel: WCAG-AA
   - name: RadioGroup
     category: forms
     schema: src/components/forms/RadioGroup.schema.ts
     zodExport: RadioGroupPropsSchema
-    i18nKeys: ["RadioGroup.error.invalidProps"]
-  # ─── Forms field primitives (Wave 2 T11-T20) ────────────────────────────────
+    i18nKeys: ["RadioGroup.aria.label", "RadioGroup.error.required", "RadioGroup.error.invalidProps"]
+    sizeLimit: "15KB"
+    a11yLevel: WCAG-AA
   - name: Select
     category: forms
     schema: src/components/forms/Select.schema.ts
     zodExport: SelectPropsSchema
-    i18nKeys:
-      - Select.placeholder
-      - Select.search.placeholder
-      - Select.empty
-
+    i18nKeys: ["Select.placeholder", "Select.search.placeholder", "Select.empty", "Select.error.required", "Select.error.invalidProps"]
     sizeLimit: "15KB"
-  # ─── Forms field primitives (Wave 2 T11-T20) ────────────────────────────────
+    a11yLevel: WCAG-AA
   - name: Textarea
     category: forms
     schema: src/components/forms/Textarea.schema.ts
     zodExport: TextareaPropsSchema
-  - name: Checkbox
-    category: forms
-    schema: src/components/forms/Checkbox.schema.ts
-    zodExport: CheckboxPropsSchema
-    i18nKeys: []
+    i18nKeys: ["Textarea.aria.label", "Textarea.error.required", "Textarea.error.tooLong", "Textarea.counter.remaining", "Textarea.error.invalidProps"]
     sizeLimit: "10KB"
+    a11yLevel: WCAG-AA
   - name: MultiSelect
     category: forms
     schema: src/components/forms/MultiSelect.schema.ts
     zodExport: MultiSelectPropsSchema
-    i18nKeys: []
+    i18nKeys: ["MultiSelect.aria.label", "MultiSelect.aria.removeChip", "MultiSelect.error.required", "MultiSelect.error.maxItems", "MultiSelect.placeholder", "MultiSelect.search.placeholder", "MultiSelect.empty", "MultiSelect.error.invalidProps"]
     sizeLimit: "20KB"
     a11yLevel: WCAG-AA

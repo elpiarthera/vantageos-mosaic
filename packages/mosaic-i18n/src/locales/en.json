@@ -57,5 +57,166 @@
     "error": {
       "invalidProps": "StatusBadge: invalid props"
     }
+  },
+  "Skeleton": {
+    "aria": {
+      "label": "Loading"
+    },
+    "error": {
+      "invalidProps": "Skeleton: invalid props"
+    }
+  },
+  "Alert": {
+    "aria": {
+      "dismiss": "Dismiss alert"
+    },
+    "error": {
+      "invalidProps": "Alert: invalid props"
+    }
+  },
+  "Tabs": {
+    "error": {
+      "invalidProps": "Tabs: invalid props"
+    }
+  },
+  "VirtualList": {
+    "empty": {
+      "message": "No items to display"
+    },
+    "error": {
+      "invalidProps": "VirtualList: invalid props"
+    }
+  },
+  "EmptyState": {
+    "error": {
+      "invalidProps": "EmptyState: invalid props"
+    }
+  },
+  "Toast": {
+    "aria": {
+      "close": "Close notification"
+    },
+    "error": {
+      "invalidProps": "Toast: invalid props"
+    }
+  },
+  "useMosaicForm": {
+    "error": {
+      "invalidProps": "useMosaicForm: invalid options"
+    }
+  },
+  "FormProvider": {
+    "error": {
+      "invalidProps": "FormProvider: invalid props"
+    }
+  },
+  "FormField": {
+    "error": {
+      "invalidProps": "FormField: invalid props"
+    }
+  },
+  "ErrorDisplay": {
+    "error": {
+      "required": "This field is required",
+      "min": "Value is below the minimum",
+      "max": "Value exceeds the maximum",
+      "minLength": "Input is too short",
+      "maxLength": "Input is too long",
+      "pattern": "Invalid format",
+      "email": "Enter a valid email address",
+      "url": "Enter a valid URL",
+      "generic": "Invalid value"
+    }
+  },
+  "SubmitButton": {
+    "aria": {
+      "submit": "Submit form"
+    },
+    "state": {
+      "loading": "Submitting…"
+    },
+    "error": {
+      "invalidProps": "SubmitButton: invalid props"
+    }
+  },
+  "Input": {
+    "aria": {
+      "label": "Input field"
+    },
+    "error": {
+      "required": "This field is required",
+      "invalid": "Invalid value",
+      "tooLong": "Input is too long",
+      "tooShort": "Input is too short",
+      "invalidProps": "Input: invalid props"
+    }
+  },
+  "Textarea": {
+    "aria": {
+      "label": "Text area"
+    },
+    "error": {
+      "required": "This field is required",
+      "tooLong": "Text is too long",
+      "invalidProps": "Textarea: invalid props"
+    },
+    "counter": {
+      "remaining": "characters remaining"
+    }
+  },
+  "FieldArray": {
+    "aria": {
+      "list": "List of items",
+      "addItem": "Add item",
+      "removeItem": "Remove item"
+    },
+    "error": {
+      "invalidProps": "FieldArray: invalid props"
+    }
+  },
+  "Checkbox": {
+    "aria": {
+      "label": "Checkbox"
+    },
+    "error": {
+      "required": "This field must be checked",
+      "invalidProps": "Checkbox: invalid props"
+    }
+  },
+  "MultiSelect": {
+    "aria": {
+      "label": "Multi-select field",
+      "removeChip": "Remove"
+    },
+    "error": {
+      "required": "Select at least one option",
+      "maxItems": "Maximum number of selections reached",
+      "invalidProps": "MultiSelect: invalid props"
+    },
+    "placeholder": "Select options…",
+    "search": {
+      "placeholder": "Search…"
+    },
+    "empty": "No options available"
+  },
+  "RadioGroup": {
+    "aria": {
+      "label": "Radio group"
+    },
+    "error": {
+      "required": "Select one option",
+      "invalidProps": "RadioGroup: invalid props"
+    }
+  },
+  "Select": {
+    "placeholder": "Select an option…",
+    "search": {
+      "placeholder": "Search…"
+    },
+    "empty": "No options available",
+    "error": {
+      "required": "Select an option",
+      "invalidProps": "Select: invalid props"
+    }
   }
 }
