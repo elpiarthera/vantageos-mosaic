@@ -26,7 +26,8 @@
     "lint": "biome check --error-on-warnings src",
     "size-limit": "size-limit",
     "build-storybook": "storybook build -o storybook-static",
-    "prepublishOnly": "pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js"
+    "prepublishOnly": "pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js",
+    "precheck:sandbox": "tsx scripts/sandbox-publish-precheck.ts"
   },
   "peerDependencies": {
     "@mcp-ui/client": "7.1.1",
@@ -79,6 +80,9 @@
     "typescript": "5.8.3",
     "vite": "6.3.5",
     "vite-plugin-singlefile": "2.1.0",
-    "vitest": "3.2.2"
+    "vitest": "3.2.2",
+    "@types/node": "22.15.29",
+    "@vercel/sandbox": "2.2.1",
+    "tsx": "4.22.4"
   }
 }
