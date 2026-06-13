@@ -45,48 +45,22 @@ function renderItem(item: Item, _index: number) {
 
 describe("VirtualList — Preact runtime parity", () => {
   it("renders empty state (EN) — parity with React", () => {
-    render(
-      <VirtualList
-        items={[]}
-        itemHeight={40}
-        renderItem={renderItem}
-        locale="en"
-      />,
-    );
+    render(<VirtualList items={[]} itemHeight={40} renderItem={renderItem} locale="en" />);
     expect(screen.getByText("No items to display")).toBeDefined();
   });
 
   it("renders empty state (FR) — parity with React", () => {
-    render(
-      <VirtualList
-        items={[]}
-        itemHeight={40}
-        renderItem={renderItem}
-        locale="fr"
-      />,
-    );
+    render(<VirtualList items={[]} itemHeight={40} renderItem={renderItem} locale="fr" />);
     expect(screen.getByText("Aucun élément à afficher")).toBeDefined();
   });
 
   it("renders 1 item — parity", () => {
-    render(
-      <VirtualList
-        items={makeItems(1)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
-    );
+    render(<VirtualList items={makeItems(1)} itemHeight={40} renderItem={renderItem} />);
     expect(screen.getByTestId("preact-item-1")).toBeDefined();
   });
 
   it("renders 100 items — parity", () => {
-    render(
-      <VirtualList
-        items={makeItems(100)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
-    );
+    render(<VirtualList items={makeItems(100)} itemHeight={40} renderItem={renderItem} />);
     expect(screen.getByTestId("preact-item-1")).toBeDefined();
     expect(screen.getByTestId("preact-item-100")).toBeDefined();
   });
@@ -94,13 +68,9 @@ describe("VirtualList — Preact runtime parity", () => {
   it("data-virtual attribute present for non-empty lists — parity", () => {
     // Use small count to avoid DOM thrash in jsdom; data-virtual marker confirms virtualizer engaged
     const { container } = render(
-      <VirtualList
-        items={makeItems(50)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
+      <VirtualList items={makeItems(50)} itemHeight={40} renderItem={renderItem} />,
     );
-    expect(container.querySelector("[data-virtual=\"true\"]")).not.toBeNull();
+    expect(container.querySelector('[data-virtual="true"]')).not.toBeNull();
   });
 
   it("role=button + tabIndex=0 when onRowClick defined — parity", () => {
@@ -120,13 +90,7 @@ describe("VirtualList — Preact runtime parity", () => {
   });
 
   it("no role=button when onRowClick undefined — parity", () => {
-    render(
-      <VirtualList
-        items={makeItems(3)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
-    );
+    render(<VirtualList items={makeItems(3)} itemHeight={40} renderItem={renderItem} />);
     expect(screen.queryAllByRole("button").length).toBe(0);
   });
 
@@ -134,14 +98,10 @@ describe("VirtualList — Preact runtime parity", () => {
     const handler = vi.fn();
     const items = makeItems(3);
     render(
-      <VirtualList
-        items={items}
-        itemHeight={40}
-        renderItem={renderItem}
-        onRowClick={handler}
-      />,
+      <VirtualList items={items} itemHeight={40} renderItem={renderItem} onRowClick={handler} />,
     );
     const rows = screen.getAllByRole("button");
+    // biome-ignore lint/style/noNonNullAssertion: test array — length guaranteed by makeItems(3)
     fireEvent.click(rows[0]!);
     expect(handler).toHaveBeenCalledWith(items[0], 0);
   });
@@ -150,14 +110,10 @@ describe("VirtualList — Preact runtime parity", () => {
     const handler = vi.fn();
     const items = makeItems(2);
     render(
-      <VirtualList
-        items={items}
-        itemHeight={40}
-        renderItem={renderItem}
-        onRowClick={handler}
-      />,
+      <VirtualList items={items} itemHeight={40} renderItem={renderItem} onRowClick={handler} />,
     );
     const rows = screen.getAllByRole("button");
+    // biome-ignore lint/style/noNonNullAssertion: test array — length guaranteed by makeItems(2)
     fireEvent.keyDown(rows[1]!, { key: "Enter" });
     expect(handler).toHaveBeenCalledWith(items[1], 1);
   });
@@ -166,14 +122,10 @@ describe("VirtualList — Preact runtime parity", () => {
     const handler = vi.fn();
     const items = makeItems(2);
     render(
-      <VirtualList
-        items={items}
-        itemHeight={40}
-        renderItem={renderItem}
-        onRowClick={handler}
-      />,
+      <VirtualList items={items} itemHeight={40} renderItem={renderItem} onRowClick={handler} />,
     );
     const rows = screen.getAllByRole("button");
+    // biome-ignore lint/style/noNonNullAssertion: test array — length guaranteed by makeItems(2)
     fireEvent.keyDown(rows[0]!, { key: " " });
     expect(handler).toHaveBeenCalledWith(items[0], 0);
   });

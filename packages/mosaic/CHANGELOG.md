@@ -12,6 +12,9 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Wave 3 components TBD (DatePicker, Avatar, FilterChip, Pagination — demand-driven T21+).
 
+### Fixed
+- CI `biome check --error-on-warnings` now exits 0 on `main` (unblocks v0.3.0 GA publish gate): suppressed 6 `noNonNullAssertion` lint errors in VirtualList tests (React + Preact) with justified `biome-ignore` comments matching repo convention, plus format/organizeImports auto-fixes across 7 files.
+
 ---
 
 ## [0.3.0] — GA — TBD

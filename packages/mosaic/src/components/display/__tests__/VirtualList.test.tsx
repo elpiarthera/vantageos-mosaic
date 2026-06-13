@@ -138,49 +138,23 @@ describe("VirtualList — Zod schema validation", () => {
 
 describe("VirtualList — render edge cases", () => {
   it("renders empty state when items array is empty", () => {
-    render(
-      <VirtualList
-        items={[]}
-        itemHeight={40}
-        renderItem={renderItem}
-        locale="en"
-      />,
-    );
+    render(<VirtualList items={[]} itemHeight={40} renderItem={renderItem} locale="en" />);
     // Should show empty message
     expect(screen.getByText("No items to display")).toBeDefined();
   });
 
   it("renders empty state in FR locale", () => {
-    render(
-      <VirtualList
-        items={[]}
-        itemHeight={40}
-        renderItem={renderItem}
-        locale="fr"
-      />,
-    );
+    render(<VirtualList items={[]} itemHeight={40} renderItem={renderItem} locale="fr" />);
     expect(screen.getByText("Aucun élément à afficher")).toBeDefined();
   });
 
   it("renders 1 item correctly", () => {
-    render(
-      <VirtualList
-        items={makeItems(1)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
-    );
+    render(<VirtualList items={makeItems(1)} itemHeight={40} renderItem={renderItem} />);
     expect(screen.getByTestId("item-1")).toBeDefined();
   });
 
   it("renders 100 items", () => {
-    render(
-      <VirtualList
-        items={makeItems(100)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
-    );
+    render(<VirtualList items={makeItems(100)} itemHeight={40} renderItem={renderItem} />);
     // All 100 rendered because virtualizer mock returns all items
     expect(screen.getByTestId("item-1")).toBeDefined();
     expect(screen.getByTestId("item-100")).toBeDefined();
@@ -190,14 +164,10 @@ describe("VirtualList — render edge cases", () => {
     // Use a small subset to avoid DOM thrash in jsdom; data-virtual marker confirms virtualizer engaged
     const items = makeItems(50);
     const { container } = render(
-      <VirtualList
-        items={items}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
+      <VirtualList items={items} itemHeight={40} renderItem={renderItem} />,
     );
     // data-virtual="true" is set on the scroll container whenever items.length > 0
-    expect(container.querySelector("[data-virtual=\"true\"]")).not.toBeNull();
+    expect(container.querySelector('[data-virtual="true"]')).not.toBeNull();
     expect(screen.getByTestId("item-1")).toBeDefined();
     expect(screen.getByTestId("item-50")).toBeDefined();
   });
@@ -215,13 +185,7 @@ describe("VirtualList — render edge cases", () => {
   });
 
   it("renders with estimateSize instead of itemHeight", () => {
-    render(
-      <VirtualList
-        items={makeItems(5)}
-        estimateSize={(_i) => 48}
-        renderItem={renderItem}
-      />,
-    );
+    render(<VirtualList items={makeItems(5)} estimateSize={(_i) => 48} renderItem={renderItem} />);
     expect(screen.getByTestId("item-1")).toBeDefined();
     expect(screen.getByTestId("item-5")).toBeDefined();
   });
@@ -256,14 +220,10 @@ describe("VirtualList — onRowClick a11y", () => {
     const handler = vi.fn();
     const items = makeItems(3);
     render(
-      <VirtualList
-        items={items}
-        itemHeight={40}
-        renderItem={renderItem}
-        onRowClick={handler}
-      />,
+      <VirtualList items={items} itemHeight={40} renderItem={renderItem} onRowClick={handler} />,
     );
     const rows = screen.getAllByRole("button");
+    // biome-ignore lint/style/noNonNullAssertion: test array — length guaranteed by makeItems(3)
     fireEvent.click(rows[1]!);
     expect(handler).toHaveBeenCalledWith(items[1], 1);
   });
@@ -272,14 +232,10 @@ describe("VirtualList — onRowClick a11y", () => {
     const handler = vi.fn();
     const items = makeItems(3);
     render(
-      <VirtualList
-        items={items}
-        itemHeight={40}
-        renderItem={renderItem}
-        onRowClick={handler}
-      />,
+      <VirtualList items={items} itemHeight={40} renderItem={renderItem} onRowClick={handler} />,
     );
     const rows = screen.getAllByRole("button");
+    // biome-ignore lint/style/noNonNullAssertion: test array — length guaranteed by makeItems(3)
     fireEvent.keyDown(rows[0]!, { key: "Enter" });
     expect(handler).toHaveBeenCalledWith(items[0], 0);
   });
@@ -288,14 +244,10 @@ describe("VirtualList — onRowClick a11y", () => {
     const handler = vi.fn();
     const items = makeItems(3);
     render(
-      <VirtualList
-        items={items}
-        itemHeight={40}
-        renderItem={renderItem}
-        onRowClick={handler}
-      />,
+      <VirtualList items={items} itemHeight={40} renderItem={renderItem} onRowClick={handler} />,
     );
     const rows = screen.getAllByRole("button");
+    // biome-ignore lint/style/noNonNullAssertion: test array — length guaranteed by makeItems(3)
     fireEvent.keyDown(rows[2]!, { key: " " });
     expect(handler).toHaveBeenCalledWith(items[2], 2);
   });
@@ -322,23 +274,13 @@ describe("VirtualList — onRowClick a11y", () => {
 
 describe("VirtualList — onRowClick undefined (back-compat)", () => {
   it("does NOT add role=button when onRowClick is undefined", () => {
-    render(
-      <VirtualList
-        items={makeItems(3)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
-    );
+    render(<VirtualList items={makeItems(3)} itemHeight={40} renderItem={renderItem} />);
     expect(screen.queryAllByRole("button").length).toBe(0);
   });
 
   it("does NOT add tabIndex=0 when onRowClick is undefined", () => {
     const { container } = render(
-      <VirtualList
-        items={makeItems(3)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
+      <VirtualList items={makeItems(3)} itemHeight={40} renderItem={renderItem} />,
     );
     const rows = container.querySelectorAll("[data-list-row]");
     for (const row of rows) {
@@ -352,24 +294,13 @@ describe("VirtualList — onRowClick undefined (back-compat)", () => {
 describe("VirtualList — overscan prop", () => {
   it("defaults overscan to 5 when not provided", () => {
     // Verifying component renders without error — overscan is passed internally
-    render(
-      <VirtualList
-        items={makeItems(10)}
-        itemHeight={40}
-        renderItem={renderItem}
-      />,
-    );
+    render(<VirtualList items={makeItems(10)} itemHeight={40} renderItem={renderItem} />);
     expect(screen.getByTestId("item-1")).toBeDefined();
   });
 
   it("accepts custom overscan value", () => {
     render(
-      <VirtualList
-        items={makeItems(10)}
-        itemHeight={40}
-        renderItem={renderItem}
-        overscan={10}
-      />,
+      <VirtualList items={makeItems(10)} itemHeight={40} renderItem={renderItem} overscan={10} />,
     );
     expect(screen.getByTestId("item-1")).toBeDefined();
   });
