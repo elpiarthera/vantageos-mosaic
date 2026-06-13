@@ -28,6 +28,16 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.3.1] — 2026-06-13 — hotfix: workspace:* leak in published 0.3.0 manifest
+
+### Fixed
+- **External npm install of `@vantageos/mosaic@0.3.0` was broken**: the published manifest carried `"@vantageos/mosaic-tokens": "workspace:*"` as a runtime dependency. The `workspace:*` protocol is a bun/pnpm/yarn monorepo specifier that the npm registry cannot resolve to a real version, so any external `npm install @vantageos/mosaic` failed with `ETARGET No matching version found for @vantageos/mosaic-tokens@workspace:*`. Replaced with `"@vantageos/mosaic-tokens": "^0.2.0"` (matches the currently published `@vantageos/mosaic-tokens@0.2.0`). No code change in `dist/`. Gamma flag via Pi msg `jn77k1v2414far8z5b7abxgjqn88jq9b`. Task `k1769bhq5f7z56yyfs143jsw5588k7j6` (mission `k57b6d1bzc318pc4gqmhe4tapx88jqbd`).
+
+### Root cause + follow-up
+- Mosaic publish step does not auto-rewrite `workspace:*` references on `npm publish`. Future fix: either (a) move to `bun publish` if/when it rewrites workspace specifiers like pnpm/yarn do, or (b) add a `prepublishOnly` script that mirrors the lockfile's resolved version into `package.json` before `npm publish`. Tracked in F-list `k173e0bwvfpmngwrrtcqh3zzj988fnaq`.
+
+---
+
 ## [0.3.0] — GA — 2026-06-13
 
 ### Added

@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -188,7 +188,7 @@
     "@lit-labs/react": "1.0.6",
     "@mcp-ui/server": "6.1.0",
     "@tanstack/react-virtual": "3.13.6",
-    "@vantageos/mosaic-tokens": "workspace:*",
+    "@vantageos/mosaic-tokens": "^0.2.0",
     "dompurify": "3.2.4",
     "marked": "15.0.7",
     "zod": "3.25.28"
