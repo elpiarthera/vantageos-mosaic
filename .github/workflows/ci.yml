@@ -38,20 +38,55 @@ jobs:
         run: pnpm --filter @vantageos/mosaic run test -- --coverage
 
       # Step 4: playwright + axe-core (a11y violations = fail)
+      # The a11y specs drive a headless Chromium against a Storybook served by
+      # Playwright's own webServer (packages/mosaic/playwright.config.ts runs
+      # `storybook dev -p 6006`). The CI runner ships no browsers, so install
+      # Chromium + its system deps before the test step or every spec fails at
+      # browserType.launch with "Executable doesn't exist".
+      - name: playwright-install-chromium
+        run: pnpm --filter @vantageos/mosaic exec playwright install --with-deps chromium
       - name: playwright-axe
         run: pnpm --filter @vantageos/mosaic exec playwright test tests/a11y/
 
-      # Step 5: size-limit (≤250KB gz)
+      # Step 5: build (produces dist/ — required by size-limit below)
+      # size-limit reads dist/index.js, dist/react/forms.js, dist/preact/forms.js.
+      # Nothing earlier in this job runs the build, so without this step
+      # size-limit fails with "Size Limit can't find files at dist/index.js".
+      - name: build
+        run: pnpm --filter @vantageos/mosaic run build
+
+      # Step 6: size-limit (≤250KB gz)
       - name: size-limit
         run: pnpm --filter @vantageos/mosaic run size-limit
 
-      # Step 6: registry drift gate
+      # Step 7: registry drift gate
       - name: registry-drift
         run: node packages/mosaic/scripts/mosaic-registry-drift-check.mjs
 
-      # Step 7: storybook test-runner (4 stories per comp)
+      # Step 8: storybook test-runner (a11y + play-fn smoke per story)
+      # The @storybook/test-runner binary is `test-storybook` (not
+      # `storybook-test-runner`), and it drives a headless Chromium (installed
+      # by the playwright-install-chromium step above) against a RUNNING
+      # Storybook at http://127.0.0.1:6006. The runner does not serve Storybook
+      # itself, so we build the static Storybook, serve it in the background,
+      # wait for it to answer, then run the suite against it.
+      - name: build-storybook
+        run: pnpm --filter @vantageos/mosaic run build-storybook
       - name: storybook-test
-        run: pnpm --filter @vantageos/mosaic exec storybook-test-runner
+        run: |
+          npx --yes http-server@14 packages/mosaic/storybook-static -p 6006 --silent &
+          SB_PID=$!
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://127.0.0.1:6006/index.html; then
+              echo "storybook up after ${i}s"
+              break
+            fi
+            sleep 1
+          done
+          pnpm --filter @vantageos/mosaic exec test-storybook --url http://127.0.0.1:6006
+          STATUS=$?
+          kill "$SB_PID" 2>/dev/null || true
+          exit $STATUS
 
   build-parity-cross-runtime:
     name: Gate 1 — Cross-runtime build parity

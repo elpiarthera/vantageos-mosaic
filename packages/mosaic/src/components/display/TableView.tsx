@@ -260,6 +260,16 @@ function VirtualTable<TRow extends Record<string, unknown>>({
     <div
       data-virtual="true"
       ref={scrollRef}
+      // WCAG 2.1.1 / 2.1.3 (axe scrollable-region-focusable, serious): a
+      // scrollable container must be keyboard-operable. tabIndex={0} puts the
+      // virtualized viewport in the tab order so keyboard users can scroll it;
+      // role=region + aria-label expose it as a named landmark so the focusable
+      // element is announced. Verified axe 0 violations (tests/a11y/TableView.spec.ts).
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: WCAG 2.1.1 — the virtual-scroll viewport is scrollable and must be in the tab order for keyboard scroll access (axe scrollable-region-focusable)
+      tabIndex={0}
+      // biome-ignore lint/a11y/useSemanticElements: the scroll viewport wraps a <table>; converting it to <section> would nest sectioning content inside the table wrapper and break the virtualizer's ref-bound div — role=region is the correct, non-structural a11y annotation here
+      role="region"
+      aria-label={ariaLabel}
       style={{ height: 400, overflow: "auto", position: "relative" }}
     >
       <table
