@@ -598,6 +598,19 @@ Référence : CLAUDE.md doctrine "NPM PUBLISH PROTOCOL".
 - GitHub Packages mirror (optionnel post-v1.0)
 - VantageRegistry catalog auto-upsert post-publish
 
+### 10.5 Release checklist (mandatory pre-publish)
+
+Before running `npm publish` for any `@vantageos/mosaic` release:
+
+1. **CHANGELOG.md updated** — `packages/mosaic/CHANGELOG.md` must have a section for the new version following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. Categories: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`. Move entries from `[Unreleased]` to the versioned section.
+2. **CHANGELOG.md in tarball** — verify with `npm pack --dry-run --json | jq '.[0].files[].path' | grep -i CHANGELOG`. Must match. The `package.json` `files` array must include `"CHANGELOG.md"`.
+3. **Version bump** — `package.json` version matches the new section heading.
+4. **Git tag** — tag `vX.Y.Z` created post-merge before publish.
+5. **Eta gate** — `ETA_APPROVED_TASK_ID` present (§10.2).
+6. **Build + test green** — `pnpm run build && pnpm run test && pnpm run size-limit` pass with 0 errors.
+
+Athena Audit Axis 8 (2026-06-13): CHANGELOG absence from the tarball was identified as a gap. This checklist + the `files` amendment close it.
+
 ---
 
 ## 12. Storybook & Docs
