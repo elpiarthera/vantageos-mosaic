@@ -24,7 +24,7 @@ The `build` script prefixes `NODE_OPTIONS=--max-old-space-size=8192` automatical
 
 **Why 8 GB heap?** tsup runs multiple parallel DTS (declaration emit) configs for cross-runtime outputs (React 19, Preact 10, server, tokens). Each TypeScript compiler worker holds the full type graph in memory. The combined peak exceeds Node's default 2 GB V8 limit, causing OOM crashes (`FATAL ERROR: Reached heap limit Allocation failed`). 8 GB gives adequate headroom on a standard CI runner (ubuntu-latest provides 16 GB RAM).
 
-This constraint is also set as a job-level `env: NODE_OPTIONS` in `.github/workflows/ci.yml` for all build-bearing jobs (`build-parity-cross-runtime`, `peer-resolution-smoke`, `npm-publish`).
+This constraint is codified locally via the `build` script (the `NODE_OPTIONS` prefix above), so it applies anywhere the script runs — including CI. Wiring it as an explicit job-level `env: NODE_OPTIONS` in `.github/workflows/ci.yml` for the build-bearing jobs (`build-parity-cross-runtime`, `peer-resolution-smoke`, `npm-publish`) is planned but not yet present.
 
 ## Surface
 
