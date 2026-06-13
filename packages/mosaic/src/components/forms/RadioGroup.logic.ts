@@ -67,17 +67,13 @@ export function findNextEnabledIndex(
 }
 
 /** First enabled option index, or 0 if all are disabled. */
-export function findFirstEnabledIndex(
-  options: Array<Pick<RadioGroupOption, "disabled">>,
-): number {
+export function findFirstEnabledIndex(options: Array<Pick<RadioGroupOption, "disabled">>): number {
   const idx = options.findIndex((o) => !o.disabled);
   return idx === -1 ? 0 : idx;
 }
 
 /** Last enabled option index, or `options.length - 1` if all are disabled. */
-export function findLastEnabledIndex(
-  options: Array<Pick<RadioGroupOption, "disabled">>,
-): number {
+export function findLastEnabledIndex(options: Array<Pick<RadioGroupOption, "disabled">>): number {
   for (let i = options.length - 1; i >= 0; i--) {
     if (!options[i]?.disabled) return i;
   }
@@ -118,11 +114,7 @@ export function getGroupLabelId(instanceId: string, name: string): string {
 }
 
 /** Stable DOM id for an option label span (linked by radio aria-labelledby). */
-export function getOptionLabelId(
-  instanceId: string,
-  name: string,
-  optionValue: string,
-): string {
+export function getOptionLabelId(instanceId: string, name: string, optionValue: string): string {
   return `${instanceId}-${name}-${optionValue}-label`;
 }
 
@@ -137,16 +129,11 @@ export function getOptionDescriptionId(
 
 /** Tailwind classes for the root radiogroup container. */
 export function getGroupClasses(orientation: RadioOrientation): string {
-  return orientation === "vertical"
-    ? "flex flex-col gap-2"
-    : "flex flex-row flex-wrap gap-4";
+  return orientation === "vertical" ? "flex flex-col gap-2" : "flex flex-row flex-wrap gap-4";
 }
 
 /** Tailwind classes for a single radio row (label + control + description). */
-export function getOptionRowClasses(
-  isDisabled: boolean,
-  orientation: RadioOrientation,
-): string {
+export function getOptionRowClasses(isDisabled: boolean, orientation: RadioOrientation): string {
   const base = "flex items-start gap-2";
   const orient = orientation === "vertical" ? "flex-row" : "flex-row";
   const state = isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
@@ -154,10 +141,7 @@ export function getOptionRowClasses(
 }
 
 /** Tailwind classes for the visible radio control (the round dot). */
-export function getRadioControlClasses(
-  isSelected: boolean,
-  isDisabled: boolean,
-): string {
+export function getRadioControlClasses(isSelected: boolean, isDisabled: boolean): string {
   const base =
     "inline-flex items-center justify-center w-4 h-4 mt-0.5 rounded-full border-2 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 shrink-0";
   const state = isDisabled

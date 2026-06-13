@@ -3,9 +3,9 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Toast } from "../../runtimes/react/components/confirmation/Toast";
 import { getAriaLive, getAriaRole, variantContainerClasses } from "./Toast.logic";
 import { ToastPropsSchema, validateToastProps } from "./Toast.schema";
-import { Toast } from "../../runtimes/react/components/confirmation/Toast";
 
 afterEach(() => {
   cleanup();

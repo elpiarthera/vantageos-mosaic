@@ -13,7 +13,9 @@ try {
   reactImportFailed = true;
 }
 if (!reactImportFailed) {
-  console.error("FAIL: react/progress import succeeded in preact-only fixture (peer not installed) — peerDeps optionality broken");
+  console.error(
+    "FAIL: react/progress import succeeded in preact-only fixture (peer not installed) — peerDeps optionality broken",
+  );
   process.exit(3);
 }
 

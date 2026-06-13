@@ -29,8 +29,6 @@ export { RadioGroup } from "../../runtimes/react/components/forms/RadioGroup.js"
 
 export { Select } from "../../runtimes/react/components/forms/Select.js";
 
-
-
 // Shared schemas + pure logic (runtime-agnostic, safe to re-export)
 export {
   UseMosaicFormOptionsSchema,
@@ -142,5 +140,3 @@ export {
   indexOfValue,
   resolveSelectedLabel,
 } from "./Select.logic.js";
-
-
