@@ -5,20 +5,15 @@
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 import React from "react";
-import { t } from "../../../../i18n/strings.js";
 import {
   type MarkdownRendererProps,
   validateProps,
 } from "../../../../components/artifacts/MarkdownRenderer.schema.js";
+import { t } from "../../../../i18n/strings.js";
 
 // ─── Inner (validated props) ──────────────────────────────────────────────────
 
-function MarkdownRendererInner({
-  content,
-  locale,
-  maxLength,
-  allowHtml,
-}: MarkdownRendererProps) {
+function MarkdownRendererInner({ content, locale, maxLength, allowHtml }: MarkdownRendererProps) {
   if (content.length > maxLength) {
     return (
       <div role="alert" lang={locale}>

@@ -101,9 +101,7 @@ describe("MarkdownRenderer — allowHtml", () => {
   });
 
   it("preserves HTML tags when allowHtml is true", () => {
-    render(
-      <MarkdownRenderer content="<strong>Hello</strong>" locale="en" allowHtml={true} />,
-    );
+    render(<MarkdownRenderer content="<strong>Hello</strong>" locale="en" allowHtml={true} />);
     const article = screen.getByRole("article");
     expect(article.innerHTML).toContain("<strong>Hello</strong>");
   });
