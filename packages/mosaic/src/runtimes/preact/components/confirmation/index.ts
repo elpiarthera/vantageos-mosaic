@@ -31,3 +31,18 @@ export {
   validateConfirmDialogProps,
 } from "./ConfirmDialog";
 export type { ConfirmDialogProps } from "./ConfirmDialog";
+/**
+ * v0.3.0 Wave 1 T5 — TokenDisplayOnceModal: Preact 10 mirror of the React
+ * runtime implementation. The tsup preact pass aliases react → preact/compat
+ * at build time (§18.1), so the shared React source compiles to Preact
+ * hooks/JSX automatically. No source duplication required.
+ *
+ * i18nKeys: TokenDisplayOnceModal.button.copy, .button.close,
+ *            .warning.once, .copied  (EN + FR)
+ */
+export {
+  TokenDisplayOnceModal,
+  TokenDisplayOnceModalPropsSchema,
+  validateTokenDisplayOnceModalProps,
+} from "./TokenDisplayOnceModal.js";
+export type { TokenDisplayOnceModalProps } from "../../../../components/confirmation/TokenDisplayOnceModal.schema.js";
