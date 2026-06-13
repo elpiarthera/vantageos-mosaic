@@ -12,9 +12,9 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import React from "react";
 import { Subject } from "rxjs";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { TableViewProps } from "../../../../../components/display/TableView.schema.js";
 // Import from preact runtime path — parity with React runtime
 import { StreamingTableView, TableView } from "../TableView.preact";
-import type { TableViewProps } from "../../../../../components/display/TableView.schema.js";
 
 // Mock @tanstack/react-virtual — same mock as React side (preact/compat resolves same module)
 vi.mock("@tanstack/react-virtual", () => ({
@@ -148,9 +148,7 @@ describe("TableView Preact — accessibility parity", () => {
   });
 
   it("(7) renders role=alert FR fallback on invalid ariaLabel — parity", () => {
-    render(
-      <TableView columns={defaultColumns} rows={[]} ariaLabel="" locale="fr" />,
-    );
+    render(<TableView columns={defaultColumns} rows={[]} ariaLabel="" locale="fr" />);
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toMatch(/propriétés invalides/i);
   });

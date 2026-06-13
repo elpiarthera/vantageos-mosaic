@@ -11,8 +11,8 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import React from "react";
 import { Subject } from "rxjs";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { StreamingTableView, TableView } from "../TableView";
 import type { TableViewProps } from "../../../../../components/display/TableView.schema.js";
+import { StreamingTableView, TableView } from "../TableView";
 
 // Mock @tanstack/react-virtual — jsdom has no real scroll dimensions
 vi.mock("@tanstack/react-virtual", () => ({
@@ -120,9 +120,7 @@ describe("TableView React — virtualization threshold", () => {
 
 describe("TableView React — empty state", () => {
   it("(5) renders FR empty message when rows=[] and locale=fr", () => {
-    render(
-      <TableView columns={defaultColumns} rows={[]} ariaLabel="Empty FR" locale="fr" />,
-    );
+    render(<TableView columns={defaultColumns} rows={[]} ariaLabel="Empty FR" locale="fr" />);
     const table = screen.getByRole("table");
     expect(table.getAttribute("aria-rowcount")).toBe("0");
     // FR i18n key: "Aucune donnée à afficher"
@@ -149,9 +147,7 @@ describe("TableView React — accessibility", () => {
   });
 
   it("(7) renders role=alert with FR error message on invalid ariaLabel", () => {
-    render(
-      <TableView columns={defaultColumns} rows={[]} ariaLabel="" locale="fr" />,
-    );
+    render(<TableView columns={defaultColumns} rows={[]} ariaLabel="" locale="fr" />);
     const alert = screen.getByRole("alert");
     expect(alert.textContent).toMatch(/propriétés invalides/i);
   });
