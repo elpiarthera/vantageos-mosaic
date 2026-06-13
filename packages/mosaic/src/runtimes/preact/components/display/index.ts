@@ -23,3 +23,12 @@ export {
   VirtualListPropsSchema,
   validateVirtualListProps,
 } from "../../../../components/display/VirtualList.schema.js";
+/**
+ * v0.3.0: StatusBadge (status indicator badge, cross-runtime, display category)
+ */
+export { StatusBadge } from "./StatusBadge.js";
+export type { StatusBadgeProps } from "../../../../components/media/StatusBadge.schema.js";
+export {
+  StatusBadgePropsSchema,
+  validateProps as validateStatusBadgeProps,
+} from "../../../../components/media/StatusBadge.schema.js";
