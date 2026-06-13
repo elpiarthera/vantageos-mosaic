@@ -1,5 +1,58 @@
 import { type Options, defineConfig } from "tsup";
 
+// esbuild's `Plugin` type, derived from tsup's own `Options` so we don't need
+// `esbuild` as a direct devDependency (it is only a transitive dep of tsup and
+// is therefore not type-resolvable from this config under `tsc --noEmit`).
+type EsbuildPlugin = NonNullable<Options["esbuildPlugins"]>[number];
+
+/**
+ * esbuild plugin — rewrite EVERY `react*` specifier to its preact equivalent
+ * for the preact runtime pass, and mark the result external.
+ *
+ * Why a plugin and not `esbuildOptions.alias`:
+ * tsup auto-externalises all `dependencies` + `peerDependencies` BEFORE the
+ * alias map is consulted. `react`, `react-dom` and (critically) the automatic
+ * JSX runtime import `react/jsx-runtime` are peerDeps, so esbuild externalised
+ * them verbatim and the alias never fired. The preact bundles that re-export a
+ * shared React implementation (progress/input/confirmation/forms) therefore
+ * shipped `import … from "react/jsx-runtime"` + `import … from "react"`.
+ *
+ * Consequence (Gate 2 peerDeps-optionality bug): a react-only consumer HAS
+ * react installed, so `@vantageos/mosaic/preact/*` resolved successfully even
+ * though preact was absent — optionality broken. An `onResolve` hook runs
+ * regardless of auto-externalisation, so it deterministically maps:
+ *   react                 → preact/compat
+ *   react-dom             → preact/compat
+ *   react-dom/client      → preact/compat/client
+ *   react/jsx-runtime     → preact/jsx-runtime
+ *   react/jsx-dev-runtime → preact/jsx-runtime   (preact has no dev runtime)
+ * and keeps them external so the preact bundles import ONLY preact specifiers.
+ * Result: a react-only consumer (no preact) can no longer resolve any
+ * /preact/* subpath, and symmetrically the react pass never references preact.
+ */
+const reactToPreact: EsbuildPlugin = {
+  name: "mosaic-react-to-preact",
+  setup(build) {
+    const map: Record<string, string> = {
+      react: "preact/compat",
+      "react-dom": "preact/compat",
+      "react-dom/client": "preact/compat/client",
+      "react/jsx-runtime": "preact/jsx-runtime",
+      "react/jsx-dev-runtime": "preact/jsx-runtime",
+    };
+    // Match the react family exactly (including the jsx runtimes) so nothing
+    // slips through. Anchored regex avoids rewriting e.g. `react-i18next`.
+    build.onResolve(
+      { filter: /^react(-dom)?(\/(client|jsx-runtime|jsx-dev-runtime))?$/ },
+      (args) => {
+        const replacement = map[args.path];
+        if (!replacement) return undefined;
+        return { path: replacement, external: true };
+      },
+    );
+  },
+};
+
 /**
  * Multi-runtime tsup configuration (v0.2.0 — T3-A).
  *
@@ -41,6 +94,7 @@ const REACT_EXTERNAL = [
 const PREACT_EXTERNAL = [
   "preact",
   "preact/hooks",
+  "preact/jsx-runtime",
   "preact/compat",
   "preact/compat/client",
   "react-i18next",
@@ -106,14 +160,16 @@ const preactPass: Options = {
   treeshake: true,
   splitting: false,
   external: PREACT_EXTERNAL,
-  esbuildOptions(opts) {
-    opts.alias = {
-      ...(opts.alias ?? {}),
-      react: "preact/compat",
-      "react-dom": "preact/compat",
-      "react-dom/client": "preact/compat/client",
-    };
-  },
+  // `noExternal` makes tsup's own `external` onResolve plugin RETURN UNDEFINED
+  // for the react family (instead of externalising them verbatim), letting the
+  // `reactToPreact` plugin below intercept and rewrite them to preact. Without
+  // this, tsup externalises `react` / `react/jsx-runtime` first (peerDeps are
+  // auto-external) and our rewrite never runs — that was the Gate 2 bug.
+  noExternal: [/^react($|-dom|\/jsx-runtime|\/jsx-dev-runtime|-dom\/client)/],
+  // onResolve plugin (not esbuildOptions.alias): runs AFTER tsup's external
+  // plugin returns undefined for the react family, deterministically mapping
+  // every react specifier to its preact equivalent + marking it external.
+  esbuildPlugins: [reactToPreact],
 };
 
 const tokensReexportPass: Options = {

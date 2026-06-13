@@ -1,0 +1,4 @@
+# run-smoke.sh installs into isolated mktemp consumers; any node_modules left
+# inside a fixture dir is a stale artifact from manual runs — never commit it.
+*/node_modules/
+*.tgz
