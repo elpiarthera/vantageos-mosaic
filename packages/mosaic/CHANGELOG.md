@@ -23,7 +23,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [0.3.0] — GA — TBD
+## [0.3.0] — GA — 2026-06-13
 
 ### Added
 - All Wave 1 + Wave 2 components promoted from `0.3.0-alpha.1` with no breaking API changes.
