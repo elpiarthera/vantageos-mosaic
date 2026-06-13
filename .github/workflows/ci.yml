@@ -38,6 +38,13 @@ jobs:
         run: pnpm --filter @vantageos/mosaic run test -- --coverage
 
       # Step 4: playwright + axe-core (a11y violations = fail)
+      # The a11y specs drive a headless Chromium against a Storybook served by
+      # Playwright's own webServer (packages/mosaic/playwright.config.ts runs
+      # `storybook dev -p 6006`). The CI runner ships no browsers, so install
+      # Chromium + its system deps before the test step or every spec fails at
+      # browserType.launch with "Executable doesn't exist".
+      - name: playwright-install-chromium
+        run: pnpm --filter @vantageos/mosaic exec playwright install --with-deps chromium
       - name: playwright-axe
         run: pnpm --filter @vantageos/mosaic exec playwright test tests/a11y/
 
