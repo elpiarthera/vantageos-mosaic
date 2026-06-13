@@ -295,6 +295,7 @@ function SelectInner({
           triggerRef.current = el;
           field.ref(el);
         }}
+        // biome-ignore lint/a11y/useSemanticElements: APG combobox pattern — native <select> cannot host a searchable custom listbox; the ARIA combobox role is the spec-correct construct
         role="combobox"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
@@ -335,6 +336,8 @@ function SelectInner({
               aria-label="Search options"
             />
           ) : null}
+          {/* biome-ignore lint/a11y/useSemanticElements: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure */}
+          {/* biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure */}
           <ul id={listboxId} role="listbox" aria-labelledby={labelId} tabIndex={-1}>
             {visibleOptions.length === 0 ? (
               <li className="px-3 py-2 text-sm text-slate-500" role="presentation">
@@ -345,9 +348,12 @@ function SelectInner({
                 const isSelected = opt.value === field.value;
                 const isActive = idx === activeIndex;
                 return (
+                  // biome-ignore lint/a11y/useFocusableInteractive: APG combobox — options are managed via aria-activedescendant on the combobox and are intentionally not in the tab order
                   <li
                     key={opt.value}
                     id={getOptionId(instanceId, opt.value)}
+                    // biome-ignore lint/a11y/useSemanticElements: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure
+                    // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure
                     role="option"
                     aria-selected={isSelected}
                     aria-disabled={opt.disabled || undefined}
