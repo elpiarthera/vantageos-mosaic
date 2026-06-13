@@ -14,6 +14,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 - CI `biome check --error-on-warnings` now exits 0 on `main` (unblocks v0.3.0 GA publish gate): suppressed 6 `noNonNullAssertion` lint errors in VirtualList tests (React + Preact) with justified `biome-ignore` comments matching repo convention, plus format/organizeImports auto-fixes across 7 files.
+- `forms/Select.tsx` (React + Preact) biome a11y gate: replaced the blanket `biome.json` per-file rule override with scoped, justified `biome-ignore` comments on exactly the 6 flagged ARIA roles per runtime (`useSemanticElements` on the `combobox`/`listbox`/`option` roles, `noNoninteractiveElementToInteractiveRole` on `ul`→`listbox` + `li`→`option`, `useFocusableInteractive` on the `li`). These are biome heuristic false-positives on the WAI-ARIA APG combobox + listbox pattern (options managed via `aria-activedescendant`, intentionally not in the tab order). Comments mirror the existing `noAutofocus` APG-pattern suppression; no JSX/logic changed. Added `tests/a11y/Select.spec.ts` (axe-core) proving 0 violations on the pattern.
 
 ---
 

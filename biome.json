@@ -17,23 +17,6 @@
       "recommended": true
     }
   },
-  "overrides": [
-    {
-      "include": [
-        "packages/mosaic/src/runtimes/react/components/forms/Select.tsx",
-        "packages/mosaic/src/runtimes/preact/components/forms/Select.tsx"
-      ],
-      "linter": {
-        "rules": {
-          "a11y": {
-            "useSemanticElements": "off",
-            "noNoninteractiveElementToInteractiveRole": "off",
-            "useFocusableInteractive": "off"
-          }
-        }
-      }
-    }
-  ],
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
