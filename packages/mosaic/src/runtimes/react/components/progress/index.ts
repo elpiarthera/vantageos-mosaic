@@ -1,8 +1,18 @@
 /**
- * @vantageos/mosaic/react/progress — runtime subpath barrel (skeleton).
+ * @vantageos/mosaic/react/progress — React 19 runtime subpath barrel.
  *
- * Populated in T3-C (react: migrate v0.1.2) / T3-D (preact: port) and
- * T3-E/F/G/H/I (Batch 1 cross-BU additions). T3-A only scaffolds the
- * subpath surface so tsup multi-entry build resolves cleanly.
+ * Exports the runtime ProgressBar wrapper + schema types so consumers can
+ * import component and types from a single subpath entry.
+ *
+ * @example
+ * ```ts
+ * import { ProgressBar } from "@vantageos/mosaic/react/progress";
+ * import type { ProgressBarProps } from "@vantageos/mosaic/react/progress";
+ * ```
  */
-export {};
+export { ProgressBar } from "./ProgressBar.js";
+export type { ProgressBarProps } from "../../../../components/progress/ProgressBar.schema.js";
+export {
+  ProgressBarPropsSchema,
+  validateProps,
+} from "../../../../components/progress/ProgressBar.schema.js";
