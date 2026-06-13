@@ -57,5 +57,166 @@
     "error": {
       "invalidProps": "StatusBadge : propriétés invalides"
     }
+  },
+  "Skeleton": {
+    "aria": {
+      "label": "Chargement"
+    },
+    "error": {
+      "invalidProps": "Skeleton : propriétés invalides"
+    }
+  },
+  "Alert": {
+    "aria": {
+      "dismiss": "Fermer l'alerte"
+    },
+    "error": {
+      "invalidProps": "Alert : propriétés invalides"
+    }
+  },
+  "Tabs": {
+    "error": {
+      "invalidProps": "Tabs : propriétés invalides — le composant ne s'affichera pas."
+    }
+  },
+  "VirtualList": {
+    "empty": {
+      "message": "Aucun élément à afficher"
+    },
+    "error": {
+      "invalidProps": "VirtualList : propriétés invalides"
+    }
+  },
+  "EmptyState": {
+    "error": {
+      "invalidProps": "EmptyState : propriétés invalides"
+    }
+  },
+  "Toast": {
+    "aria": {
+      "close": "Fermer la notification"
+    },
+    "error": {
+      "invalidProps": "Toast : propriétés invalides"
+    }
+  },
+  "useMosaicForm": {
+    "error": {
+      "invalidProps": "useMosaicForm : options invalides"
+    }
+  },
+  "FormProvider": {
+    "error": {
+      "invalidProps": "FormProvider : propriétés invalides"
+    }
+  },
+  "FormField": {
+    "error": {
+      "invalidProps": "FormField : propriétés invalides"
+    }
+  },
+  "ErrorDisplay": {
+    "error": {
+      "required": "Ce champ est obligatoire",
+      "min": "La valeur est inférieure au minimum",
+      "max": "La valeur dépasse le maximum",
+      "minLength": "La saisie est trop courte",
+      "maxLength": "La saisie est trop longue",
+      "pattern": "Format invalide",
+      "email": "Saisissez une adresse e-mail valide",
+      "url": "Saisissez une URL valide",
+      "generic": "Valeur invalide"
+    }
+  },
+  "SubmitButton": {
+    "aria": {
+      "submit": "Soumettre le formulaire"
+    },
+    "state": {
+      "loading": "Envoi en cours…"
+    },
+    "error": {
+      "invalidProps": "SubmitButton : propriétés invalides"
+    }
+  },
+  "Input": {
+    "aria": {
+      "label": "Champ de saisie"
+    },
+    "error": {
+      "required": "Ce champ est obligatoire",
+      "invalid": "Valeur invalide",
+      "tooLong": "La saisie est trop longue",
+      "tooShort": "La saisie est trop courte",
+      "invalidProps": "Input : propriétés invalides"
+    }
+  },
+  "Textarea": {
+    "aria": {
+      "label": "Zone de texte"
+    },
+    "error": {
+      "required": "Ce champ est obligatoire",
+      "tooLong": "Le texte est trop long",
+      "invalidProps": "Textarea : propriétés invalides"
+    },
+    "counter": {
+      "remaining": "caractères restants"
+    }
+  },
+  "FieldArray": {
+    "aria": {
+      "list": "Liste d'éléments",
+      "addItem": "Ajouter un élément",
+      "removeItem": "Supprimer l'élément"
+    },
+    "error": {
+      "invalidProps": "FieldArray : propriétés invalides"
+    }
+  },
+  "Checkbox": {
+    "aria": {
+      "label": "Case à cocher"
+    },
+    "error": {
+      "required": "Ce champ doit être coché",
+      "invalidProps": "Checkbox : propriétés invalides"
+    }
+  },
+  "MultiSelect": {
+    "aria": {
+      "label": "Champ de sélection multiple",
+      "removeChip": "Retirer"
+    },
+    "error": {
+      "required": "Sélectionnez au moins une option",
+      "maxItems": "Nombre maximum de sélections atteint",
+      "invalidProps": "MultiSelect : propriétés invalides"
+    },
+    "placeholder": "Sélectionner des options…",
+    "search": {
+      "placeholder": "Rechercher…"
+    },
+    "empty": "Aucune option disponible"
+  },
+  "RadioGroup": {
+    "aria": {
+      "label": "Groupe de boutons radio"
+    },
+    "error": {
+      "required": "Sélectionnez une option",
+      "invalidProps": "RadioGroup : propriétés invalides"
+    }
+  },
+  "Select": {
+    "placeholder": "Sélectionner une option…",
+    "search": {
+      "placeholder": "Rechercher…"
+    },
+    "empty": "Aucune option disponible",
+    "error": {
+      "required": "Sélectionnez une option",
+      "invalidProps": "Select : propriétés invalides"
+    }
   }
 }
