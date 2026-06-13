@@ -32,3 +32,18 @@ export {
   validateConfirmDialogProps,
 } from "./ConfirmDialog";
 export type { ConfirmDialogProps } from "./ConfirmDialog";
+/**
+ * v0.3.0 Wave 1 T5 — TokenDisplayOnceModal: security-first modal that
+ * displays a secret token exactly once, with clipboard copy + ephemeral
+ * "Copied" toast. Token is held in React state only — never in data-*,
+ * never logged, never written via dangerouslySetInnerHTML.
+ *
+ * i18nKeys: TokenDisplayOnceModal.button.copy, .button.close,
+ *            .warning.once, .copied  (EN + FR)
+ */
+export { TokenDisplayOnceModal } from "./TokenDisplayOnceModal.js";
+export type { TokenDisplayOnceModalProps } from "../../../../components/confirmation/TokenDisplayOnceModal.schema.js";
+export {
+  TokenDisplayOnceModalPropsSchema,
+  validateTokenDisplayOnceModalProps,
+} from "../../../../components/confirmation/TokenDisplayOnceModal.schema.js";
