@@ -18,3 +18,17 @@ export {
  */
 export { ConfirmModal } from "./ConfirmModal";
 export type { ConfirmModalProps } from "./ConfirmModal";
+/**
+ * v0.3.0 T5 — promotes `ConfirmDialog` to the `react/confirmation` subpath
+ * so consumers can import the canonical name directly (not just the alias).
+ * Referential identity with `ConfirmModal` is preserved: both point to the
+ * same shared source module (src/components/input/ConfirmDialog.tsx).
+ * Athena audit blocker resolved — dist/react/confirmation.d.ts now contains
+ * both `ConfirmDialog` and `ConfirmModal`.
+ */
+export {
+  ConfirmDialog,
+  ConfirmDialogPropsSchema,
+  validateConfirmDialogProps,
+} from "./ConfirmDialog";
+export type { ConfirmDialogProps } from "./ConfirmDialog";
