@@ -107,6 +107,35 @@ jobs:
       - name: Gate 1 — verify-build-parity
         run: bash scripts/verify-build-parity.sh
 
+  cross-runtime-subpath-coverage:
+    name: Gate 4 — Cross-runtime subpath coverage
+    needs: build-parity-cross-runtime
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Build first so dist/ exists — the check inspects dist artifacts named by
+      # package.json exports (./react/<cat>, ./preact/<cat>) for non-emptiness.
+      - run: pnpm --filter @vantageos/mosaic-tokens build
+      - run: pnpm --filter @vantageos/mosaic build
+      # python3 ships on ubuntu-latest. No pip install: the vendored check has a
+      # graceful no-PyYAML fallback (HAS_YAML=False skips the registry
+      # cross-check; package.json-exports coverage still runs and gates).
+      # --ga-mode treats only explicit subpaths (suppresses wildcard keys).
+      # Exit 1 => a bare category is missing a non-empty /react or /preact
+      # counterpart => CI fails. This is the CI-side equivalent of the B-PR2
+      # npm-publish hook, and the gate that would have caught the v0.3.0 GA
+      # foundation blocker (6 components missing from /react + /preact).
+      - name: Gate 4 — cross-runtime subpath coverage
+        run: python3 packages/mosaic/scripts/cross-runtime-subpath-coverage-check.py --package-root packages/mosaic --ga-mode
+
   peer-resolution-smoke:
     name: Gate 2 — PeerDeps optionality smoke
     needs: build-parity-cross-runtime

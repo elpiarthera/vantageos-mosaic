@@ -10,6 +10,10 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- **CI Gate 4 — Cross-runtime subpath coverage (B-PR3).** New fail-fast CI gate asserting that **every bare component category** in `packages/mosaic/package.json` `exports` (`./forms`, `./progress`, `./display`, `./artifacts`, `./confirmation`, `./media`, `./input`) also exports a **non-empty** `dist` artifact under **both** `./react/<cat>` and `./preact/<cat>`. This is the gate that would have caught the original v0.3.0 GA blocker (foundation components present as bare exports but missing/empty under `/react` + `/preact`).
+  - New vendored script `packages/mosaic/scripts/cross-runtime-subpath-coverage-check.py` — vendored from the canonical B-PR1 skill `mosaic-cross-runtime-subpath-coverage-check` (VantageRegistry; PR #20). Stdlib-only, with an optional PyYAML registry cross-check that degrades gracefully when PyYAML is absent (no Python dependency added to CI). Carries one documented deviation: a `RUNTIME_PREFIXED` toggle adapting the canonical category-prefixed layout (`./forms/react`) to this repo's runtime-prefixed layout (`./react/forms`).
+  - New job `cross-runtime-subpath-coverage` (`needs: build-parity-cross-runtime`) builds tokens + mosaic so `dist/` exists, then runs `python3 .../cross-runtime-subpath-coverage-check.py --package-root packages/mosaic --ga-mode` (exit 1 fails CI with a `component × runtime` diagnostic). CI-side equivalent of the B-PR2 npm-publish hook.
+  - New doc `docs/CROSS-RUNTIME-GATE.md` (bilingual EN+FR). Additive change — no existing gate (Gate 1 build-parity, Gate 2 peerDeps smoke, Gate 3 coherence, `ci` job) weakened or replaced. Mission `k57b6d1b` · task `k176pzsszyy4v3f505khwg33gx88j36n`.
 - Wave 3 components TBD (DatePicker, Avatar, FilterChip, Pagination — demand-driven T21+).
 
 ### Fixed
