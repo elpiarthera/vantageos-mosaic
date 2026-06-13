@@ -28,6 +28,36 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.3.1] — 2026-06-13 — hotfix: workspace:* leak in published 0.3.0 manifest (Path B — root-cause fix)
+
+### Fixed
+- **External npm install of `@vantageos/mosaic@0.3.0` was broken**: the published manifest carried `"@vantageos/mosaic-tokens": "workspace:*"` as a runtime dependency. The `workspace:*` protocol is a bun/pnpm/yarn monorepo specifier that the npm registry cannot resolve to a real version, so any external `npm install @vantageos/mosaic` failed with `ETARGET No matching version found for @vantageos/mosaic-tokens@workspace:*`. Gamma flag via Pi msg `jn77k1v2414far8z5b7abxgjqn88jq9b`. Task `k1769bhq5f7z56yyfs143jsw5588k7j6` (mission `k57b6d1bzc318pc4gqmhe4tapx88jqbd`).
+
+### Path B — root-cause fix (Gamma defect-owner recommendation, msg `jn7fjf62mnzrwfhe2p9vfwymxn88ks67`)
+
+The first iteration of this PR rewrote `packages/mosaic/package.json` source from `workspace:*` → `^0.2.0`, but this approach:
+- broke CI (`ERR_PNPM_OUTDATED_LOCKFILE` — pnpm frozen-lockfile no longer matched the manifest), AND
+- severed the monorepo workspace link (sibling `mosaic-tokens` would resolve from npm, not the local package), AND
+- re-leaks on every future release unless the spec is permanently pinned (which breaks dev linking).
+
+Path B keeps the source `workspace:*` reference (lockfile stays valid → CI green) and **rewrites at publish-time only**:
+
+- **NEW** `packages/mosaic/scripts/rewrite-workspace-deps.mjs` — Node stdlib-only script. Walks `dependencies` / `peerDependencies` / `devDependencies` / `optionalDependencies`; for every `workspace:*` (or `workspace:^` / `workspace:~`) ref, reads the sibling package's `package.json` `version` field from `packages/<bare-name>/package.json` and rewrites the spec to `^<version>`. Mutates `packages/mosaic/package.json` in place for the duration of the publish step.
+- **MODIFIED** `prepublishOnly` script now runs the rewrite FIRST: `node scripts/rewrite-workspace-deps.mjs && pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js`.
+- **NEW** `postpublish` script reverts the mutation via `git checkout HEAD -- package.json`, leaving the source repo in its workspace-linked state for monorepo dev.
+
+This preserves monorepo dev (`workspace:*` resolves to the local sibling) AND ships a registry-resolvable manifest (`^<version>` in the published tarball). The rewrite happens during `npm publish` (which invokes `prepublishOnly` automatically), and the postpublish revert ensures no source drift.
+
+### Verify post-publish
+- `npm view @vantageos/mosaic@0.3.1 dependencies` — `@vantageos/mosaic-tokens` shows `^0.2.0`, no `workspace:*` anywhere.
+- Clean install: `mkdir /tmp/smoke && cd /tmp/smoke && npm init -y && npm install @vantageos/mosaic@0.3.1` — exits 0, pulls `@vantageos/mosaic-tokens@0.2.0` from registry.
+- `git diff HEAD -- packages/mosaic/package.json` post-publish — clean (postpublish reverted).
+
+### F-list track
+- Tracked in F-list `k173e0bwvfpmngwrrtcqh3zzj988fnaq` priority MAX. The rewrite script is fleet-wide reusable for any other `@vantageos/*` monorepo package that publishes via `npm publish` (vs `pnpm publish` which auto-rewrites).
+
+---
+
 ## [0.3.0] — GA — 2026-06-13
 
 ### Added
