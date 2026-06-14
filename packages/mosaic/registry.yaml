@@ -21,6 +21,13 @@ components:
     i18nKeys: ["TableView.aria.table", "TableView.pagination.next", "TableView.pagination.prev", "TableView.empty.message", "TableView.error.invalidProps"]
     sizeLimit: "80KB"
     a11yLevel: WCAG-AA
+  - name: Badge
+    category: display
+    schema: src/components/display/Badge.schema.ts
+    zodExport: BadgePropsSchema
+    i18nKeys: ["Badge.aria.label", "Badge.error.invalidProps"]
+    sizeLimit: "10KB"
+    a11yLevel: WCAG-AA
   - name: MarkdownRenderer
     category: artifacts
     schema: src/components/artifacts/MarkdownRenderer.schema.ts

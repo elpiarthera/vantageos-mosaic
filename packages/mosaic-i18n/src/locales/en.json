@@ -50,6 +50,14 @@
     },
     "copied": "Copied"
   },
+  "Badge": {
+    "aria": {
+      "label": "Badge"
+    },
+    "error": {
+      "invalidProps": "Badge: invalid props"
+    }
+  },
   "StatusBadge": {
     "aria": {
       "status": "Status"
