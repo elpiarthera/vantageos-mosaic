@@ -16,7 +16,12 @@
     "./locales/en.json": "./src/locales/en.json",
     "./locales/fr.json": "./src/locales/fr.json"
   },
-  "files": ["dist", "src/locales", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "src/locales",
+    "README.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "keywords": [
     "vantageos",
@@ -43,11 +48,12 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "biome check --error-on-warnings src",
-    "test": "echo 'no tests yet' && exit 0"
+    "test": "echo 'no tests yet' && exit 0",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "react-i18next": "15.5.2",
-    "i18next": "^25.0.0"
+    "i18next": "^25.0.0",
+    "react-i18next": "15.5.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

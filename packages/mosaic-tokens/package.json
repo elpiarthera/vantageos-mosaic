@@ -55,9 +55,9 @@
     "dev": "tsup --watch",
     "test": "vitest run",
     "lint": "biome check --error-on-warnings src",
-    "size-limit": "size-limit"
+    "size-limit": "size-limit",
+    "prepublishOnly": "npm run build"
   },
-  "dependencies": {},
   "peerDependencies": {
     "tailwindcss": "^4.1.0"
   },
