@@ -97,19 +97,27 @@ import mosaicPlugin from "@vantageos/mosaic-tokens/tailwind";
 
 ### Dark mode token override
 
-```css
-/* Override token values for dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --mosaic-color-neutral-50: oklch(0.15 0.005 250);
-    --mosaic-color-neutral-500: oklch(0.65 0.012 250);
-    --mosaic-color-neutral-700: oklch(0.82 0.01 250);
-  }
-}
+`@vantageos/mosaic-tokens` ships a full `[data-theme="dark"]` block — the same selector convention used by `@vantageos/mosaic-blocks`. Set `data-theme="dark"` on your `<html>` element to activate dark mode across both packages with a single toggle.
 
-/* Or via Tailwind v4 dark: variant */
-.dark {
-  --mosaic-color-neutral-50: oklch(0.15 0.005 250);
+```css
+/* tokens.css already ships this block — no extra CSS needed */
+[data-theme="dark"] {
+  --mosaic-color-background: oklch(0.04 0 0);
+  --mosaic-color-primary: oklch(0.7 0.15 240);
+  /* ... all other dark overrides */
+}
+```
+
+```html
+<!-- Toggle dark mode — works for both mosaic-tokens and mosaic-blocks -->
+<html data-theme="dark">
+```
+
+Custom overrides follow the same selector:
+
+```css
+[data-theme="dark"] {
+  --mosaic-color-neutral-50: oklch(0.08 0 0);
 }
 ```
 
@@ -186,15 +194,15 @@ This package IS the theming layer. Token reference (v0.3.0 — anydebate design 
 
 `--mosaic-color-background` / `foreground` / `card` / `card-foreground` / `popover` / `popover-foreground` / `primary` / `primary-foreground` / `secondary` / `secondary-foreground` / `muted` / `muted-foreground` / `accent` / `accent-foreground` / `destructive` / `destructive-foreground` / `border` / `input` / `ring`
 
-These mirror anydebate's semantic CSS custom property layer. Override with `.dark { --mosaic-color-primary: oklch(0.7 0.15 240); }`.
+These mirror anydebate's semantic CSS custom property layer. Override with `[data-theme="dark"] { --mosaic-color-primary: oklch(0.7 0.15 240); }`.
 
 ### Dark mode
 
-All color tokens have `.dark` overrides in `tokens.css`. Import `@vantageos/mosaic-tokens/css` then wire `.dark` class to your HTML element. The dark palette uses the anydebate blue accent as primary.
+All color tokens have `[data-theme="dark"]` overrides in `tokens.css` — the same selector used by `@vantageos/mosaic-blocks`. Import `@vantageos/mosaic-tokens/css` then set `data-theme="dark"` on your HTML element. A single toggle activates dark mode for both packages.
 
 ```css
-/* Dark mode — anydebate blue primary */
-.dark {
+/* Dark mode — anydebate blue primary (auto-applied via @import) */
+[data-theme="dark"] {
   --mosaic-color-background: oklch(0.04 0 0);
   --mosaic-color-primary: oklch(0.7 0.15 240);
   /* ... all other slots auto-applied via @import */

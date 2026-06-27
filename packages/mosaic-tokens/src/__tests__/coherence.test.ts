@@ -200,8 +200,10 @@ describe("mosaic-tokens / anydebate palette snapshot", () => {
     expect(colors.foreground).toBe("oklch(0.150 0 0)");
   });
 
-  it("dark mode overrides declared in CSS (.dark block)", () => {
-    expect(cssSource).toContain(".dark {");
+  it('dark mode overrides declared in CSS ([data-theme="dark"] — mosaic-blocks ecosystem convention)', () => {
+    expect(cssSource).toContain('[data-theme="dark"] {');
+    // Ensure the anydebate .dark selector was NOT copied verbatim (would fragment dark-mode toggling)
+    expect(cssSource).not.toContain(".dark {");
     expect(cssSource).toContain("--mosaic-color-background: oklch(0.04 0 0)");
     expect(cssSource).toContain("--mosaic-color-primary: oklch(0.7 0.15 240)");
   });

@@ -12,7 +12,7 @@
  *
  * Naming convention: --mosaic-<category>-<key>. Categories: color, space,
  * text, lh, fw, font, shadow, radius, duration, easing. All vars declared on
- * :root (light). Dark-mode overrides under .dark.
+ * :root (light). Dark-mode overrides under [data-theme="dark"].
  *
  * Size target: ≤3 KB gz (enforced via size-limit gate).
  */
@@ -145,10 +145,12 @@
 
 /* ---------------------------------------------------------------------------
  * Dark mode overrides — anydebate sophisticated dark design
- * Source: .dark in app/globals.css
- * Background: oklch(0.04 0 0), primary accent: oklch(0.7 0.15 240) blue
+ * Source: .dark block in elpiarthera/any-debate-ai@dev app/globals.css.
+ * Selector changed from anydebate's .dark to [data-theme="dark"] to match
+ * the @vantageos/mosaic-blocks ecosystem convention (styles.css line 47).
+ * Background: oklch(0.04 0 0), primary accent: oklch(0.7 0.15 240) blue.
  * ---------------------------------------------------------------------------*/
-.dark {
+[data-theme="dark"] {
   /* Semantic status colors — adjusted for dark bg legibility */
   --mosaic-color-success-50: oklch(0.15 0.04 145);
   --mosaic-color-success-500: oklch(0.65 0.18 160);
