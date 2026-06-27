@@ -1,5 +1,9 @@
 /*
- * @vantageos/mosaic-tokens — CSS custom properties (T3-B implementation).
+ * @vantageos/mosaic-tokens — CSS custom properties (anydebate design language, v0.3.0).
+ *
+ * Design language: anydebate — bright/clean light mode + sophisticated dark mode
+ * with blue accent (oklch(0.7 0.15 240)). Source: elpiarthera/any-debate-ai@dev
+ * app/globals.css (canonical, 2026-06-27).
  *
  * Mirror of tokens.ts. Consumers can:
  *   1. import "@vantageos/mosaic-tokens/css" — surface in :root globally
@@ -7,29 +11,67 @@
  *   3. import the JS tokens for typed runtime access
  *
  * Naming convention: --mosaic-<category>-<key>. Categories: color, space,
- * text, lh, fw, shadow, radius, duration, easing. All vars declared on :root.
+ * text, lh, fw, font, shadow, radius, duration, easing. All vars declared on
+ * :root (light). Dark-mode overrides under .dark.
  *
  * Size target: ≤3 KB gz (enforced via size-limit gate).
  */
 :root {
-  /* Colors — semantic × 3 shades, OKLCH */
+  /* -------------------------------------------------------------------------
+   * Colors — semantic × 3 shades, OKLCH (anydebate light-mode palette)
+   * Mapped from anydebate semantic slots to mosaic status categories.
+   * success  → constructive / green channel
+   * warning  → amber / orange channel
+   * danger   → destructive / red channel  (mirrors --destructive in anydebate)
+   * info     → primary blue accent (anydebate dark primary: oklch(0.7 0.15 240))
+   * neutral  → monochromatic grays (anydebate background/foreground axis)
+   * -------------------------------------------------------------------------*/
   --mosaic-color-success-50: oklch(0.965 0.04 145);
   --mosaic-color-success-500: oklch(0.66 0.18 145);
   --mosaic-color-success-700: oklch(0.47 0.14 145);
   --mosaic-color-warning-50: oklch(0.975 0.045 85);
   --mosaic-color-warning-500: oklch(0.77 0.17 85);
   --mosaic-color-warning-700: oklch(0.56 0.145 65);
-  --mosaic-color-danger-50: oklch(0.965 0.035 25);
-  --mosaic-color-danger-500: oklch(0.64 0.205 25);
-  --mosaic-color-danger-700: oklch(0.46 0.18 25);
-  --mosaic-color-info-50: oklch(0.97 0.035 250);
-  --mosaic-color-info-500: oklch(0.65 0.17 250);
-  --mosaic-color-info-700: oklch(0.46 0.15 250);
-  --mosaic-color-neutral-50: oklch(0.98 0.005 250);
-  --mosaic-color-neutral-500: oklch(0.58 0.012 250);
-  --mosaic-color-neutral-700: oklch(0.38 0.01 250);
+  /* anydebate destructive: oklch(0.577 0.245 27.325) */
+  --mosaic-color-danger-50: oklch(0.965 0.035 27);
+  --mosaic-color-danger-500: oklch(0.577 0.245 27);
+  --mosaic-color-danger-700: oklch(0.4 0.18 27);
+  /* anydebate info/primary accent (dark mode blue): oklch(0.7 0.15 240) */
+  --mosaic-color-info-50: oklch(0.97 0.03 240);
+  --mosaic-color-info-500: oklch(0.7 0.15 240);
+  --mosaic-color-info-700: oklch(0.5 0.13 240);
+  /* anydebate neutral axis — light mode: bg oklch(0.98 0 0), fg oklch(0.15 0 0) */
+  --mosaic-color-neutral-50: oklch(0.98 0 0);
+  --mosaic-color-neutral-500: oklch(0.45 0 0);
+  --mosaic-color-neutral-700: oklch(0.15 0 0);
 
-  /* Spacing — 4 → 64 px */
+  /* -------------------------------------------------------------------------
+   * Semantic UI colors — anydebate light-mode slots (additive new keys)
+   * Source: :root in app/globals.css
+   * -------------------------------------------------------------------------*/
+  --mosaic-color-background: oklch(0.98 0 0);
+  --mosaic-color-foreground: oklch(0.15 0 0);
+  --mosaic-color-card: oklch(0.95 0 0);
+  --mosaic-color-card-foreground: oklch(0.15 0 0);
+  --mosaic-color-popover: oklch(0.98 0 0);
+  --mosaic-color-popover-foreground: oklch(0.15 0 0);
+  --mosaic-color-primary: oklch(0.15 0 0);
+  --mosaic-color-primary-foreground: oklch(0.98 0 0);
+  --mosaic-color-secondary: oklch(0.92 0 0);
+  --mosaic-color-secondary-foreground: oklch(0.15 0 0);
+  --mosaic-color-muted: oklch(0.92 0 0);
+  --mosaic-color-muted-foreground: oklch(0.45 0 0);
+  --mosaic-color-accent: oklch(0.88 0 0);
+  --mosaic-color-accent-foreground: oklch(0.15 0 0);
+  --mosaic-color-destructive: oklch(0.577 0.245 27);
+  --mosaic-color-destructive-foreground: oklch(0.98 0 0);
+  --mosaic-color-border: oklch(0.88 0 0);
+  --mosaic-color-input: oklch(0.92 0 0);
+  --mosaic-color-ring: oklch(0.6 0 0);
+
+  /* -------------------------------------------------------------------------
+   * Spacing — 4 → 64 px (unchanged 4 pt base grid)
+   * -------------------------------------------------------------------------*/
   --mosaic-space-1: 4px;
   --mosaic-space-2: 8px;
   --mosaic-space-3: 12px;
@@ -39,7 +81,12 @@
   --mosaic-space-12: 48px;
   --mosaic-space-16: 64px;
 
-  /* Typography — 1.25x scale + line-height + weight */
+  /* -------------------------------------------------------------------------
+   * Typography — 1.25x scale + line-height + weight
+   * Font family: Inter (anydebate primary) / Geist Sans
+   * -------------------------------------------------------------------------*/
+  --mosaic-font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --mosaic-font-mono: ui-monospace, "Geist Mono", "Cascadia Code", monospace;
   --mosaic-text-xs: 12px;
   --mosaic-text-sm: 14px;
   --mosaic-text-base: 16px;
@@ -55,34 +102,91 @@
   --mosaic-fw-semibold: 600;
   --mosaic-fw-bold: 700;
 
-  /* Shadows — 6 elevation, OKLCH neutral tint */
+  /* -------------------------------------------------------------------------
+   * Shadows — 6 elevation, anydebate neutral tint (dark: oklch(0.04 0 0))
+   * Shadow color tuned to near-black (anydebate dark bg) for depth on light.
+   * -------------------------------------------------------------------------*/
   --mosaic-shadow-0: none;
-  --mosaic-shadow-1: 0 1px 2px 0 oklch(0.2 0.01 250 / 0.05);
-  --mosaic-shadow-2: 0 2px 4px -1px oklch(0.2 0.01 250 / 0.08), 0 1px 2px -1px
-    oklch(0.2 0.01 250 / 0.06);
-  --mosaic-shadow-3: 0 4px 8px -2px oklch(0.2 0.01 250 / 0.1), 0 2px 4px -2px
-    oklch(0.2 0.01 250 / 0.06);
-  --mosaic-shadow-4: 0 8px 16px -4px oklch(0.2 0.01 250 / 0.12), 0 4px 8px -4px
-    oklch(0.2 0.01 250 / 0.08);
-  --mosaic-shadow-5: 0 16px 32px -8px oklch(0.2 0.01 250 / 0.16), 0 8px 16px -8px
-    oklch(0.2 0.01 250 / 0.1);
+  --mosaic-shadow-1: 0 1px 2px 0 oklch(0.04 0 0 / 0.05);
+  --mosaic-shadow-2: 0 2px 4px -1px oklch(0.04 0 0 / 0.08), 0 1px 2px -1px oklch(0.04 0 0 / 0.06);
+  --mosaic-shadow-3: 0 4px 8px -2px oklch(0.04 0 0 / 0.1), 0 2px 4px -2px oklch(0.04 0 0 / 0.06);
+  --mosaic-shadow-4: 0 8px 16px -4px oklch(0.04 0 0 / 0.12), 0 4px 8px -4px oklch(0.04 0 0 / 0.08);
+  --mosaic-shadow-5: 0 16px 32px -8px oklch(0.04 0 0 / 0.16), 0 8px 16px -8px oklch(0.04 0 0 / 0.1);
 
-  /* Radii — strictly ascending */
+  /* -------------------------------------------------------------------------
+   * Radii — anydebate base radius 0.75rem (12px), calc-derived scale
+   * Source: --radius: 0.75rem in app/globals.css
+   * sm = 0.75rem - 4px = 8px, md = 0.75rem - 2px = 10px,
+   * lg = 0.75rem = 12px, xl = 0.75rem + 4px = 16px
+   * -------------------------------------------------------------------------*/
   --mosaic-radius-none: 0px;
-  --mosaic-radius-xs: 2px;
-  --mosaic-radius-sm: 4px;
-  --mosaic-radius-md: 6px;
-  --mosaic-radius-lg: 8px;
-  --mosaic-radius-xl: 12px;
+  --mosaic-radius-xs: 4px;
+  --mosaic-radius-sm: 8px;
+  --mosaic-radius-md: 10px;
+  --mosaic-radius-lg: 12px;
+  --mosaic-radius-xl: 16px;
   --mosaic-radius-full: 9999px;
 
-  /* Motion — durations + easing */
-  --mosaic-duration-fast: 75ms;
-  --mosaic-duration-base: 150ms;
+  /* -------------------------------------------------------------------------
+   * Motion — durations + easing curves
+   * anydebate uses tw-animate-css conventions; Tailwind default easings.
+   * Added duration-slower (500ms) for entrance animations per design language.
+   * -------------------------------------------------------------------------*/
+  --mosaic-duration-fast: 100ms;
+  --mosaic-duration-base: 200ms;
   --mosaic-duration-slow: 300ms;
+  --mosaic-duration-slower: 500ms;
   --mosaic-easing-linear: linear;
   --mosaic-easing-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --mosaic-easing-in: cubic-bezier(0.4, 0, 1, 1);
   --mosaic-easing-out: cubic-bezier(0, 0, 0.2, 1);
   --mosaic-easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------------------------------------------------------------------------
+ * Dark mode overrides — anydebate sophisticated dark design
+ * Source: .dark in app/globals.css
+ * Background: oklch(0.04 0 0), primary accent: oklch(0.7 0.15 240) blue
+ * ---------------------------------------------------------------------------*/
+.dark {
+  /* Semantic status colors — adjusted for dark bg legibility */
+  --mosaic-color-success-50: oklch(0.15 0.04 145);
+  --mosaic-color-success-500: oklch(0.65 0.18 160);
+  --mosaic-color-success-700: oklch(0.8 0.15 145);
+  --mosaic-color-warning-50: oklch(0.15 0.03 85);
+  --mosaic-color-warning-500: oklch(0.75 0.12 280);
+  --mosaic-color-warning-700: oklch(0.85 0.1 85);
+  /* anydebate dark destructive: oklch(0.6 0.2 25) */
+  --mosaic-color-danger-50: oklch(0.12 0.035 27);
+  --mosaic-color-danger-500: oklch(0.6 0.2 25);
+  --mosaic-color-danger-700: oklch(0.75 0.16 25);
+  /* anydebate dark primary (blue accent): oklch(0.7 0.15 240) */
+  --mosaic-color-info-50: oklch(0.1 0.04 240);
+  --mosaic-color-info-500: oklch(0.7 0.15 240);
+  --mosaic-color-info-700: oklch(0.85 0.12 240);
+  /* anydebate dark neutral axis: bg oklch(0.04 0 0), fg oklch(0.95 0 0) */
+  --mosaic-color-neutral-50: oklch(0.08 0 0);
+  --mosaic-color-neutral-500: oklch(0.6 0 0);
+  --mosaic-color-neutral-700: oklch(0.95 0 0);
+
+  /* Semantic UI colors — anydebate dark-mode slots */
+  --mosaic-color-background: oklch(0.04 0 0);
+  --mosaic-color-foreground: oklch(0.95 0 0);
+  --mosaic-color-card: oklch(0.06 0 0);
+  --mosaic-color-card-foreground: oklch(0.95 0 0);
+  --mosaic-color-popover: oklch(0.06 0 0);
+  --mosaic-color-popover-foreground: oklch(0.95 0 0);
+  --mosaic-color-primary: oklch(0.7 0.15 240);
+  --mosaic-color-primary-foreground: oklch(0.04 0 0);
+  --mosaic-color-secondary: oklch(0.1 0 0);
+  --mosaic-color-secondary-foreground: oklch(0.95 0 0);
+  --mosaic-color-muted: oklch(0.08 0 0);
+  --mosaic-color-muted-foreground: oklch(0.6 0 0);
+  --mosaic-color-accent: oklch(0.12 0 0);
+  --mosaic-color-accent-foreground: oklch(0.95 0 0);
+  --mosaic-color-destructive: oklch(0.6 0.2 25);
+  --mosaic-color-destructive-foreground: oklch(0.95 0 0);
+  --mosaic-color-border: oklch(0.12 0 0);
+  --mosaic-color-input: oklch(0.08 0 0);
+  --mosaic-color-ring: oklch(0.7 0.15 240);
 }
