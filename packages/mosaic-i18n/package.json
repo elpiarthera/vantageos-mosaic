@@ -1,7 +1,8 @@
 {
   "name": "@vantageos/mosaic-i18n",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "FR+EN locale resources and react-i18next wiring for @vantageos/mosaic.",
+  "license": "FSL-1.1-Apache-2.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -15,17 +16,44 @@
     "./locales/en.json": "./src/locales/en.json",
     "./locales/fr.json": "./src/locales/fr.json"
   },
-  "files": ["dist", "src/locales", "README.md"],
+  "files": [
+    "dist",
+    "src/locales",
+    "README.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
+  "keywords": [
+    "vantageos",
+    "mosaic",
+    "i18n",
+    "internationalization",
+    "react-i18next",
+    "i18next",
+    "fr",
+    "en",
+    "locales",
+    "translations",
+    "bilingual",
+    "french",
+    "english"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elpiarthera/vantageos-mosaic.git",
+    "directory": "packages/mosaic-i18n"
+  },
+  "homepage": "https://vantageos.com/mosaic",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "biome check --error-on-warnings src",
-    "test": "echo 'no tests yet' && exit 0"
+    "test": "echo 'no tests yet' && exit 0",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "react-i18next": "15.5.2",
-    "i18next": "^25.0.0"
+    "i18next": "^25.0.0",
+    "react-i18next": "15.5.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

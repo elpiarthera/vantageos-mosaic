@@ -1,7 +1,8 @@
 {
   "name": "@vantageos/mosaic-tokens",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Framework-free design tokens (colors, spacing, typography, shadows, radii, motion) for @vantageos/mosaic — CSS custom props + JS exports + Tailwind v4 plugin.",
+  "license": "FSL-1.1-Apache-2.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -21,19 +22,42 @@
   "files": [
     "dist",
     "src/tokens.css",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "sideEffects": [
     "**/*.css"
   ],
+  "keywords": [
+    "vantageos",
+    "mosaic",
+    "design-tokens",
+    "oklch",
+    "css-variables",
+    "tailwindcss",
+    "tailwindcss-v4",
+    "tailwind-plugin",
+    "colors",
+    "spacing",
+    "typography",
+    "dark-mode",
+    "theming",
+    "framework-agnostic"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elpiarthera/vantageos-mosaic.git",
+    "directory": "packages/mosaic-tokens"
+  },
+  "homepage": "https://vantageos.com/mosaic",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
     "lint": "biome check --error-on-warnings src",
-    "size-limit": "size-limit"
+    "size-limit": "size-limit",
+    "prepublishOnly": "npm run build"
   },
-  "dependencies": {},
   "peerDependencies": {
     "tailwindcss": "^4.1.0"
   },
