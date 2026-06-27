@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@vantageos/mosaic-tokens)](https://www.npmjs.com/package/@vantageos/mosaic-tokens)
 [![License: FSL-1.1-Apache-2.0](https://img.shields.io/badge/license-FSL--1.1--Apache--2.0-blue)](LICENSE)
 
-**Framework-free OKLCH design tokens for `@vantageos/mosaic`.** 58 semantic tokens — colors, spacing, typography, shadows, radii, motion — consumable as CSS custom properties, typed JS exports, or a Tailwind v4 plugin. Zero runtime dependencies.
+**Framework-free OKLCH design tokens for `@vantageos/mosaic`.** 80 semantic tokens — colors (status + semantic UI slots), spacing, typography (incl. font families), shadows, radii, motion — consumable as CSS custom properties, typed JS exports, or a Tailwind v4 plugin. Zero runtime dependencies. Design language: **anydebate** (bright/clean light + sophisticated dark with blue accent).
 
 ---
 
@@ -11,12 +11,13 @@
 
 `@vantageos/mosaic-tokens` is the **design token layer** of the VantageOS Mosaic design system. It defines the visual language shared across all mosaic packages:
 
-- 5 semantic color categories × 3 shades in **OKLCH** — perceptually uniform, dark-mode ready
-- Spacing scale (4 → 64 px), typography scale (xs → 3xl), 3 line-heights, 4 weights
-- 6 elevation shadows (OKLCH neutral tint), 7 border radii, 8 motion tokens (durations + easings)
+- **anydebate design language**: bright/clean light mode + sophisticated dark mode with blue accent `oklch(0.7 0.15 240)`
+- 5 semantic color categories × 3 shades + 19 semantic UI slots (background/foreground/card/primary/etc.) in **OKLCH** — perceptually uniform, full dark-mode `.dark` overrides
+- Spacing scale (4 → 64 px), typography scale (xs → 3xl), font families (Inter + Geist Mono), 3 line-heights, 4 weights
+- 6 elevation shadows (OKLCH near-black tint), 7 border radii (anydebate 0.75rem base), 9 motion tokens (4 durations + 5 easings)
 - Three consumption surfaces: CSS custom props, typed JS exports, Tailwind v4 plugin
-- Enforced by coherence tests (JS ↔ CSS parity, scale monotonicity)
-- Bundle gates: `dist/index.js` ≤ 5 KB gz (actual: 649 B), `src/tokens.css` ≤ 3 KB gz (actual: 560 B)
+- Enforced by coherence tests (JS ↔ CSS parity, scale monotonicity, anydebate palette snapshots)
+- Bundle gates: `dist/index.js` ≤ 5 KB gz, `src/tokens.css` ≤ 3 KB gz
 
 For the full component library that consumes these tokens, see [`@vantageos/mosaic-blocks`](https://www.npmjs.com/package/@vantageos/mosaic-blocks).
 
@@ -96,19 +97,27 @@ import mosaicPlugin from "@vantageos/mosaic-tokens/tailwind";
 
 ### Dark mode token override
 
-```css
-/* Override token values for dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --mosaic-color-neutral-50: oklch(0.15 0.005 250);
-    --mosaic-color-neutral-500: oklch(0.65 0.012 250);
-    --mosaic-color-neutral-700: oklch(0.82 0.01 250);
-  }
-}
+`@vantageos/mosaic-tokens` ships a full `[data-theme="dark"]` block — the same selector convention used by `@vantageos/mosaic-blocks`. Set `data-theme="dark"` on your `<html>` element to activate dark mode across both packages with a single toggle.
 
-/* Or via Tailwind v4 dark: variant */
-.dark {
-  --mosaic-color-neutral-50: oklch(0.15 0.005 250);
+```css
+/* tokens.css already ships this block — no extra CSS needed */
+[data-theme="dark"] {
+  --mosaic-color-background: oklch(0.04 0 0);
+  --mosaic-color-primary: oklch(0.7 0.15 240);
+  /* ... all other dark overrides */
+}
+```
+
+```html
+<!-- Toggle dark mode — works for both mosaic-tokens and mosaic-blocks -->
+<html data-theme="dark">
+```
+
+Custom overrides follow the same selector:
+
+```css
+[data-theme="dark"] {
+  --mosaic-color-neutral-50: oklch(0.08 0 0);
 }
 ```
 
@@ -116,16 +125,18 @@ import mosaicPlugin from "@vantageos/mosaic-tokens/tailwind";
 
 ## 6. Component Catalogue Summary
 
-58 design tokens across 6 categories. This is not a component library — for components that consume these tokens, see [`@vantageos/mosaic-blocks` → docs/components-catalog.md](https://github.com/vantageos-agency/mosaic-blocks/blob/main/docs/components-catalog.md).
+80 design tokens across 6 categories (anydebate design language, v0.3.0). This is not a component library — for components that consume these tokens, see [`@vantageos/mosaic-blocks` → docs/components-catalog.md](https://github.com/vantageos-agency/mosaic-blocks/blob/main/docs/components-catalog.md).
 
 | Category | Count | CSS prefix | JS export |
 |---|---|---|---|
-| Colors | 15 | `--mosaic-color-` | `colors` |
+| Colors (status × 3 shades) | 15 | `--mosaic-color-` | `colors` |
+| Colors (semantic UI slots) | 19 | `--mosaic-color-` | `colors` |
 | Spacing | 8 | `--mosaic-space-` | `spacing` |
-| Typography | 14 | `--mosaic-text-`, `--mosaic-lh-`, `--mosaic-fw-` | `typography` |
+| Typography (sizes + lh + weights) | 14 | `--mosaic-text-`, `--mosaic-lh-`, `--mosaic-fw-` | `typography` |
+| Typography (font families) | 2 | `--mosaic-font-` | `typography` |
 | Shadows | 6 | `--mosaic-shadow-` | `shadows` |
 | Radii | 7 | `--mosaic-radius-` | `radii` |
-| Motion | 8 | `--mosaic-duration-`, `--mosaic-easing-` | `motion` |
+| Motion | 9 | `--mosaic-duration-`, `--mosaic-easing-` | `motion` |
 
 ---
 
@@ -155,48 +166,72 @@ For FR+EN locale strings used by `@vantageos/mosaic` components, see [`@vantageo
 
 ---
 
-## 10. Theming
+## 10. Theming — Design language: anydebate
 
-This package IS the theming layer. Token reference:
+This package IS the theming layer. Token reference (v0.3.0 — anydebate design language).
 
-### Colors (15 tokens)
+**Source**: `elpiarthera/any-debate-ai@dev` · `app/globals.css` absorbed 2026-06-27.
+
+**anydebate identity**: bright/clean monochromatic light mode + sophisticated dark mode. The dark mode primary accent is blue (`oklch(0.7 0.15 240)`). All neutrals are pure chroma-zero OKLCH (no hue tint). Radius base is `0.75rem` (12 px).
+
+### Colors — status palette (15 tokens)
 
 5 semantic statuses × 3 shades — all OKLCH:
 
-| Token | Value | Usage |
+| Token | Value (light) | Usage |
 |---|---|---|
 | `--mosaic-color-success-50` | `oklch(0.965 0.04 145)` | Success backgrounds, badges |
 | `--mosaic-color-success-500` | `oklch(0.66 0.18 145)` | Success foreground, icons |
 | `--mosaic-color-success-700` | `oklch(0.47 0.14 145)` | Success text on light bg |
 | `--mosaic-color-warning-500` | `oklch(0.77 0.17 85)` | Warning indicators |
-| `--mosaic-color-danger-500` | `oklch(0.64 0.205 25)` | Error states, destructive actions |
-| `--mosaic-color-info-500` | `oklch(0.65 0.17 250)` | Informational UI |
-| `--mosaic-color-neutral-50` | `oklch(0.98 0.005 250)` | Page backgrounds |
-| `--mosaic-color-neutral-500` | `oklch(0.58 0.012 250)` | Secondary text |
-| `--mosaic-color-neutral-700` | `oklch(0.38 0.01 250)` | Primary text |
+| `--mosaic-color-danger-500` | `oklch(0.577 0.245 27)` | Error states, destructive (anydebate exact) |
+| `--mosaic-color-info-500` | `oklch(0.700 0.150 240)` | Blue accent, informational UI |
+| `--mosaic-color-neutral-50` | `oklch(0.98 0 0)` | Page backgrounds |
+| `--mosaic-color-neutral-500` | `oklch(0.45 0 0)` | Secondary text |
+| `--mosaic-color-neutral-700` | `oklch(0.15 0 0)` | Primary text |
+
+### Colors — semantic UI slots (19 additive tokens, light + dark)
+
+`--mosaic-color-background` / `foreground` / `card` / `card-foreground` / `popover` / `popover-foreground` / `primary` / `primary-foreground` / `secondary` / `secondary-foreground` / `muted` / `muted-foreground` / `accent` / `accent-foreground` / `destructive` / `destructive-foreground` / `border` / `input` / `ring`
+
+These mirror anydebate's semantic CSS custom property layer. Override with `[data-theme="dark"] { --mosaic-color-primary: oklch(0.7 0.15 240); }`.
+
+### Dark mode
+
+All color tokens have `[data-theme="dark"]` overrides in `tokens.css` — the same selector used by `@vantageos/mosaic-blocks`. Import `@vantageos/mosaic-tokens/css` then set `data-theme="dark"` on your HTML element. A single toggle activates dark mode for both packages.
+
+```css
+/* Dark mode — anydebate blue primary (auto-applied via @import) */
+[data-theme="dark"] {
+  --mosaic-color-background: oklch(0.04 0 0);
+  --mosaic-color-primary: oklch(0.7 0.15 240);
+  /* ... all other slots auto-applied via @import */
+}
+```
 
 ### Spacing (8 tokens)
 
 `--mosaic-space-1` (4 px) through `--mosaic-space-16` (64 px). Strictly ascending, 4 px base unit.
 
-### Typography (14 tokens)
+### Typography (16 tokens)
 
-Font sizes: `--mosaic-text-xs` (12 px) through `--mosaic-text-3xl` (38 px), 1.25× scale.
-Line heights: `--mosaic-lh-tight`, `--mosaic-lh-normal`, `--mosaic-lh-loose`.
-Weights: `--mosaic-fw-normal`, `--mosaic-fw-medium`, `--mosaic-fw-semibold`, `--mosaic-fw-bold`.
+Font families: `--mosaic-font-sans` (Inter), `--mosaic-font-mono` (Geist Mono). Additive in v0.3.0.
+Font sizes: `--mosaic-text-xs` (12 px) through `--mosaic-text-3xl` (38 px), 1.25x scale.
+Line heights: `--mosaic-lh-tight`, `--mosaic-lh-normal`, `--mosaic-lh-relaxed`.
+Weights: `--mosaic-fw-regular`, `--mosaic-fw-medium`, `--mosaic-fw-semibold`, `--mosaic-fw-bold`.
 
 ### Shadows (6 tokens)
 
-`--mosaic-shadow-0` (none) through `--mosaic-shadow-5` (large elevation). OKLCH neutral tint, monotonic blur radius.
+`--mosaic-shadow-0` (none) through `--mosaic-shadow-5` (large elevation). OKLCH near-black tint `oklch(0.04 0 0)` — matches anydebate dark background.
 
 ### Radii (7 tokens)
 
-`--mosaic-radius-none` (0) → `--mosaic-radius-xs` → `--mosaic-radius-sm` → `--mosaic-radius-md` → `--mosaic-radius-lg` → `--mosaic-radius-xl` → `--mosaic-radius-full`. Strictly ascending.
+`--mosaic-radius-none` (0) → `xs` (4 px) → `sm` (8 px) → `md` (10 px) → `lg` (12 px, anydebate base) → `xl` (16 px) → `full` (9999 px). Strictly ascending.
 
-### Motion (8 tokens)
+### Motion (9 tokens)
 
-Durations: `--mosaic-duration-fast` (100 ms), `--mosaic-duration-normal` (200 ms), `--mosaic-duration-slow` (400 ms).
-Easings: `--mosaic-easing-linear`, `--mosaic-easing-ease`, `--mosaic-easing-ease-in`, `--mosaic-easing-ease-out`, `--mosaic-easing-ease-in-out`.
+Durations: `--mosaic-duration-fast` (100 ms), `--mosaic-duration-base` (200 ms), `--mosaic-duration-slow` (300 ms), `--mosaic-duration-slower` (500 ms, additive in v0.3.0).
+Easings: `--mosaic-easing-linear`, `--mosaic-easing-ease`, `--mosaic-easing-in`, `--mosaic-easing-out`, `--mosaic-easing-in-out`.
 
 ---
 
@@ -301,16 +336,17 @@ The JS exports return the raw OKLCH strings — canvas/chart consumers should te
 
 | Version | Notes |
 |---|---|
-| `0.2.1` | Current — FSL license, README complete, keywords, LICENSE in files array |
+| `0.3.0` | Current — anydebate design language absorbed. 80 tokens: 19 semantic UI color slots + font families + duration-slower + `.dark` mode overrides. Non-breaking key contract. |
+| `0.2.1` | FSL license, README complete, keywords, LICENSE in files array |
 | `0.2.0` | 58 tokens stable — coherence tests, size-limit gates, Tailwind v4 plugin |
 | `0.1.x` | Initial token set |
 
-Bundle gate history:
+Bundle gate limits (both green in v0.3.0):
 
-| Surface | Limit gz | v0.2.1 actual |
-|---|---|---|
-| `dist/index.js` | 5 KB | 649 B (87% under) |
-| `src/tokens.css` | 3 KB | 560 B (81% under) |
+| Surface | Limit gz |
+|---|---|
+| `dist/index.js` | 5 KB |
+| `src/tokens.css` | 3 KB |
 
 Full changelog: [CHANGELOG.md](../../CHANGELOG.md) at monorepo root.
 
@@ -352,7 +388,7 @@ Full license: [LICENSE](LICENSE)
 - [`@vantageos/mosaic-blocks`](https://www.npmjs.com/package/@vantageos/mosaic-blocks) — React composed UI blocks (primary consumer of these tokens)
 - [`@vantageos/mosaic-i18n`](https://www.npmjs.com/package/@vantageos/mosaic-i18n) — FR+EN locale resources
 
-The OKLCH color choices draw from [OKLCH color picker](https://oklch.com/) by Evil Martians and the [Tailwind v4 color system](https://tailwindcss.com/docs/colors) design principles.
+The anydebate design language is sourced from `elpiarthera/any-debate-ai@dev` (2026-06-27). The OKLCH color choices draw from [OKLCH color picker](https://oklch.com/) by Evil Martians and the [Tailwind v4 color system](https://tailwindcss.com/docs/colors) design principles.
 
 Token coherence test pattern adapted from [token validation best practices](https://tr.designtokens.org/format/).
 
