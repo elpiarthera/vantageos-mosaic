@@ -46,10 +46,28 @@
 //
 // Exit codes:
 //   0 — every cited path (both forms) is present in what `npm pack` ships.
-//   1 — at least one cited path is NOT shipped. Each is named.
-//   2 — REFUSE: could not read README.md / CHANGELOG.md / package.json, or
-//       `npm pack --dry-run --json` failed, or a path-shaped token could not
-//       be classified into a known form. Never a silent pass.
+//   1 — at least one cited path is NOT shipped. Each is named. This
+//       includes a Form-A citation whose subpath is absent from `exports`:
+//       an absent export key is a MEASURED verdict ("this subpath resolves
+//       to nothing, so it does not ship"), not an inability to measure —
+//       reserving exit 2 for that case would let the guard fail OPEN on
+//       exactly the defect it exists to catch (a doc citing a path that
+//       drifted out of both `exports` and `files` at once).
+//   2 — REFUSE: could not read an INPUT — README.md / CHANGELOG.md /
+//       package.json is missing/unparsable, or `npm pack --dry-run --json`
+//       itself could not be produced. Reserved strictly for "the guard
+//       cannot measure", never for "the guard measured a violation".
+
+// --- Robustness: pack resolution must not hard-depend on a successful
+// build. `npm pack` runs `prepublishOnly` (here: `npm run build`) by
+// default; in a bare checkout (no devDependencies installed) that build
+// fails and would make this guard REFUSE on an input problem that has
+// nothing to do with the docs/manifest it is meant to check. Fixed by
+// packing with `--ignore-scripts` and driving the `dist/` build ourselves,
+// explicitly, only when a cited path actually needs it (see the "citesDist"
+// step below) — so the guard's own build step is the only build that runs,
+// its failure is attributable, and a bare checkout with no cited dist/*
+// path never needs to build at all.
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -200,14 +218,16 @@ for (const relPath of knownOwnRelPaths) {
 }
 
 // --- Resolve Form A subpaths through the exports map. ---
-const resolvedPaths = new Map(); // display-name -> relative file path to check in tarball
+// `resolvedPaths` maps citation -> resolved file path to check in the
+// tarball. A subpath absent from `exports` resolves to `null`: this is a
+// MEASURED "not shipped" (there is no target to ship), carried through to
+// the verdict step below as a violation — never refused here. Refusing
+// would mean the guard cannot tell "not exported" from "cannot read
+// exports", which are different failure modes with the same root symptom
+// (bare backtick citation and its match is present, exports map read fine).
+const resolvedPaths = new Map();
 for (const subpath of allCitedA) {
-  const resolved = subpathToFile.get(subpath);
-  if (!resolved) {
-    refuse(
-      `Form A citation "${pkgName}/${subpath}" does not match any key in package.json exports (${JSON.stringify(Object.keys(exportsMap))}). Either the docs cite a subpath that was never exported, or exports drifted — cannot verify blindly.`,
-    );
-  }
+  const resolved = subpathToFile.get(subpath) ?? null;
   resolvedPaths.set(`${pkgName}/${subpath}`, resolved);
 }
 for (const bare of allCitedB) {
@@ -242,7 +262,7 @@ if (resolvedPaths.size === 0) {
 // Cited dist/* paths (e.g. "dist/index.js" bundle-size gate rows in README)
 // are only meaningful once built; without this, a clean checkout would
 // falsely report them as missing even though `files` correctly ships `dist`.
-const citesDist = [...resolvedPaths.values()].some((p) => p.startsWith("dist/"));
+const citesDist = [...resolvedPaths.values()].some((p) => p?.startsWith("dist/"));
 if (citesDist && !existsSync(path.join(PKG_DIR, "dist"))) {
   try {
     execFileSync("npm", ["run", "build"], { cwd: PKG_DIR, stdio: "inherit" });
@@ -252,15 +272,19 @@ if (citesDist && !existsSync(path.join(PKG_DIR, "dist"))) {
 }
 
 // --- Resolve what `npm pack` would actually ship. ---
+// `--ignore-scripts`: see the robustness note in the header comment — this
+// guard drives its own `dist/` build explicitly (above) and must not depend
+// on `prepublishOnly` succeeding in an environment with no devDependencies
+// installed.
 let packOutput;
 try {
-  packOutput = execFileSync("npm", ["pack", "--dry-run", "--json"], {
+  packOutput = execFileSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], {
     cwd: PKG_DIR,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
   });
 } catch (err) {
-  refuse(`\`npm pack --dry-run --json\` failed: ${err.message}`);
+  refuse(`\`npm pack --dry-run --json --ignore-scripts\` failed: ${err.message}`);
 }
 
 let packManifest;
@@ -280,17 +304,29 @@ const shippedPaths = new Set(packEntry.files.map((f) => f.path));
 // --- Verdict ---
 const missing = [];
 for (const [citation, resolvedFile] of resolvedPaths) {
-  if (!shippedPaths.has(resolvedFile)) {
-    missing.push({ citation, resolvedFile });
+  if (resolvedFile === null) {
+    // Form A subpath absent from `exports` entirely — measured violation,
+    // not a refuse. See comment at the resolution step above.
+    missing.push({
+      citation,
+      resolvedFile: null,
+      reason: "not an exported subpath of this package",
+    });
+  } else if (!shippedPaths.has(resolvedFile)) {
+    missing.push({ citation, resolvedFile, reason: "not in npm pack file list" });
   }
 }
 
 if (missing.length > 0) {
   console.error(`FAIL (exit 1): ${missing.length} cited path(s) not present in the tarball:`);
-  for (const { citation, resolvedFile } of missing) {
-    console.error(
-      `  - cited as "${citation}" -> resolves to "${resolvedFile}" -> NOT in npm pack file list`,
-    );
+  for (const { citation, resolvedFile, reason } of missing) {
+    if (resolvedFile === null) {
+      console.error(
+        `  - cited as "${citation}" -> ${reason} (exports keys: ${JSON.stringify(Object.keys(exportsMap))})`,
+      );
+    } else {
+      console.error(`  - cited as "${citation}" -> resolves to "${resolvedFile}" -> ${reason}`);
+    }
   }
   console.error(`Shipped files (${shippedPaths.size}): ${[...shippedPaths].sort().join(", ")}`);
   process.exit(1);

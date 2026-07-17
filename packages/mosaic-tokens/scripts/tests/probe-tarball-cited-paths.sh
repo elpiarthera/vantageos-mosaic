@@ -121,15 +121,17 @@ PYEOF
 rc=$?
 grep -q "anydebate-override.css" "${WORK}/real-defect.log"
 named=$?
-# The real 0.5.0 defect removed the subpath from BOTH exports and files, so the
-# citation is unresolvable through exports at all -> the guard correctly
-# REFUSES (exit 2) instead of guessing "not shipped" (exit 1). Exit 2 IS the
-# guard biting: non-zero, naming the exact path, refusing to fabricate a verdict
-# it cannot support. This is documented, not a downgrade of the probe.
-if [ "$rc" = "2" ] && [ "$named" = "0" ]; then
-  report "Real 0.5.0 defect MUST_BLOCK (as REFUSE)" 2 "$rc" "guard refused rather than guessing, naming the path"
+# The real 0.5.0 defect removed the subpath from BOTH exports and files.
+# "Absent from exports" is a MEASURED verdict, not an inability to measure:
+# the guard CAN read the exports map, sees no matching key, and that means
+# the cited path does not ship — full stop. Coordinator correction (this
+# session): the guard must BLOCK (exit 1) here, not REFUSE (exit 2).
+# REFUSE is reserved strictly for unreadable INPUTS (see MUST_REFUSE case
+# below), never for "the guard measured a violation".
+if [ "$rc" = "1" ] && [ "$named" = "0" ]; then
+  report "Real 0.5.0 defect MUST_BLOCK" 1 "$rc" "guard named the unshipped/unexported path"
 else
-  report "Real 0.5.0 defect MUST_BLOCK (as REFUSE)" 2 "$rc" "$(tail -3 "${WORK}/real-defect.log")"
+  report "Real 0.5.0 defect MUST_BLOCK" 1 "$rc" "$(tail -3 "${WORK}/real-defect.log")"
 fi
 
 echo "=== MUST_PASS — real fixed tree ==="
