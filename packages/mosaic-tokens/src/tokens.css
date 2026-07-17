@@ -1,9 +1,15 @@
 /*
- * @vantageos/mosaic-tokens — CSS custom properties (anydebate design language, v0.3.0).
+ * @vantageos/mosaic-tokens — CSS custom properties (neutral generic semantic defaults).
  *
- * Design language: anydebate — bright/clean light mode + sophisticated dark mode
- * with blue accent (oklch(0.7 0.15 240)). Source: elpiarthera/any-debate-ai@dev
- * app/globals.css (canonical, 2026-06-27).
+ * Default semantic palette: neutral shadcn-grayscale (light + dark), sourced
+ * from @vantageos/mosaic-blocks src/styles.css (canonical). The any-debate-ai
+ * design language (bright/clean light mode + sophisticated dark mode with a
+ * blue accent, oklch(0.7 0.15 240)) is NOT the canonical default — it is an
+ * opt-in consumer override, see examples/anydebate-override.css.
+ *
+ * The status triads below (success/warning/danger/info/neutral) still carry
+ * their original any-debate-ai-derived values — unchanged by the semantic UI
+ * color realignment.
  *
  * Mirror of tokens.ts. Consumers can:
  *   1. import "@vantageos/mosaic-tokens/css" — surface in :root globally
@@ -46,8 +52,10 @@
   --mosaic-color-neutral-700: oklch(0.15 0 0);
 
   /* -------------------------------------------------------------------------
-   * Semantic UI colors — anydebate light-mode slots (additive new keys)
-   * Source: :root in app/globals.css
+   * Semantic UI colors — neutral generic defaults (light mode)
+   * Source: @vantageos/mosaic-blocks src/styles.css :root (canonical neutral
+   * values). Previously these 23 slots carried any-debate-ai's brand values;
+   * that palette now lives only in examples/anydebate-override.css.
    * -------------------------------------------------------------------------*/
   --mosaic-color-background: oklch(1 0 0);
   --mosaic-color-foreground: oklch(0.145 0 0);
@@ -80,8 +88,9 @@
    * intentionally NOT shipped — a declared-but-unconsumed token is a
    * violation under the consumer's bidirectional guard, not a completeness
    * gain. Values reuse the existing card/foreground/accent/border tones
-   * (anydebate palette) rather than the consumer's own arbitrary shadcn
-   * defaults, to stay coherent with this package's own design language.
+   * from this package's own neutral default palette — which is now the same
+   * generic shadcn defaults shipped by mosaic-blocks — keeping this
+   * package's semantic UI colors internally coherent.
    * These four get unprefixed aliases (src/aliases.css) — they ARE consumed.
    * -------------------------------------------------------------------------*/
   --mosaic-color-sidebar: oklch(1 0 0);
@@ -187,11 +196,17 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Dark mode overrides — anydebate sophisticated dark design
- * Source: .dark block in elpiarthera/any-debate-ai@dev app/globals.css.
- * Selector changed from anydebate's .dark to [data-theme="dark"] to match
- * the @vantageos/mosaic-blocks ecosystem convention (styles.css line 47).
- * Background: oklch(0.04 0 0), primary accent: oklch(0.7 0.15 240) blue.
+ * Dark mode overrides.
+ * Status triads below still carry their original any-debate-ai-derived dark
+ * values (source: .dark block in elpiarthera/any-debate-ai@dev app/globals.css;
+ * selector changed from anydebate's .dark to [data-theme="dark"] to match the
+ * @vantageos/mosaic-blocks ecosystem convention, styles.css line 47).
+ * The semantic UI colors (background/primary/etc., below the status triads)
+ * are the neutral generic defaults — background oklch(0.145 0 0), primary
+ * oklch(0.922 0 0) — sourced from mosaic-blocks src/styles.css
+ * [data-theme="dark"]. The any-debate-ai dark look (background
+ * oklch(0.04 0 0), blue accent oklch(0.7 0.15 240)) is opt-in only, see
+ * examples/anydebate-override.css.
  * ---------------------------------------------------------------------------*/
 [data-theme="dark"] {
   /* Semantic status colors — adjusted for dark bg legibility */
@@ -214,7 +229,9 @@
   --mosaic-color-neutral-500: oklch(0.6 0 0);
   --mosaic-color-neutral-700: oklch(0.95 0 0);
 
-  /* Semantic UI colors — anydebate dark-mode slots */
+  /* Semantic UI colors — neutral generic defaults (dark mode), sourced from
+   * mosaic-blocks src/styles.css [data-theme="dark"]. Any-debate-ai's dark
+   * brand values now live only in examples/anydebate-override.css. */
   --mosaic-color-background: oklch(0.145 0 0);
   --mosaic-color-foreground: oklch(0.985 0 0);
   --mosaic-color-card: oklch(0.205 0 0);
