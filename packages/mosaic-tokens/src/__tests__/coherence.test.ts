@@ -1,5 +1,5 @@
 /**
- * mosaic-tokens coherence test — v0.3.0 (anydebate design language).
+ * mosaic-tokens coherence test — neutral generic semantic defaults.
  *
  * Enforces invariants between tokens.ts (JS) and tokens.css (CSS) plus
  * ordering / scale constraints documented in tokens.ts. Failure to
@@ -21,8 +21,17 @@
  *     secondary, muted, accent, destructive, border, input, ring + foregrounds)
  *   - Font family keys (font-sans, font-mono) under --mosaic-font-*
  *   - New motion key: duration-slower
- *   - Snapshot test: anydebate OKLCH palette fingerprint
- *   - Dark-mode presence test: .dark overrides present in CSS
+ *   - Dark-mode presence test: [data-theme="dark"] overrides present in CSS
+ *
+ * Neutral-realign update: the 23 semantic UI color slots (both tokens.ts and
+ * tokens.css, light + dark) were realigned from any-debate-ai's brand values
+ * to the generic neutral defaults sourced from @vantageos/mosaic-blocks
+ * src/styles.css (doctrine: one client's brand does not belong in the shared
+ * canonical package). The any-debate-ai palette snapshot moved to the
+ * "anydebate-override example" describe block below — coverage was
+ * relocated, not deleted. Status triads (success/warning/danger/info/
+ * neutral-50/500/700) are untouched and still carry their original
+ * any-debate-ai-derived values.
  */
 
 import { readFileSync } from "node:fs";
@@ -185,30 +194,36 @@ describe("mosaic-tokens / scale invariants", () => {
   });
 });
 
-describe("mosaic-tokens / anydebate palette snapshot", () => {
-  it("primary blue accent (info-500) matches anydebate oklch(0.7 0.15 240)", () => {
+describe("mosaic-tokens / neutral default palette snapshot", () => {
+  it("info-500 status color (unchanged) is still the any-debate-ai blue oklch(0.7 0.15 240) — NOT the primary slot", () => {
+    // info-500 is a status-triad token, separate from the semantic `primary`
+    // slot below. An earlier version of this test conflated the two.
     expect(colors["info-500"]).toBe("oklch(0.700 0.150 240)");
   });
 
-  it("destructive matches anydebate oklch(0.577 0.245 27)", () => {
+  it("danger-500 status color (unchanged) stays oklch(0.577 0.245 27); destructive slot (realigned) now diverges to oklch(0.577 0.245 27.325)", () => {
     expect(colors["danger-500"]).toBe("oklch(0.577 0.245 27)");
-    expect(colors.destructive).toBe("oklch(0.577 0.245 27)");
+    // destructive is now sourced from mosaic-blocks' neutral default, which
+    // happens to carry more precision (27.325) than the status triad (27) —
+    // they are no longer required to match.
+    expect(colors.destructive).toBe("oklch(0.577 0.245 27.325)");
   });
 
-  it("anydebate light background/foreground present", () => {
-    expect(colors.background).toBe("oklch(0.980 0 0)");
-    expect(colors.foreground).toBe("oklch(0.150 0 0)");
+  it("neutral default light background/foreground/primary present (sourced from mosaic-blocks)", () => {
+    expect(colors.background).toBe("oklch(1 0 0)");
+    expect(colors.foreground).toBe("oklch(0.145 0 0)");
+    expect(colors.primary).toBe("oklch(0.205 0 0)");
   });
 
-  it('dark mode overrides declared in CSS ([data-theme="dark"] — mosaic-blocks ecosystem convention)', () => {
+  it('dark mode overrides declared in CSS ([data-theme="dark"] — mosaic-blocks ecosystem convention), now neutral', () => {
     expect(cssSource).toContain('[data-theme="dark"] {');
     // Ensure the anydebate .dark selector was NOT copied verbatim (would fragment dark-mode toggling)
     expect(cssSource).not.toContain(".dark {");
-    expect(cssSource).toContain("--mosaic-color-background: oklch(0.04 0 0)");
-    expect(cssSource).toContain("--mosaic-color-primary: oklch(0.7 0.15 240)");
+    expect(cssSource).toContain("--mosaic-color-background: oklch(0.145 0 0)");
+    expect(cssSource).toContain("--mosaic-color-primary: oklch(0.922 0 0)");
   });
 
-  it("anydebate base radius (lg=12px) matches source --radius: 0.75rem", () => {
+  it("radius scale (unchanged) lg=12px matches source --radius: 0.75rem", () => {
     expect(radii.lg).toBe("12px");
   });
 
@@ -216,7 +231,7 @@ describe("mosaic-tokens / anydebate palette snapshot", () => {
     expect(typography["font-sans"]).toContain("Inter");
   });
 
-  it("all semantic UI color slots present (additive anydebate keys)", () => {
+  it("all semantic UI color slots present (now neutral generic defaults)", () => {
     const slots = [
       "background",
       "foreground",
@@ -267,6 +282,57 @@ describe("mosaic-tokens / anydebate palette snapshot", () => {
     ];
     for (const k of v021Keys) {
       expect(colors[k], `0.2.1 compat missing: ${k}`).toMatch(/^oklch\(/);
+    }
+  });
+});
+
+describe("mosaic-tokens / anydebate-override example (opt-in, not canonical)", () => {
+  const OVERRIDE_PATH = join(import.meta.dirname, "..", "..", "examples", "anydebate-override.css");
+  const overrideSource = readFileSync(OVERRIDE_PATH, "utf-8");
+
+  it("carries the any-debate-ai light background (previously the canonical default)", () => {
+    expect(overrideSource).toContain(":root {");
+    expect(overrideSource).toContain("--mosaic-color-background: oklch(0.98 0 0)");
+    expect(overrideSource).toContain("--mosaic-color-foreground: oklch(0.15 0 0)");
+  });
+
+  it("carries the any-debate-ai dark background and blue primary/ring accent", () => {
+    expect(overrideSource).toContain('[data-theme="dark"] {');
+    expect(overrideSource).toContain("--mosaic-color-background: oklch(0.04 0 0)");
+    expect(overrideSource).toContain("--mosaic-color-primary: oklch(0.7 0.15 240)");
+    expect(overrideSource).toContain("--mosaic-color-ring: oklch(0.7 0.15 240)");
+  });
+
+  it("covers all 23 realigned semantic slots in both themes", () => {
+    const slots = [
+      "background",
+      "foreground",
+      "card",
+      "card-foreground",
+      "popover",
+      "popover-foreground",
+      "primary",
+      "primary-foreground",
+      "secondary",
+      "secondary-foreground",
+      "muted",
+      "muted-foreground",
+      "accent",
+      "accent-foreground",
+      "destructive",
+      "destructive-foreground",
+      "border",
+      "input",
+      "ring",
+      "sidebar",
+      "sidebar-foreground",
+      "sidebar-accent",
+      "sidebar-border",
+    ];
+    for (const slot of slots) {
+      const re = new RegExp(`--mosaic-color-${slot}:`, "g");
+      const count = [...overrideSource.matchAll(re)].length;
+      expect(count, `expected 2 occurrences (light+dark) of --mosaic-color-${slot}`).toBe(2);
     }
   });
 });

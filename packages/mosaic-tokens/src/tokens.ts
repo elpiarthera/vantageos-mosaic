@@ -1,9 +1,15 @@
 /**
- * @vantageos/mosaic-tokens — design tokens (anydebate design language, v0.3.0).
+ * @vantageos/mosaic-tokens — design tokens (neutral generic semantic defaults).
  *
- * Design language: anydebate — bright/clean light mode + sophisticated dark
- * mode with blue accent (oklch(0.7 0.15 240)).
- * Source: elpiarthera/any-debate-ai@dev · app/globals.css (2026-06-27).
+ * Default semantic palette: neutral shadcn-grayscale (light values below;
+ * dark values live in tokens.css [data-theme="dark"]), sourced from
+ * @vantageos/mosaic-blocks src/styles.css (canonical). The any-debate-ai
+ * design language (bright/clean light + sophisticated dark, blue accent
+ * oklch(0.7 0.15 240)) is NOT the canonical default — it is an opt-in
+ * consumer override, see examples/anydebate-override.css.
+ *
+ * The status triads below (success/warning/danger/info/neutral) still carry
+ * their original any-debate-ai-derived values — unchanged by this realign.
  *
  * Framework-free, OKLCH-based, mirror of the CSS custom properties in
  * tokens.css. Consumers can opt for either the CSS surface (Tailwind v4
@@ -44,14 +50,23 @@ export interface MosaicTokens {
 // Colors — semantic statuses × 3 shades (50/500/700) OKLCH + semantic UI slots.
 // 50 = surface tint, 500 = brand body, 700 = accessible contrast on light bg.
 //
-// anydebate palette mapping:
-//   danger    → destructive (oklch(0.577 0.245 27.325))
-//   info      → primary blue accent dark (oklch(0.7 0.15 240))
-//   neutral   → monochromatic: bg=oklch(0.98 0 0) / fg=oklch(0.15 0 0)
+// Status triads (danger/info/neutral) and semantic UI slots (destructive/
+// primary/etc.) are SEPARATE token families that happen to share an OKLCH
+// design system — they are not aliases of each other:
+//   danger-500 (status, unchanged) = oklch(0.577 0.245 27) — close to, but
+//     NOT identical to, destructive (semantic slot, now neutral-sourced) =
+//     oklch(0.577 0.245 27.325). Coincidence of the neutral default, not a
+//     mapping.
+//   info-500 (status, unchanged, any-debate-ai blue) = oklch(0.7 0.15 240) —
+//     primary (semantic slot) is now neutral oklch(0.205 0 0), NOT the blue
+//     accent. An earlier version of this file conflated the two; they are
+//     different tokens.
+//   neutral-50/700 (status triad, unchanged) = oklch(0.98 0 0) / oklch(0.15 0 0).
 //
-// Additive semantic UI keys mirror anydebate's CSS custom property names
+// Additive semantic UI keys mirror shadcn's CSS custom property names
 // (background, foreground, card, etc.) for drop-in compatibility with
-// consumers that wire anydebate components into mosaic.
+// shadcn-based consumers (including any-debate-ai, via the opt-in override
+// in examples/anydebate-override.css).
 // ---------------------------------------------------------------------------
 export const colors: MosaicTokens["colors"] = Object.freeze({
   // Status palette (preserved keys, anydebate-updated values)
@@ -74,35 +89,37 @@ export const colors: MosaicTokens["colors"] = Object.freeze({
   "neutral-500": "oklch(0.450 0 0)",
   "neutral-700": "oklch(0.150 0 0)",
 
-  // Additive semantic UI slots (anydebate light-mode defaults)
-  background: "oklch(0.980 0 0)",
-  foreground: "oklch(0.150 0 0)",
-  card: "oklch(0.950 0 0)",
-  "card-foreground": "oklch(0.150 0 0)",
-  popover: "oklch(0.980 0 0)",
-  "popover-foreground": "oklch(0.150 0 0)",
-  primary: "oklch(0.150 0 0)",
-  "primary-foreground": "oklch(0.980 0 0)",
-  secondary: "oklch(0.920 0 0)",
-  "secondary-foreground": "oklch(0.150 0 0)",
-  muted: "oklch(0.920 0 0)",
-  "muted-foreground": "oklch(0.450 0 0)",
-  accent: "oklch(0.880 0 0)",
-  "accent-foreground": "oklch(0.150 0 0)",
-  destructive: "oklch(0.577 0.245 27)",
-  "destructive-foreground": "oklch(0.980 0 0)",
-  border: "oklch(0.880 0 0)",
-  input: "oklch(0.920 0 0)",
-  ring: "oklch(0.600 0 0)",
+  // Additive semantic UI slots — neutral generic defaults (light mode),
+  // sourced from @vantageos/mosaic-blocks src/styles.css :root. Any-debate-ai's
+  // brand values now live only in examples/anydebate-override.css.
+  background: "oklch(1 0 0)",
+  foreground: "oklch(0.145 0 0)",
+  card: "oklch(1 0 0)",
+  "card-foreground": "oklch(0.145 0 0)",
+  popover: "oklch(1 0 0)",
+  "popover-foreground": "oklch(0.145 0 0)",
+  primary: "oklch(0.205 0 0)",
+  "primary-foreground": "oklch(0.985 0 0)",
+  secondary: "oklch(0.97 0 0)",
+  "secondary-foreground": "oklch(0.205 0 0)",
+  muted: "oklch(0.97 0 0)",
+  "muted-foreground": "oklch(0.556 0 0)",
+  accent: "oklch(0.97 0 0)",
+  "accent-foreground": "oklch(0.205 0 0)",
+  destructive: "oklch(0.577 0.245 27.325)",
+  "destructive-foreground": "oklch(0.985 0 0)",
+  border: "oklch(0.922 0 0)",
+  input: "oklch(0.922 0 0)",
+  ring: "oklch(0.708 0 0)",
 
   // Sidebar (v0.3.1) — EXACTLY 4 keys, derived from real consumption on the
   // one real consumer (mosaic-blocks). See tokens.css for the derivation
   // command and the declared-divergence rationale for NOT shipping the
   // other 4 of the shadcn 8-var convention.
-  sidebar: "oklch(0.950 0 0)",
-  "sidebar-foreground": "oklch(0.150 0 0)",
-  "sidebar-accent": "oklch(0.880 0 0)",
-  "sidebar-border": "oklch(0.880 0 0)",
+  sidebar: "oklch(1 0 0)",
+  "sidebar-foreground": "oklch(0.145 0 0)",
+  "sidebar-accent": "oklch(0.97 0 0)",
+  "sidebar-border": "oklch(0.922 0 0)",
 
   // Chart series (v0.3.1) — declared divergence: added on request, not on
   // measured consumer demand. See tokens.css for rationale. NO alias.
