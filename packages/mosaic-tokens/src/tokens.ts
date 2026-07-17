@@ -94,6 +94,23 @@ export const colors: MosaicTokens["colors"] = Object.freeze({
   border: "oklch(0.880 0 0)",
   input: "oklch(0.920 0 0)",
   ring: "oklch(0.600 0 0)",
+
+  // Sidebar (v0.3.1) — EXACTLY 4 keys, derived from real consumption on the
+  // one real consumer (mosaic-blocks). See tokens.css for the derivation
+  // command and the declared-divergence rationale for NOT shipping the
+  // other 4 of the shadcn 8-var convention.
+  sidebar: "oklch(0.950 0 0)",
+  "sidebar-foreground": "oklch(0.150 0 0)",
+  "sidebar-accent": "oklch(0.880 0 0)",
+  "sidebar-border": "oklch(0.880 0 0)",
+
+  // Chart series (v0.3.1) — declared divergence: added on request, not on
+  // measured consumer demand. See tokens.css for rationale. NO alias.
+  "chart-1": "oklch(0.650 0.200 240)",
+  "chart-2": "oklch(0.650 0.180 145)",
+  "chart-3": "oklch(0.700 0.170 85)",
+  "chart-4": "oklch(0.600 0.220 27)",
+  "chart-5": "oklch(0.550 0.180 300)",
 });
 
 // ---------------------------------------------------------------------------
@@ -180,6 +197,9 @@ export const motion: MosaicTokens["motion"] = Object.freeze({
   "easing-in": "cubic-bezier(0.4, 0, 1, 1)",
   "easing-out": "cubic-bezier(0, 0, 0.2, 1)",
   "easing-in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
+  // Declared divergence (v0.3.1): no proven consumer, added per Pi
+  // arbitration. NO alias — see tokens.css for rationale.
+  "easing-out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
 });
 
 export const tokens: MosaicTokens = Object.freeze({

@@ -1,0 +1,68 @@
+/*
+ * @vantageos/mosaic-tokens — unprefixed ALIAS layer (v0.3.1).
+ *
+ * WHY this file exists (see analysis/mosaic-tokens-inventory-2026-07-17.md
+ * §9 for the full derivation): a real consumer (`mosaic-blocks`) has ZERO
+ * dependency on this package and redeclares its own unprefixed token layer
+ * (`--background`, `--sidebar-border`, ...) under a documented public
+ * contract ("Override any `--color-*` / `--*` var to rebrand"). Migrating
+ * that consumer to `--mosaic-*` would break every host relying on that
+ * contract. So instead: ONE place holds the VALUES (tokens.css, canonical,
+ * `--mosaic-*`), and this file is a SEPARATE, opt-in alias surface mapping
+ * the unprefixed public names onto those canonical values. No value is
+ * duplicated — every alias is a `var()` reference, never a literal.
+ *
+ * Usage: import BOTH `@vantageos/mosaic-tokens/css` (canonical) AND
+ * `@vantageos/mosaic-tokens/css/aliases` (this file) if unprefixed names
+ * are required by an existing consumer contract. New consumers should
+ * prefer the canonical `--mosaic-*` names directly and skip this file.
+ *
+ * DERIVATION (not typed from memory or from the inventory report):
+ *   grep -oE '\-\-mosaic-color-[a-zA-Z0-9-]+:' tokens.css \
+ *     | sed -E 's/^--mosaic-color-//; s/:$//' | sort -u \
+ *     | grep -vE '^(success|warning|danger|info|neutral)-(50|500|700)$'
+ * -> the 19 semantic UI color slots (background, foreground, card, ...)
+ *    PLUS the 4 sidebar slots added in this same change (v0.3.1).
+ * The status-triad shades (success-50/500/700, etc.) are excluded on
+ * purpose: they are not part of any known unprefixed public contract
+ * (no consumer reads a bare `--success-500`), so aliasing them would be a
+ * dangling promise, not a reuse of a real one.
+ *
+ * `--chart-*` and `--ease-out-expo` are DELIBERATELY NOT aliased here —
+ * see tokens.css for the declared-divergence rationale (no consumer has
+ * been proven to read those unprefixed names).
+ *
+ * Every alias below MUST `var()`-reference a `--mosaic-*` custom property
+ * that is actually declared in tokens.css — enforced by
+ * src/__tests__/aliases.test.ts, which reads both files and asserts no
+ * dangling reference exists.
+ */
+:root {
+  --background: var(--mosaic-color-background);
+  --foreground: var(--mosaic-color-foreground);
+  --card: var(--mosaic-color-card);
+  --card-foreground: var(--mosaic-color-card-foreground);
+  --popover: var(--mosaic-color-popover);
+  --popover-foreground: var(--mosaic-color-popover-foreground);
+  --primary: var(--mosaic-color-primary);
+  --primary-foreground: var(--mosaic-color-primary-foreground);
+  --secondary: var(--mosaic-color-secondary);
+  --secondary-foreground: var(--mosaic-color-secondary-foreground);
+  --muted: var(--mosaic-color-muted);
+  --muted-foreground: var(--mosaic-color-muted-foreground);
+  --accent: var(--mosaic-color-accent);
+  --accent-foreground: var(--mosaic-color-accent-foreground);
+  --destructive: var(--mosaic-color-destructive);
+  --destructive-foreground: var(--mosaic-color-destructive-foreground);
+  --border: var(--mosaic-color-border);
+  --input: var(--mosaic-color-input);
+  --ring: var(--mosaic-color-ring);
+
+  /* Sidebar — the two genuine gaps this change closes, aliased because
+   * they ARE consumed (mosaic-blocks: bg-sidebar, bg-sidebar-accent,
+   * border-sidebar-border, text-sidebar-foreground). */
+  --sidebar: var(--mosaic-color-sidebar);
+  --sidebar-foreground: var(--mosaic-color-sidebar-foreground);
+  --sidebar-accent: var(--mosaic-color-sidebar-accent);
+  --sidebar-border: var(--mosaic-color-sidebar-border);
+}

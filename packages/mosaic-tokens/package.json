@@ -14,6 +14,7 @@
       "require": "./dist/index.cjs"
     },
     "./css": "./src/tokens.css",
+    "./css/aliases": "./src/aliases.css",
     "./tailwind": {
       "types": "./dist/tailwind-plugin.d.ts",
       "import": "./dist/tailwind-plugin.js"
@@ -22,6 +23,7 @@
   "files": [
     "dist",
     "src/tokens.css",
+    "src/aliases.css",
     "README.md",
     "LICENSE"
   ],
