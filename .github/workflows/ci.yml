@@ -171,6 +171,22 @@ jobs:
       - name: Gate 3 — coherence dedicated (ship-blocker, no override)
         run: pnpm --filter @vantageos/mosaic-tokens test --reporter=verbose --bail=1
 
+  tarball-cited-paths-mosaic-tokens:
+    name: Gate 5 — Tarball-cited-paths (ship-blocker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Gate 5 — every README/CHANGELOG-cited path ships in the tarball
+        run: node packages/mosaic-tokens/scripts/tarball-cited-paths-guard.mjs
+
   npm-publish:
     name: Publish to npm (Eta gate)
     needs: ci

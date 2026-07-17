@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic-tokens",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Framework-free design tokens (colors, spacing, typography, shadows, radii, motion) for @vantageos/mosaic — CSS custom props + JS exports + Tailwind v4 plugin.",
   "license": "FSL-1.1-Apache-2.0",
   "type": "module",
@@ -15,6 +15,7 @@
     },
     "./css": "./src/tokens.css",
     "./css/aliases": "./src/aliases.css",
+    "./examples/anydebate-override.css": "./examples/anydebate-override.css",
     "./tailwind": {
       "types": "./dist/tailwind-plugin.d.ts",
       "import": "./dist/tailwind-plugin.js"
@@ -24,6 +25,7 @@
     "dist",
     "src/tokens.css",
     "src/aliases.css",
+    "examples",
     "README.md",
     "LICENSE"
   ],
