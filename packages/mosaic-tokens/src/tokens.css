@@ -49,25 +49,25 @@
    * Semantic UI colors — anydebate light-mode slots (additive new keys)
    * Source: :root in app/globals.css
    * -------------------------------------------------------------------------*/
-  --mosaic-color-background: oklch(0.98 0 0);
-  --mosaic-color-foreground: oklch(0.15 0 0);
-  --mosaic-color-card: oklch(0.95 0 0);
-  --mosaic-color-card-foreground: oklch(0.15 0 0);
-  --mosaic-color-popover: oklch(0.98 0 0);
-  --mosaic-color-popover-foreground: oklch(0.15 0 0);
-  --mosaic-color-primary: oklch(0.15 0 0);
-  --mosaic-color-primary-foreground: oklch(0.98 0 0);
-  --mosaic-color-secondary: oklch(0.92 0 0);
-  --mosaic-color-secondary-foreground: oklch(0.15 0 0);
-  --mosaic-color-muted: oklch(0.92 0 0);
-  --mosaic-color-muted-foreground: oklch(0.45 0 0);
-  --mosaic-color-accent: oklch(0.88 0 0);
-  --mosaic-color-accent-foreground: oklch(0.15 0 0);
-  --mosaic-color-destructive: oklch(0.577 0.245 27);
-  --mosaic-color-destructive-foreground: oklch(0.98 0 0);
-  --mosaic-color-border: oklch(0.88 0 0);
-  --mosaic-color-input: oklch(0.92 0 0);
-  --mosaic-color-ring: oklch(0.6 0 0);
+  --mosaic-color-background: oklch(1 0 0);
+  --mosaic-color-foreground: oklch(0.145 0 0);
+  --mosaic-color-card: oklch(1 0 0);
+  --mosaic-color-card-foreground: oklch(0.145 0 0);
+  --mosaic-color-popover: oklch(1 0 0);
+  --mosaic-color-popover-foreground: oklch(0.145 0 0);
+  --mosaic-color-primary: oklch(0.205 0 0);
+  --mosaic-color-primary-foreground: oklch(0.985 0 0);
+  --mosaic-color-secondary: oklch(0.97 0 0);
+  --mosaic-color-secondary-foreground: oklch(0.205 0 0);
+  --mosaic-color-muted: oklch(0.97 0 0);
+  --mosaic-color-muted-foreground: oklch(0.556 0 0);
+  --mosaic-color-accent: oklch(0.97 0 0);
+  --mosaic-color-accent-foreground: oklch(0.205 0 0);
+  --mosaic-color-destructive: oklch(0.577 0.245 27.325);
+  --mosaic-color-destructive-foreground: oklch(0.985 0 0);
+  --mosaic-color-border: oklch(0.922 0 0);
+  --mosaic-color-input: oklch(0.922 0 0);
+  --mosaic-color-ring: oklch(0.708 0 0);
 
   /* -------------------------------------------------------------------------
    * Sidebar — v0.3.1, EXACTLY 4 vars (derived from real consumption, not the
@@ -84,10 +84,10 @@
    * defaults, to stay coherent with this package's own design language.
    * These four get unprefixed aliases (src/aliases.css) — they ARE consumed.
    * -------------------------------------------------------------------------*/
-  --mosaic-color-sidebar: oklch(0.95 0 0);
-  --mosaic-color-sidebar-foreground: oklch(0.15 0 0);
-  --mosaic-color-sidebar-accent: oklch(0.88 0 0);
-  --mosaic-color-sidebar-border: oklch(0.88 0 0);
+  --mosaic-color-sidebar: oklch(1 0 0);
+  --mosaic-color-sidebar-foreground: oklch(0.145 0 0);
+  --mosaic-color-sidebar-accent: oklch(0.97 0 0);
+  --mosaic-color-sidebar-border: oklch(0.922 0 0);
 
   /* -------------------------------------------------------------------------
    * Spacing — 4 → 64 px (unchanged 4 pt base grid)
@@ -215,32 +215,32 @@
   --mosaic-color-neutral-700: oklch(0.95 0 0);
 
   /* Semantic UI colors — anydebate dark-mode slots */
-  --mosaic-color-background: oklch(0.04 0 0);
-  --mosaic-color-foreground: oklch(0.95 0 0);
-  --mosaic-color-card: oklch(0.06 0 0);
-  --mosaic-color-card-foreground: oklch(0.95 0 0);
-  --mosaic-color-popover: oklch(0.06 0 0);
-  --mosaic-color-popover-foreground: oklch(0.95 0 0);
-  --mosaic-color-primary: oklch(0.7 0.15 240);
-  --mosaic-color-primary-foreground: oklch(0.04 0 0);
-  --mosaic-color-secondary: oklch(0.1 0 0);
-  --mosaic-color-secondary-foreground: oklch(0.95 0 0);
-  --mosaic-color-muted: oklch(0.08 0 0);
-  --mosaic-color-muted-foreground: oklch(0.6 0 0);
-  --mosaic-color-accent: oklch(0.12 0 0);
-  --mosaic-color-accent-foreground: oklch(0.95 0 0);
-  --mosaic-color-destructive: oklch(0.6 0.2 25);
-  --mosaic-color-destructive-foreground: oklch(0.95 0 0);
-  --mosaic-color-border: oklch(0.12 0 0);
-  --mosaic-color-input: oklch(0.08 0 0);
-  --mosaic-color-ring: oklch(0.7 0.15 240);
+  --mosaic-color-background: oklch(0.145 0 0);
+  --mosaic-color-foreground: oklch(0.985 0 0);
+  --mosaic-color-card: oklch(0.205 0 0);
+  --mosaic-color-card-foreground: oklch(0.985 0 0);
+  --mosaic-color-popover: oklch(0.205 0 0);
+  --mosaic-color-popover-foreground: oklch(0.985 0 0);
+  --mosaic-color-primary: oklch(0.922 0 0);
+  --mosaic-color-primary-foreground: oklch(0.205 0 0);
+  --mosaic-color-secondary: oklch(0.269 0 0);
+  --mosaic-color-secondary-foreground: oklch(0.985 0 0);
+  --mosaic-color-muted: oklch(0.269 0 0);
+  --mosaic-color-muted-foreground: oklch(0.708 0 0);
+  --mosaic-color-accent: oklch(0.269 0 0);
+  --mosaic-color-accent-foreground: oklch(0.985 0 0);
+  --mosaic-color-destructive: oklch(0.704 0.191 22.216);
+  --mosaic-color-destructive-foreground: oklch(0.985 0 0);
+  --mosaic-color-border: oklch(1 0 0 / 10%);
+  --mosaic-color-input: oklch(1 0 0 / 15%);
+  --mosaic-color-ring: oklch(0.556 0 0);
 
   /* Sidebar — dark, reusing dark card/foreground/accent/border tones (see
    * light-mode sidebar comment above for the 4-var derivation). */
-  --mosaic-color-sidebar: oklch(0.06 0 0);
-  --mosaic-color-sidebar-foreground: oklch(0.95 0 0);
-  --mosaic-color-sidebar-accent: oklch(0.12 0 0);
-  --mosaic-color-sidebar-border: oklch(0.12 0 0);
+  --mosaic-color-sidebar: oklch(0.205 0 0);
+  --mosaic-color-sidebar-foreground: oklch(0.985 0 0);
+  --mosaic-color-sidebar-accent: oklch(0.269 0 0);
+  --mosaic-color-sidebar-border: oklch(1 0 0 / 10%);
 
   /* Chart series — dark, brighter for legibility on dark bg (see light-mode
    * chart comment above for the declared-divergence rationale). */

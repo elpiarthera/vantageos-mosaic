@@ -1,0 +1,57 @@
+/* @vantageos/mosaic-tokens — any-debate-ai brand override example.
+ * Import AFTER the canonical tokens.css to restore the any-debate-ai
+ * blue-accent palette that previously lived in the canonical package.
+ * Source: elpiarthera/any-debate-ai@dev app/globals.css (values captured
+ * from @vantageos/mosaic-tokens 0.4.0 before the neutral realignment).
+ */
+:root {
+  --mosaic-color-background: oklch(0.98 0 0);
+  --mosaic-color-foreground: oklch(0.15 0 0);
+  --mosaic-color-card: oklch(0.95 0 0);
+  --mosaic-color-card-foreground: oklch(0.15 0 0);
+  --mosaic-color-popover: oklch(0.98 0 0);
+  --mosaic-color-popover-foreground: oklch(0.15 0 0);
+  --mosaic-color-primary: oklch(0.15 0 0);
+  --mosaic-color-primary-foreground: oklch(0.98 0 0);
+  --mosaic-color-secondary: oklch(0.92 0 0);
+  --mosaic-color-secondary-foreground: oklch(0.15 0 0);
+  --mosaic-color-muted: oklch(0.92 0 0);
+  --mosaic-color-muted-foreground: oklch(0.45 0 0);
+  --mosaic-color-accent: oklch(0.88 0 0);
+  --mosaic-color-accent-foreground: oklch(0.15 0 0);
+  --mosaic-color-destructive: oklch(0.577 0.245 27);
+  --mosaic-color-destructive-foreground: oklch(0.98 0 0);
+  --mosaic-color-border: oklch(0.88 0 0);
+  --mosaic-color-input: oklch(0.92 0 0);
+  --mosaic-color-ring: oklch(0.6 0 0);
+  --mosaic-color-sidebar: oklch(0.95 0 0);
+  --mosaic-color-sidebar-foreground: oklch(0.15 0 0);
+  --mosaic-color-sidebar-accent: oklch(0.88 0 0);
+  --mosaic-color-sidebar-border: oklch(0.88 0 0);
+}
+
+[data-theme="dark"] {
+  --mosaic-color-background: oklch(0.04 0 0);
+  --mosaic-color-foreground: oklch(0.95 0 0);
+  --mosaic-color-card: oklch(0.06 0 0);
+  --mosaic-color-card-foreground: oklch(0.95 0 0);
+  --mosaic-color-popover: oklch(0.06 0 0);
+  --mosaic-color-popover-foreground: oklch(0.95 0 0);
+  --mosaic-color-primary: oklch(0.7 0.15 240);
+  --mosaic-color-primary-foreground: oklch(0.04 0 0);
+  --mosaic-color-secondary: oklch(0.1 0 0);
+  --mosaic-color-secondary-foreground: oklch(0.95 0 0);
+  --mosaic-color-muted: oklch(0.08 0 0);
+  --mosaic-color-muted-foreground: oklch(0.6 0 0);
+  --mosaic-color-accent: oklch(0.12 0 0);
+  --mosaic-color-accent-foreground: oklch(0.95 0 0);
+  --mosaic-color-destructive: oklch(0.6 0.2 25);
+  --mosaic-color-destructive-foreground: oklch(0.95 0 0);
+  --mosaic-color-border: oklch(0.12 0 0);
+  --mosaic-color-input: oklch(0.08 0 0);
+  --mosaic-color-ring: oklch(0.7 0.15 240);
+  --mosaic-color-sidebar: oklch(0.06 0 0);
+  --mosaic-color-sidebar-foreground: oklch(0.95 0 0);
+  --mosaic-color-sidebar-accent: oklch(0.12 0 0);
+  --mosaic-color-sidebar-border: oklch(0.12 0 0);
+}
