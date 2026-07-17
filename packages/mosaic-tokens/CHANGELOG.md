@@ -1,5 +1,20 @@
 # @vantageos/mosaic-tokens — Changelog
 
+## 0.5.1
+
+- **Fix**: `examples/` is now listed in `package.json` `files`, and
+  `./examples/anydebate-override.css` is now a declared `exports` subpath.
+  0.5.0's CHANGELOG told consumers to `import
+  "@vantageos/mosaic-tokens/examples/anydebate-override.css"` to restore the
+  prior any-debate-ai look, but that file was never shipped in the published
+  tarball — a dangling promise (`npm pack --dry-run` on 0.5.0 omits
+  `examples/` entirely). No other file moved or changed.
+- Adds `scripts/tarball-cited-paths-guard.mjs` + CI Gate 5: every path cited
+  in README.md/CHANGELOG.md via an import specifier or a bare in-package
+  relative path is now verified against what `npm pack` would actually ship,
+  so this class of drift fails CI before publish instead of surfacing to
+  consumers after.
+
 ## 0.5.0
 
 - **Realigned the 23 semantic UI color slots** (`background`, `foreground`, `card`,
