@@ -332,6 +332,50 @@ The JS exports return the raw OKLCH strings — canvas/chart consumers should te
 
 ---
 
+## 13.5 Naming Contract (`--mosaic-<category>-<key>`)
+
+Every custom property this package ships follows `--mosaic-<category>-<key>`
+(categories: `color`, `space`, `text`, `lh`, `fw`, `font`, `shadow`, `radius`,
+`duration`, `easing`). That convention is not just prose — it is a generated,
+versioned artifact a downstream tool (e.g. a DTCG → CSS exporter) can pin
+against and get a mechanical failure the moment it drifts.
+
+Pin it from the installed package:
+
+```js
+import contract from "@vantageos/mosaic-tokens/naming-contract" with { type: "json" };
+
+console.log(contract.contractVersion); // e.g. "1.0.0"
+console.log(contract.surfaceDigest); // e.g. "ef6d9e4348ab32f7"
+console.log(contract.pattern); // "--mosaic-<category>-<key>"
+console.log(contract.categories); // ["color", "duration", "easing", ...]
+console.log(contract.names); // every declared "--mosaic-*" property, sorted
+```
+
+A consumer pins BOTH values, for two different purposes:
+
+- **`contractVersion`** — a semver, hand-set intent, INDEPENDENT of the
+  package version. It signals compatibility intent but is NOT mechanically
+  enforced to move with the naming surface.
+- **`surfaceDigest`** — a sha256 (truncated to 16 hex chars) over the sorted
+  `categories` and sorted `names` only. This is the ENFORCED value: it cannot
+  go stale because nobody types it, and `naming-contract.test.ts` recomputes
+  it independently from `tokens.css` and fails the build the moment it
+  diverges. A rename that lands without a `contractVersion` bump still shows
+  up as a changed `surfaceDigest`.
+
+The artifact is generated, never hand-edited. To regenerate it after adding
+or renaming tokens in `src/tokens.css`:
+
+```bash
+pnpm --filter @vantageos/mosaic-tokens naming-contract:build
+```
+
+`src/__tests__/naming-contract.test.ts` fails the build if the checked-in
+`naming-contract.json` ever falls out of sync with `src/tokens.css`.
+
+---
+
 ## 14. Versioning & Changelog
 
 | Version | Notes |
