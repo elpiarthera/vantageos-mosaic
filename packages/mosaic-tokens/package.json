@@ -15,6 +15,7 @@
     },
     "./css": "./src/tokens.css",
     "./css/aliases": "./src/aliases.css",
+    "./naming-contract": "./naming-contract.json",
     "./examples/anydebate-override.css": "./examples/anydebate-override.css",
     "./tailwind": {
       "types": "./dist/tailwind-plugin.d.ts",
@@ -26,6 +27,7 @@
     "src/tokens.css",
     "src/aliases.css",
     "examples",
+    "naming-contract.json",
     "README.md",
     "LICENSE"
   ],
@@ -58,6 +60,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
+    "naming-contract:build": "node scripts/derive-naming-contract.mjs",
     "lint": "biome check --error-on-warnings src",
     "size-limit": "size-limit",
     "prepublishOnly": "npm run build"
