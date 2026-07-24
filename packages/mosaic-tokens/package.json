@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic-tokens",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Framework-free design tokens (colors, spacing, typography, shadows, radii, motion) for @vantageos/mosaic — CSS custom props + JS exports + Tailwind v4 plugin.",
   "license": "FSL-1.1-Apache-2.0",
   "type": "module",
