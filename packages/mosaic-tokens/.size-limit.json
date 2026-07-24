@@ -8,5 +8,10 @@
     "path": "src/tokens.css",
     "limit": "3 KB",
     "gzip": true
+  },
+  {
+    "path": "src/theme.css",
+    "limit": "2 KB",
+    "gzip": true
   }
 ]
