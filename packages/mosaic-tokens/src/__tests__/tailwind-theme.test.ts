@@ -183,7 +183,39 @@ function matchesPermittedShape(
   return { ok: true };
 }
 
+describe("mosaic-tokens / @theme committed artifact — exactly equals the generator's own output", () => {
+  // This assertion answers a DIFFERENT question than the shape check below:
+  // "is the committed src/theme.css byte-identical to what the generator
+  // produces from the committed src/tokens.css right now" — closing the
+  // class of defect a line-based parser cannot see (a declaration WRAPPED
+  // across lines, which disappears from parseThemeDeclarations' line-by-line
+  // regex instead of being rejected — ETA-N1). No parser is involved here,
+  // so no parser blind spot: a wrapped, hand-edited, or reformatted file
+  // fails this check regardless of what notation was smuggled into it,
+  // because it is no longer byte-identical to the generator's output. The
+  // shape check afterwards is kept and is NOT redundant with this one: it
+  // independently re-derives what "correct" means (var() + sentinel) without
+  // going through generateThemeCss, so a bug shared by the generator and
+  // this equality check cannot cancel out undetected.
+  it("src/theme.css is exactly generateThemeCss(src/tokens.css) — never hand-edited, wrapped, or reformatted", () => {
+    const { css: expected } = generateThemeCss(tokensCss);
+    expect(
+      themeCss,
+      "src/theme.css is not the generator's output (hand-edited, wrapped across lines, or reformatted) — " +
+        "regenerate with `node scripts/derive-tailwind-theme.mjs` (or `pnpm --filter @vantageos/mosaic-tokens run tailwind-theme:build`) and commit the result",
+    ).toBe(expected);
+  });
+});
+
 describe("mosaic-tokens / @theme value shape — every declaration is var(--mosaic-<name>, <its own sentinel>), nothing else", () => {
+  // This assertion answers: "of the declarations the line-based parser DID
+  // find, does each match the one permitted shape for its namespace" — it is
+  // an INDEPENDENT re-derivation (its own parser, its own shape regex, no
+  // call into generateThemeCss), kept for that independence, not because it
+  // alone would have caught ETA-N1. It provably would NOT: a wrapped
+  // declaration vanishes from this parser's input entirely rather than
+  // being rejected — which is exactly why the exact-equality assertion above
+  // exists as a second, non-overlapping guard.
   const declaredNames = new Set(extractDeclaredNames(tokensCss));
   const declarations = parseThemeDeclarations(themeCss);
 
