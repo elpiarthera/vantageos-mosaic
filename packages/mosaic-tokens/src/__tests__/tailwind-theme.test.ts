@@ -126,41 +126,137 @@ describe("mosaic-tokens / @theme drift — bidirectional coverage", () => {
   });
 });
 
-describe("mosaic-tokens / @theme non-duplication — zero literal design values outside the sentinel", () => {
-  const sentinelLiterals = new Set(Object.values(ERROR_SENTINEL_BY_NAMESPACE));
-
-  /** Strip every var(...) call (both the reference and its sentinel fallback) before scanning for literals. */
-  function stripVarCalls(css: string): string {
-    return css.replace(/var\([^)]*\)/g, "");
+/**
+ * Parse every `--<prop>: <value>;` declaration out of the (single) `@theme`
+ * block of a generated theme.css source. Deliberately dumb line-based
+ * parsing — good enough for this file's own generated shape, and it must
+ * stay independent of the generator's own `entries` array (see
+ * generateThemeCss) so a bug shared by both sides cannot cancel out.
+ */
+function parseThemeDeclarations(css: string): Array<{ prop: string; value: string }> {
+  const declarations: Array<{ prop: string; value: string }> = [];
+  const re = /^\s*(--[\w-]+):\s*(.+);\s*$/gm;
+  for (const m of css.matchAll(re)) {
+    const prop = m[1];
+    const value = m[2];
+    if (prop !== undefined && value !== undefined) declarations.push({ prop, value });
   }
+  return declarations;
+}
 
-  it("positive control: the literal-value patterns DO match real design values in tokens.css (proves the sweep can match)", () => {
-    expect(tokensCss).toMatch(/oklch\(/);
-    expect(tokensCss).toMatch(/\b\d+px\b/);
+/** The Tailwind v4 namespace prefix a generated `--<prop>` belongs to, longest-prefix-first (`--font-weight-` before `--font-`). */
+function namespaceOf(prop: string): string | undefined {
+  const namespaces = Object.values(CATEGORY_NAMESPACE_MAP)
+    .filter((ns): ns is string => ns !== null)
+    .sort((a, b) => b.length - a.length);
+  return namespaces.find((ns) => `${prop}-`.startsWith(ns) || prop.startsWith(ns));
+}
+
+/**
+ * The ONE permitted shape for a generated declaration's value:
+ * `var(--mosaic-<name>, <the sentinel registered for this declaration's own
+ * namespace>)` — nothing else. Any other notation (hsl(), calc(), a bare
+ * number, color-mix(), an unlisted unit, ...) is rejected BY CONSTRUCTION,
+ * because it is not this shape — no enumeration of forbidden notations is
+ * needed or maintained.
+ */
+function matchesPermittedShape(
+  prop: string,
+  value: string,
+): { ok: true } | { ok: false; reason: string } {
+  const namespace = namespaceOf(prop);
+  if (namespace === undefined) {
+    return { ok: false, reason: `"${prop}" does not belong to any known @theme namespace` };
+  }
+  const sentinel = ERROR_SENTINEL_BY_NAMESPACE[namespace];
+  if (sentinel === undefined) {
+    return { ok: false, reason: `namespace "${namespace}" has no registered sentinel` };
+  }
+  const escapedSentinel = sentinel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const shapeRe = new RegExp(`^var\\(--mosaic-[\\w-]+, ${escapedSentinel}\\)$`);
+  if (!shapeRe.test(value)) {
+    return {
+      ok: false,
+      reason: `value "${value}" is not var(--mosaic-<name>, ${sentinel}) — the one permitted shape for the "${namespace}" namespace`,
+    };
+  }
+  return { ok: true };
+}
+
+describe("mosaic-tokens / @theme value shape — every declaration is var(--mosaic-<name>, <its own sentinel>), nothing else", () => {
+  const declaredNames = new Set(extractDeclaredNames(tokensCss));
+  const declarations = parseThemeDeclarations(themeCss);
+
+  it("positive control: parsing finds a non-zero number of declarations (the instrument is not vacuously passing)", () => {
+    expect(declarations.length).toBeGreaterThan(0);
   });
 
-  it("zero hex/oklch/rgb/numeric design literals leak into theme.css outside of var() calls (sentinel excepted)", () => {
-    const body = stripVarCalls(themeCss);
-    const literalRe =
-      /(#[0-9a-fA-F]{3,8}\b|oklch\([^)]*\)|rgb\([^)]*\)|\b\d+(?:\.\d+)?(?:px|ms|rem|em)\b)/g;
-    const found = [...body.matchAll(literalRe)].map((m) => m[0]);
-    // The header comment and digest are prose, not CSS values, and are
-    // excluded by stripVarCalls only removing var() calls — so also strip
-    // the leading /* ... */ header block before asserting.
-    const withoutHeader = body.replace(/\/\*[\s\S]*?\*\//, "");
-    const foundInBody = [...withoutHeader.matchAll(literalRe)].map((m) => m[0]);
-    expect(foundInBody, `literal values found outside var(): ${found.join(", ")}`).toEqual([]);
+  it("shape check REJECTS a fabricated declaration that is not the permitted shape (the check can actually fail)", () => {
+    // Counterpart to the positive control above: a check that never rejects
+    // anything is not a check. None of these four notations were ever
+    // enumerable by the retired blacklist regex's own list, and each is
+    // rejected here purely for not matching the required shape.
+    expect(matchesPermittedShape("--color-fabricated", "hsl(120 50% 50%)").ok).toBe(false);
+    expect(matchesPermittedShape("--color-fabricated", "42").ok).toBe(false);
+    expect(matchesPermittedShape("--color-fabricated", "calc(1px + 2px)").ok).toBe(false);
+    expect(matchesPermittedShape("--color-fabricated", "color-mix(in oklab, red, blue)").ok).toBe(
+      false,
+    );
+    // And the legitimate shape, with the correct sentinel for its own
+    // namespace, is accepted — proving the rejections above are about shape,
+    // not about the check being unconditionally negative.
+    expect(
+      matchesPermittedShape(
+        "--color-fabricated",
+        "var(--mosaic-color-fabricated, oklch(0.75 0.35 320))",
+      ).ok,
+    ).toBe(true);
   });
 
-  it("every sentinel literal is present only inside a var() fallback, never as a bare declaration value", () => {
-    for (const sentinel of sentinelLiterals) {
-      const escaped = sentinel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const bareRe = new RegExp(`:\\s*${escaped}\\s*;`);
-      expect(
-        bareRe.test(themeCss),
-        `sentinel "${sentinel}" appears as a bare (non-var) value`,
-      ).toBe(false);
-    }
+  it("zero escapes: every generated declaration matches the one permitted shape for its own namespace", () => {
+    const escapes = declarations
+      .map(({ prop, value }) => ({ prop, value, result: matchesPermittedShape(prop, value) }))
+      .filter((d) => !d.result.ok);
+    expect(
+      escapes.map((e) => `${e.prop}: ${e.value}`),
+      `escapes from the permitted shape: ${escapes
+        .map((e) => (e.result.ok ? "" : `${e.prop} — ${e.result.reason}`))
+        .join("; ")}`,
+    ).toEqual([]);
+  });
+
+  it("zero false rejections: every generated declaration is ALSO accepted (the check does not reject the legitimate)", () => {
+    const accepted = declarations.filter(
+      ({ prop, value }) => matchesPermittedShape(prop, value).ok,
+    );
+    expect(accepted.length, "count of accepted legitimate declarations").toBe(declarations.length);
+  });
+
+  it("every accepted declaration's --mosaic-<name> resolves to a property actually declared in tokens.css", () => {
+    const danglingRefs = declarations.flatMap(({ value }) => {
+      const m = value.match(/^var\((--mosaic-[\w-]+),/);
+      const ref = m?.[1];
+      if (ref === undefined) return [];
+      return declaredNames.has(ref) ? [] : [ref];
+    });
+    expect(danglingRefs, `references undeclared mosaic vars: ${danglingRefs.join(", ")}`).toEqual(
+      [],
+    );
+  });
+
+  it("the 'duration' divergence, negative pole: a duration entry present in theme.css is rejected by the shape check (no namespace maps to it)", () => {
+    const withStrayDuration = "--duration-fast: var(--mosaic-duration-fast, 100ms);";
+    const parsed = parseThemeDeclarations(withStrayDuration);
+    expect(parsed).toHaveLength(1);
+    const strayDeclaration = parsed[0];
+    if (strayDeclaration === undefined) throw new Error("expected exactly one parsed declaration");
+    const result = matchesPermittedShape(strayDeclaration.prop, strayDeclaration.value);
+    expect(result.ok).toBe(false);
+  });
+
+  it("the 'duration' divergence, positive pole: zero generated declarations reference any --mosaic-duration-* name", () => {
+    const durationRefs = declarations.filter(({ value }) => value.includes("--mosaic-duration-"));
+    expect(durationRefs, "declarations referencing a duration token").toEqual([]);
   });
 });
 
