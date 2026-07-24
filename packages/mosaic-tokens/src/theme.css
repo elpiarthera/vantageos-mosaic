@@ -1,0 +1,106 @@
+/*
+ * GENERATED FILE — do not edit by hand.
+ * Produced by scripts/derive-tailwind-theme.mjs from src/tokens.css.
+ * Run `npm run tailwind-theme:build` (or the pnpm/yarn equivalent) to regenerate.
+ *
+ * Every entry below is a var() REFERENCE to a --mosaic-* custom property
+ * declared in tokens.css — never a duplicated literal value. The second
+ * var() argument is a loud, out-of-scale fallback: if the referenced
+ * --mosaic-* property is ever removed while this file still points at it,
+ * the fallback renders instead of silently resolving to nothing.
+ *
+ * The "duration" mosaic category is intentionally NOT represented here —
+ * Tailwind v4 has no themable namespace for transition duration. See the
+ * generator script docstring for the full mapping and this declared
+ * divergence.
+ *
+ * digest: 9ede4983d21a3126
+ */
+@theme {
+  --color-accent: var(--mosaic-color-accent, oklch(0.75 0.35 320));
+  --color-accent-foreground: var(--mosaic-color-accent-foreground, oklch(0.75 0.35 320));
+  --color-background: var(--mosaic-color-background, oklch(0.75 0.35 320));
+  --color-border: var(--mosaic-color-border, oklch(0.75 0.35 320));
+  --color-card: var(--mosaic-color-card, oklch(0.75 0.35 320));
+  --color-card-foreground: var(--mosaic-color-card-foreground, oklch(0.75 0.35 320));
+  --color-chart-1: var(--mosaic-color-chart-1, oklch(0.75 0.35 320));
+  --color-chart-2: var(--mosaic-color-chart-2, oklch(0.75 0.35 320));
+  --color-chart-3: var(--mosaic-color-chart-3, oklch(0.75 0.35 320));
+  --color-chart-4: var(--mosaic-color-chart-4, oklch(0.75 0.35 320));
+  --color-chart-5: var(--mosaic-color-chart-5, oklch(0.75 0.35 320));
+  --color-danger-50: var(--mosaic-color-danger-50, oklch(0.75 0.35 320));
+  --color-danger-500: var(--mosaic-color-danger-500, oklch(0.75 0.35 320));
+  --color-danger-700: var(--mosaic-color-danger-700, oklch(0.75 0.35 320));
+  --color-destructive: var(--mosaic-color-destructive, oklch(0.75 0.35 320));
+  --color-destructive-foreground: var(--mosaic-color-destructive-foreground, oklch(0.75 0.35 320));
+  --color-foreground: var(--mosaic-color-foreground, oklch(0.75 0.35 320));
+  --color-info-50: var(--mosaic-color-info-50, oklch(0.75 0.35 320));
+  --color-info-500: var(--mosaic-color-info-500, oklch(0.75 0.35 320));
+  --color-info-700: var(--mosaic-color-info-700, oklch(0.75 0.35 320));
+  --color-input: var(--mosaic-color-input, oklch(0.75 0.35 320));
+  --color-muted: var(--mosaic-color-muted, oklch(0.75 0.35 320));
+  --color-muted-foreground: var(--mosaic-color-muted-foreground, oklch(0.75 0.35 320));
+  --color-neutral-50: var(--mosaic-color-neutral-50, oklch(0.75 0.35 320));
+  --color-neutral-500: var(--mosaic-color-neutral-500, oklch(0.75 0.35 320));
+  --color-neutral-700: var(--mosaic-color-neutral-700, oklch(0.75 0.35 320));
+  --color-popover: var(--mosaic-color-popover, oklch(0.75 0.35 320));
+  --color-popover-foreground: var(--mosaic-color-popover-foreground, oklch(0.75 0.35 320));
+  --color-primary: var(--mosaic-color-primary, oklch(0.75 0.35 320));
+  --color-primary-foreground: var(--mosaic-color-primary-foreground, oklch(0.75 0.35 320));
+  --color-ring: var(--mosaic-color-ring, oklch(0.75 0.35 320));
+  --color-secondary: var(--mosaic-color-secondary, oklch(0.75 0.35 320));
+  --color-secondary-foreground: var(--mosaic-color-secondary-foreground, oklch(0.75 0.35 320));
+  --color-sidebar: var(--mosaic-color-sidebar, oklch(0.75 0.35 320));
+  --color-sidebar-accent: var(--mosaic-color-sidebar-accent, oklch(0.75 0.35 320));
+  --color-sidebar-border: var(--mosaic-color-sidebar-border, oklch(0.75 0.35 320));
+  --color-sidebar-foreground: var(--mosaic-color-sidebar-foreground, oklch(0.75 0.35 320));
+  --color-success-50: var(--mosaic-color-success-50, oklch(0.75 0.35 320));
+  --color-success-500: var(--mosaic-color-success-500, oklch(0.75 0.35 320));
+  --color-success-700: var(--mosaic-color-success-700, oklch(0.75 0.35 320));
+  --color-warning-50: var(--mosaic-color-warning-50, oklch(0.75 0.35 320));
+  --color-warning-500: var(--mosaic-color-warning-500, oklch(0.75 0.35 320));
+  --color-warning-700: var(--mosaic-color-warning-700, oklch(0.75 0.35 320));
+  --ease-ease: var(--mosaic-easing-ease, steps(1));
+  --ease-in: var(--mosaic-easing-in, steps(1));
+  --ease-in-out: var(--mosaic-easing-in-out, steps(1));
+  --ease-linear: var(--mosaic-easing-linear, steps(1));
+  --ease-out: var(--mosaic-easing-out, steps(1));
+  --ease-out-expo: var(--mosaic-easing-out-expo, steps(1));
+  --font-mono: var(--mosaic-font-mono, "MOSAIC-TOKEN-MISSING", sans-serif);
+  --font-sans: var(--mosaic-font-sans, "MOSAIC-TOKEN-MISSING", sans-serif);
+  --font-weight-bold: var(--mosaic-fw-bold, 133);
+  --font-weight-medium: var(--mosaic-fw-medium, 133);
+  --font-weight-regular: var(--mosaic-fw-regular, 133);
+  --font-weight-semibold: var(--mosaic-fw-semibold, 133);
+  --leading-normal: var(--mosaic-lh-normal, 999);
+  --leading-relaxed: var(--mosaic-lh-relaxed, 999);
+  --leading-tight: var(--mosaic-lh-tight, 999);
+  --radius-full: var(--mosaic-radius-full, 999px);
+  --radius-lg: var(--mosaic-radius-lg, 999px);
+  --radius-md: var(--mosaic-radius-md, 999px);
+  --radius-none: var(--mosaic-radius-none, 999px);
+  --radius-sm: var(--mosaic-radius-sm, 999px);
+  --radius-xl: var(--mosaic-radius-xl, 999px);
+  --radius-xs: var(--mosaic-radius-xs, 999px);
+  --shadow-0: var(--mosaic-shadow-0, 0 0 0 999px oklch(0.75 0.35 320));
+  --shadow-1: var(--mosaic-shadow-1, 0 0 0 999px oklch(0.75 0.35 320));
+  --shadow-2: var(--mosaic-shadow-2, 0 0 0 999px oklch(0.75 0.35 320));
+  --shadow-3: var(--mosaic-shadow-3, 0 0 0 999px oklch(0.75 0.35 320));
+  --shadow-4: var(--mosaic-shadow-4, 0 0 0 999px oklch(0.75 0.35 320));
+  --shadow-5: var(--mosaic-shadow-5, 0 0 0 999px oklch(0.75 0.35 320));
+  --spacing-1: var(--mosaic-space-1, 999px);
+  --spacing-12: var(--mosaic-space-12, 999px);
+  --spacing-16: var(--mosaic-space-16, 999px);
+  --spacing-2: var(--mosaic-space-2, 999px);
+  --spacing-3: var(--mosaic-space-3, 999px);
+  --spacing-4: var(--mosaic-space-4, 999px);
+  --spacing-6: var(--mosaic-space-6, 999px);
+  --spacing-8: var(--mosaic-space-8, 999px);
+  --text-2xl: var(--mosaic-text-2xl, 999px);
+  --text-3xl: var(--mosaic-text-3xl, 999px);
+  --text-base: var(--mosaic-text-base, 999px);
+  --text-lg: var(--mosaic-text-lg, 999px);
+  --text-sm: var(--mosaic-text-sm, 999px);
+  --text-xl: var(--mosaic-text-xl, 999px);
+  --text-xs: var(--mosaic-text-xs, 999px);
+}

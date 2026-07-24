@@ -13,8 +13,15 @@
  *
  * Mirror of tokens.ts. Consumers can:
  *   1. import "@vantageos/mosaic-tokens/css" — surface in :root globally
- *   2. apply the Tailwind v4 plugin (./tailwind) for @theme inline integration
- *   3. import the JS tokens for typed runtime access
+ *   2. import "@vantageos/mosaic-tokens/theme.css" (generated, see
+ *      scripts/derive-tailwind-theme.mjs) for a native Tailwind v4 `@theme`
+ *      block — this is what actually produces `bg-danger-500`-style
+ *      utilities; this file's plain `:root` block does NOT.
+ *   3. apply the Tailwind v4 plugin (./tailwind) — a v3-shaped
+ *      `theme.extend` object (see src/tailwind-plugin.ts), for projects on a
+ *      plugin-based Tailwind config rather than a CSS-first `@theme` one.
+ *      It does not provide "@theme inline integration"; surface 2 does.
+ *   4. import the JS tokens for typed runtime access
  *
  * Naming convention: --mosaic-<category>-<key>. Categories: color, space,
  * text, lh, fw, font, shadow, radius, duration, easing. All vars declared on
