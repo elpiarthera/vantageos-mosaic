@@ -41,6 +41,27 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   lesson, the cross-runtime architecture and the migration guide. Written for 0.3.1 and itself
   unpublished until now, which is why this release follows it rather than a recalled procedure.
 
+### Documentation
+- **The package README was frozen at 0.3.1 and is rewritten against the built artifact.**
+  It told a consumer to `npm install @vantageos/mosaic@^0.2.0 @vantageos/mosaic-tokens@^0.2.0`,
+  neither of which is what ships. Corrected to the versions actually published.
+- **Six sentences claiming form primitives were still unshipped are deleted.** Each had
+  been appended as a primitive landed and never removed, so each sat directly above a
+  table row documenting the very primitive it called missing. All of Input, Textarea,
+  Select, Checkbox, MultiSelect, RadioGroup and FieldArray are exported — read from
+  `dist/react/forms.d.ts`, not from the prose.
+- **A derived per-subpath export inventory replaces a partial list that read as complete.**
+  It records that `media` exports no components although it is one of the seven categories
+  gated for cross-runtime parity.
+- **Bundle sizes are the `size-limit` output with their gates**, replacing figures for
+  surfaces the gate no longer measures.
+- **The changelog link pointed at the repo root**, which is not the file the tarball
+  carries; it now points at this one.
+- **The README stated MIT, and `package.json` carries no `license` field** while `files`
+  ships no LICENSE. The unbacked claim is removed rather than restated: naming the licence
+  is an ownership decision, not a documentation fix, and it is tracked separately. A
+  consumer installing this package currently receives no licence terms.
+
 ### Changed
 - **`@vantageos/mosaic-tokens` moves from `^0.2.0` to `^0.7.0`** in the published manifest. This is
   why the release is `0.4.0` and not the `0.3.2` the source commit targeted: `^0.2.0` does **not**

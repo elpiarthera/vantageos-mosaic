@@ -6,10 +6,10 @@ Fleet-wide MCP UI design system. Zod-validated, taxonomy-organized (6 categories
 
 ```sh
 # React 19
-npm install @vantageos/mosaic@^0.2.0 @vantageos/mosaic-tokens@^0.2.0 react react-dom
+npm install @vantageos/mosaic@^0.4.0 @vantageos/mosaic-tokens@^0.7.0 react react-dom
 
 # Preact 10
-npm install @vantageos/mosaic@^0.2.0 @vantageos/mosaic-tokens@^0.2.0 preact
+npm install @vantageos/mosaic@^0.4.0 @vantageos/mosaic-tokens@^0.7.0 preact
 ```
 
 All runtime peers are marked optional via `peerDependenciesMeta` — install only what your runtime needs.
@@ -32,7 +32,7 @@ This constraint is codified locally via the `build` script (the `NODE_OPTIONS` p
 |---|---|---|
 | `@vantageos/mosaic` | React 19 (back-compat) | v0.1.x consumers (Sigma VP, Theta CRM) |
 | `@vantageos/mosaic/<cat>` | React 19 (back-compat) | Tree-shakable category imports v0.1.x style |
-| `@vantageos/mosaic/react` | React 19 | New v0.2.0+ React consumers — explicit runtime opt-in |
+| `@vantageos/mosaic/react` | React 19 | React consumers — explicit runtime opt-in (the preferred surface since v0.2.0) |
 | `@vantageos/mosaic/react/<cat>` | React 19 | Tree-shakable category imports under explicit react/ prefix |
 | `@vantageos/mosaic/preact` | Preact 10 | Mu vantage-bridge iframe, Chi gptpowerups (LLM-host target) |
 | `@vantageos/mosaic/preact/<cat>` | Preact 10 | Tree-shakable category imports under preact/ prefix |
@@ -44,7 +44,7 @@ This constraint is codified locally via the `build` script (the `NODE_OPTIONS` p
 ## Quick start
 
 ```tsx
-// React 19 — preferred v0.2.0+ surface
+// React 19 — the preferred runtime-explicit surface
 import { ProgressBar } from "@vantageos/mosaic/react/progress";
 import { ConfirmDialog } from "@vantageos/mosaic/react/confirmation";
 import "@vantageos/mosaic-tokens/css"; // declares --mosaic-* vars on :root
@@ -64,7 +64,7 @@ export function MyComponent({ progress, label }: { progress: number; label: stri
 }
 ```
 
-## Forms (v0.3.0-alpha.1)
+## Forms
 
 `@vantageos/mosaic/{react,preact}/forms` — composite form primitives wrapping `react-hook-form` + `@hookform/resolvers/zod`. Default validation mode is `onBlur` (Chi co-validated, Day 102 DM). Cross-runtime: same imports, React 19 path or Preact 10 path.
 
@@ -130,17 +130,14 @@ export function SignupForm({ onSubmit }: { onSubmit: (data: z.infer<typeof schem
 | `<SubmitButton label="..." loadingLabel="..." />` | Bound to the surrounding `FormProvider`. Disabled while invalid OR submitting. |
 | `<Input name="..." type="text\|email\|password\|number\|url" label="..." placeholder? disabled? autoComplete? />` | Single-field `<input>` bound to the surrounding `FormProvider`. `label` is required (consumer-driven i18n). Emits `aria-invalid` + `aria-describedby` on validation error. |
 
-Field primitives (Textarea, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T12-T20 — see `docs/v0.3.0-plan.md` §7.
 | `<Textarea name="..." rows? maxLength? autoResize? placeholder? disabled? label?  />` | Multi-line text input field primitive. `rows` default 3, `maxLength` enforced via shared logic gate, optional `autoResize` grows to content. `aria-invalid` + `aria-describedby` on error. |
 
-Remaining field primitives (Input shipped T11, Select, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T13-T20 — see `docs/v0.3.0-plan.md` §7.
 | `useFieldArray({ name, control? })` | Thin wrapper around RHF's `useFieldArray`. Returns `{ fields, append, remove, move, swap }` + the rest of RHF's native return for advanced cases. Reads `control` from `FormProvider` when omitted. |
 | `<FieldArray name="...">{({ field, index }, { append, remove, move, swap, fields }) => ...}</FieldArray>` | Render-prop wrapper around `useFieldArray`. Emits `role="list"` shell + `role="listitem"` per row, keyed by RHF's stable `field.id` (NOT array index). Powers PromptForm Add Variable, Hermes variable mappings, Demeter filter chips. |
 
 | `<Checkbox name="..." label="..." indeterminate? description? disabled? />` | Boolean checkbox primitive. `indeterminate=true` → `aria-checked="mixed"` + DOM `.indeterminate=true` via ref. `description` wired via `aria-describedby`. `aria-invalid` + `aria-describedby` on error. |
 | `<RadioGroup name="..." label="..." options={[...]} orientation? disabled? />` | WCAG-AA radiogroup. Roving tabIndex, Arrow key selection sync, Home/End, Space/Enter. |
 
-Remaining field primitives (Input, Textarea, Select, MultiSelect) land in T11-T15 + T18-T20 — see `docs/v0.3.0-plan.md` §7.
 
 ### RadioGroup
 
@@ -191,13 +188,10 @@ export function PlanSelector() {
 - `aria-disabled` on disabled options; disabled options skipped in arrow nav
 - `aria-orientation` reflects `orientation` prop
 
-Field primitives (Textarea, Select, MultiSelect, RadioGroup, FieldArray) land in T12-T20 — see `docs/v0.3.0-plan.md` §7.
 | `<MultiSelect name="..." label="..." options={...} placeholder? disabled? searchable? maxItems? />` | Multi-value dropdown. RHF value is `string[]`. Selected items render as removable chips (Backspace/Delete on trigger removes last, per-chip × removes specific). WCAG-AA combobox (`role=combobox aria-multiselectable=true`), Arrow/Enter keyboard nav, optional case-insensitive search, optional `maxItems` cap. |
 
-Remaining field primitives (Input + Textarea + MultiSelect shipped T11/T12/T15; Select, Checkbox, RadioGroup, FieldArray) land in T13-T20 — see `docs/v0.3.0-plan.md` §7.
 | `<Select name="..." label="..." options={[...]} />` | Single-select dropdown (combobox+listbox APG). Optional `searchable` prop enables in-popup filter. Full keyboard nav + type-ahead. WCAG-AA strict. |
 
-Field primitives (Input, Textarea, Checkbox, MultiSelect, RadioGroup, FieldArray) land in T11, T14-T20 — see `docs/v0.3.0-plan.md` §7.
 
 
 
@@ -216,7 +210,54 @@ const resource = createMosaicResource({
 
 ## Components
 
+### What each subpath actually exports
+
+Derived from the built type declarations, not maintained by hand:
+
+```sh
+# capitalised exports per subpath, excluding the
+# Props/Schema/Validated/Option/Args/Return/Options/Shape/Mode/Type/Controls suffixes
+node -e '...' # see the release PR for the exact script
+```
+
+| Subpath | Exports |
+|---|---|
+| `forms` | Checkbox, ErrorDisplay, FieldArray, FormField, FormProvider, Input, MultiSelect, RadioGroup, Select, SubmitButton, Textarea |
+| `display` | Badge, EmptyState, Skeleton, StatusBadge, StreamingTableView, TableView, VirtualList |
+| `progress` | ProgressBar |
+| `input` | Tabs |
+| `confirmation` | Alert, ConfirmDialog, ConfirmModal, TokenDisplayOnceModal |
+| `artifacts` | MarkdownRenderer |
+| `media` | *(none)* |
+
+Two things this table says that prose would have hidden. **`media` exports no
+components**, although it is one of the seven categories gated for cross-runtime
+parity — the subpath exists and is empty of components. And the sections below
+document only a few of these; the table is the inventory, the sections are
+examples. Previously the sections WERE presented as the inventory, which is how
+six separate sentences came to claim that form primitives were still unshipped
+while a table row documenting each one sat directly beneath them.
+
+The same list for `preact` is identical by construction — cross-runtime parity is
+gated in CI (`scripts/verify-build-parity.sh`).
+
 ### Display
+
+#### Badge
+
+Static label primitive, cross-runtime. New in 0.4.0 — it was merged to `main` well
+before and shipped in no published version until then.
+
+```tsx
+import { Badge } from "@vantageos/mosaic/react/display";
+// Preact: import { Badge } from "@vantageos/mosaic/preact/display";
+
+<Badge variant="success">Active</Badge>
+```
+
+See `src/components/display/Badge.schema.ts` for the prop contract and
+`Badge.stories.tsx` for the rendered variants — both ship in the repo, and the
+schema is the authority on the props rather than this snippet.
 
 #### VirtualList
 
@@ -278,18 +319,33 @@ Consumer-driven i18n contract: components NEVER render raw alphabetic text as JS
 // <ProgressBar value={50} label="Uploading…" />
 ```
 
-## Bundle sizes (v0.2.0)
+## Bundle sizes
 
-| Surface | gz |
-|---|---|
-| `@vantageos/mosaic-tokens/dist/index.js` | 649 B (87% under the 5 KB gate) |
-| `@vantageos/mosaic-tokens/src/tokens.css` | 560 B (81% under the 3 KB gate) |
-| Per-component subpath (React) | tree-shakeable, see size-limit.json |
+Every figure below is the output of `pnpm --filter @vantageos/mosaic run size-limit`
+against the built `dist/`, and the gates are the `limit` values in
+`packages/mosaic/.size-limit.json`. Re-run the command rather than trusting this
+table: a size written by hand is wrong at the next dependency bump.
+
+| Surface | gz | gate |
+|---|---|---|
+| `dist/index.js` | 133.21 kB | 250 kB |
+| `dist/react/forms.js` | 20.79 kB | 50 kB |
+| `dist/preact/forms.js` | 20.79 kB | 50 kB |
+
+Per-component subpaths are tree-shakeable; only the three surfaces above are gated.
 
 ## License
 
-MIT. © VantageOS / ElPi Corp.
+© VantageOS / ElPi Corp.
+
+**The `license` field is absent from this package's `package.json`, and no LICENSE
+file is listed in `files`.** This README previously stated MIT; that claim was not
+backed by either the manifest or a shipped licence file, so it has been removed
+rather than restated. A consumer installing this package currently receives no
+licence terms. Naming the licence is an ownership decision, not a documentation
+fix, and it is tracked rather than guessed here.
 
 ## Changelog
 
-See repo root [`CHANGELOG.md`](../../CHANGELOG.md).
+[`CHANGELOG.md`](./CHANGELOG.md), which ships inside the published tarball — the
+repo-root file this used to point at is not what a consumer receives.
