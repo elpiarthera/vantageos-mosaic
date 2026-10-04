@@ -1,6 +1,6 @@
 # @vantageos/mosaic
 
-Fleet-wide MCP UI design system. Zod-validated, taxonomy-organized (6 categories: progress, input, display, artifacts, confirmation, media), streaming-ready, **cross-runtime React 19 + Preact 10**. Built for MCP Apps (SEP-1865 extension).
+Fleet-wide MCP UI design system. Zod-validated, taxonomy-organized (7 categories: artifacts, confirmation, display, forms, input, media, progress), streaming-ready, **cross-runtime React 19 + Preact 10**. Built for MCP Apps (SEP-1865 extension).
 
 ## Install
 
@@ -301,7 +301,7 @@ type Task = { id: string; title: string; status: string };
 ## Doctrine
 
 - **Pattern 1 (Zod runtime validation)** — every component validates props at the MCP host boundary; invalid props render an a11y fallback (`role="alert"`), never white-screen.
-- **Pattern 2 (6-category taxonomy)** — components live under exactly one category. Bilingual `category.meta.json` per category.
+- **Pattern 2 (category taxonomy)** — components live under exactly one category. Bilingual `category.meta.json` per category. The category list is the bare subpaths in the `exports` map, which is the authority; a count written here would be wrong at the next category added, as it was.
 - **Pattern 3 (Registry-gated)** — `registry.yaml` declares every component; CI gate ensures parity between source and registry.
 - **Pattern 4 (Streaming-hydration ready)** — components opt-in to MCP Apps streaming via `getStreamFor()` callbacks.
 
