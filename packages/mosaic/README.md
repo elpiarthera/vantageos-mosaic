@@ -336,14 +336,21 @@ Per-component subpaths are tree-shakeable; only the three surfaces above are gat
 
 ## License
 
-© VantageOS / ElPi Corp.
+**FSL-1.1-Apache-2.0** — Functional Source License, Version 1.1, Apache 2.0 Future
+License. © VantageOS / ElPi Corp.
 
-**The `license` field is absent from this package's `package.json`, and no LICENSE
-file is listed in `files`.** This README previously stated MIT; that claim was not
-backed by either the manifest or a shipped licence file, so it has been removed
-rather than restated. A consumer installing this package currently receives no
-licence terms. Naming the licence is an ownership decision, not a documentation
-fix, and it is tracked rather than guessed here.
+The full text ships in the published tarball as [`LICENSE`](./LICENSE), and
+`package.json` carries `"license": "FSL-1.1-Apache-2.0"`, so a consumer receives the
+terms with the package rather than having to find them.
+
+This is the same licence as every sibling `@vantageos` package — verified against
+what the registry actually serves for `@vantageos/mosaic-blocks`,
+`@vantageos/mosaic-tokens` and `@vantageos/mcp-doctor`, not against a convention
+recalled from elsewhere, and the file is byte-identical to theirs
+(sha256 `3d458972e6e84e5d2361a886ef64b07aefdc38dd8955e281ea8c2ae8849646a4`).
+
+Versions up to and including 0.3.1 shipped with no licence field and no licence
+file. From 0.4.0 they are present.
 
 ## Changelog
 

@@ -57,10 +57,18 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   surfaces the gate no longer measures.
 - **The changelog link pointed at the repo root**, which is not the file the tarball
   carries; it now points at this one.
-- **The README stated MIT, and `package.json` carries no `license` field** while `files`
-  ships no LICENSE. The unbacked claim is removed rather than restated: naming the licence
-  is an ownership decision, not a documentation fix, and it is tracked separately. A
-  consumer installing this package currently receives no licence terms.
+- **The README stated MIT while `package.json` carried no `license` field** and `files`
+  shipped no LICENSE, so every version up to 0.3.1 reached consumers with no licence terms
+  at all.
+
+### Added — licence
+- **`FSL-1.1-Apache-2.0` is now declared and shipped.** `package.json` carries the
+  `license` field, `LICENSE` is in `files`, and the file is byte-identical to the one every
+  sibling `@vantageos` package ships
+  (sha256 `3d458972e6e84e5d2361a886ef64b07aefdc38dd8955e281ea8c2ae8849646a4`). Verified
+  against what the registry serves for `mosaic-blocks`, `mosaic-tokens` and `mcp-doctor` —
+  this package was the only one of the four publishing `license: NONE`. Nothing about the
+  terms is new; they were simply never attached to this package.
 
 ### Changed
 - **`@vantageos/mosaic-tokens` moves from `^0.2.0` to `^0.7.0`** in the published manifest. This is
