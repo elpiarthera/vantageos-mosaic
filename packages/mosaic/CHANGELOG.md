@@ -28,6 +28,39 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.4.0] — 2026-10-04
+
+### Added
+- **Badge primitive, cross-runtime.** `Badge` is exported from `./display`, `./react/display` and
+  `./preact/display`, with its schema, stories, i18n strings and a 205-line React test. Landed on
+  `main` in #61 against `target 0.3.2` and unpublished until this release, so no consumer could
+  import it.
+- **`docs/GA-RELEASE-V0.3.1.md`** — the canonical release procedure (bilingual EN+FR): the five
+  fail-closed CI gate jobs, the `ETA_APPROVED_TASK_ID` approval hook, the
+  `prepublishOnly`/`postpublish` workspace-rewrite pattern, the 0.3.0 → 0.3.1 incident and its
+  lesson, the cross-runtime architecture and the migration guide. Written for 0.3.1 and itself
+  unpublished until now, which is why this release follows it rather than a recalled procedure.
+
+### Changed
+- **`@vantageos/mosaic-tokens` moves from `^0.2.0` to `^0.7.0`** in the published manifest. This is
+  why the release is `0.4.0` and not the `0.3.2` the source commit targeted: `^0.2.0` does **not**
+  satisfy `0.7.0` (a caret on a `0.x` range pins the minor), so a consumer upgrading receives a
+  five-minor jump in a runtime dependency. On a `0.x` package the minor is the only available
+  signal for that, and a patch number would have understated it.
+
+  The range was never edited by hand — the manifest carries `workspace:*` and `prepublishOnly`
+  resolves it to whatever the sibling package is at, which is now `0.7.0`. That is correct
+  behaviour and it is precisely why the published version has to be derived from the packed
+  tarball rather than from the commit that said `target 0.3.2`.
+
+### Note on this release
+Nothing else changed in the source. `latest` served `0.3.1` from 2026-06-13 until this version, so
+the items above are the entire delta a consumer receives — derived by locating the commit that set
+the version to `0.3.1` and listing what touched `packages/mosaic` after it, not by reading a date
+window (a date window includes the release commits themselves and reported 19).
+
+---
+
 ## [0.3.1] — 2026-06-13 — hotfix: workspace:* leak in published 0.3.0 manifest (Path B — root-cause fix)
 
 ### Fixed
