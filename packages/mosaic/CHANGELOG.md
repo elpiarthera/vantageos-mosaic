@@ -28,6 +28,68 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.4.0] — 2026-10-04
+
+### Added
+- **Badge primitive, cross-runtime.** `Badge` is exported from `./display`, `./react/display` and
+  `./preact/display`, with its schema, stories, i18n strings and a 205-line React test. Landed on
+  `main` in #61 against `target 0.3.2` and unpublished until this release, so no consumer could
+  import it.
+- **`docs/GA-RELEASE-V0.3.1.md`** — the canonical release procedure (bilingual EN+FR): the five
+  fail-closed CI gate jobs, the `ETA_APPROVED_TASK_ID` approval hook, the
+  `prepublishOnly`/`postpublish` workspace-rewrite pattern, the 0.3.0 → 0.3.1 incident and its
+  lesson, the cross-runtime architecture and the migration guide. Written for 0.3.1 and itself
+  unpublished until now, which is why this release follows it rather than a recalled procedure.
+
+### Documentation
+- **The package README was frozen at 0.3.1 and is rewritten against the built artifact.**
+  It told a consumer to `npm install @vantageos/mosaic@^0.2.0 @vantageos/mosaic-tokens@^0.2.0`,
+  neither of which is what ships. Corrected to the versions actually published.
+- **Six sentences claiming form primitives were still unshipped are deleted.** Each had
+  been appended as a primitive landed and never removed, so each sat directly above a
+  table row documenting the very primitive it called missing. All of Input, Textarea,
+  Select, Checkbox, MultiSelect, RadioGroup and FieldArray are exported — read from
+  `dist/react/forms.d.ts`, not from the prose.
+- **A derived per-subpath export inventory replaces a partial list that read as complete.**
+  It records that `media` exports no components although it is one of the seven categories
+  gated for cross-runtime parity.
+- **Bundle sizes are the `size-limit` output with their gates**, replacing figures for
+  surfaces the gate no longer measures.
+- **The changelog link pointed at the repo root**, which is not the file the tarball
+  carries; it now points at this one.
+- **The README stated MIT while `package.json` carried no `license` field** and `files`
+  shipped no LICENSE, so every version up to 0.3.1 reached consumers with no licence terms
+  at all.
+
+### Added — licence
+- **`FSL-1.1-Apache-2.0` is now declared and shipped.** `package.json` carries the
+  `license` field, `LICENSE` is in `files`, and the file is byte-identical to the one every
+  sibling `@vantageos` package ships
+  (sha256 `3d458972e6e84e5d2361a886ef64b07aefdc38dd8955e281ea8c2ae8849646a4`). Verified
+  against what the registry serves for `mosaic-blocks`, `mosaic-tokens` and `mcp-doctor` —
+  this package was the only one of the four publishing `license: NONE`. Nothing about the
+  terms is new; they were simply never attached to this package.
+
+### Changed
+- **`@vantageos/mosaic-tokens` moves from `^0.2.0` to `^0.7.0`** in the published manifest. This is
+  why the release is `0.4.0` and not the `0.3.2` the source commit targeted: `^0.2.0` does **not**
+  satisfy `0.7.0` (a caret on a `0.x` range pins the minor), so a consumer upgrading receives a
+  five-minor jump in a runtime dependency. On a `0.x` package the minor is the only available
+  signal for that, and a patch number would have understated it.
+
+  The range was never edited by hand — the manifest carries `workspace:*` and `prepublishOnly`
+  resolves it to whatever the sibling package is at, which is now `0.7.0`. That is correct
+  behaviour and it is precisely why the published version has to be derived from the packed
+  tarball rather than from the commit that said `target 0.3.2`.
+
+### Note on this release
+Nothing else changed in the source. `latest` served `0.3.1` from 2026-06-13 until this version, so
+the items above are the entire delta a consumer receives — derived by locating the commit that set
+the version to `0.3.1` and listing what touched `packages/mosaic` after it, not by reading a date
+window (a date window includes the release commits themselves and reported 19).
+
+---
+
 ## [0.3.1] — 2026-06-13 — hotfix: workspace:* leak in published 0.3.0 manifest (Path B — root-cause fix)
 
 ### Fixed

@@ -1,7 +1,8 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.3.1",
-  "description": "Fleet-wide MCP UI design system — 6-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
+  "version": "0.4.0",
+  "license": "FSL-1.1-Apache-2.0",
+  "description": "Fleet-wide MCP UI design system — 7-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -135,6 +136,7 @@
     "dist",
     "registry.yaml",
     "README.md",
+    "LICENSE",
     "CHANGELOG.md"
   ],
   "sideEffects": false,
