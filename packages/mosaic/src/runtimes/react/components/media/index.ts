@@ -1,8 +1,13 @@
 /**
- * @vantageos/mosaic/react/media — runtime subpath barrel (skeleton).
+ * @vantageos/mosaic/react/media — runtime subpath barrel.
  *
- * Populated in T3-C (react: migrate v0.1.2) / T3-D (preact: port) and
- * T3-E/F/G/H/I (Batch 1 cross-BU additions). T3-A only scaffolds the
- * subpath surface so tsup multi-entry build resolves cleanly.
+ * StatusBadge is implemented under components/display (kept there for
+ * back-compat) and re-exported here because the registry assigns it to the
+ * `media` category. Same component, same schema: no second implementation.
  */
-export {};
+export { StatusBadge } from "../display/StatusBadge.js";
+export type { StatusBadgeProps } from "../../../../components/media/StatusBadge.schema.js";
+export {
+  StatusBadgePropsSchema,
+  validateProps as validateStatusBadgeProps,
+} from "../../../../components/media/StatusBadge.schema.js";

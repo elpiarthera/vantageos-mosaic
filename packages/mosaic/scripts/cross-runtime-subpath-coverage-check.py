@@ -42,6 +42,7 @@ CI consumer (B-PR3): this repo, .github/workflows/ci.yml "Gate 4 — Cross-runti
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Optional
@@ -159,6 +160,33 @@ def load_registry(registry_path: Path) -> Optional[set]:
     return {c["category"] for c in components if "category" in c}
 
 
+def count_exported_symbols(text: str) -> int:
+    """
+    Count the symbols a built ESM/d.ts entry exports. Zero means the entry is a
+    shell: byte size cannot tell (a sourcemap comment alone exceeds --min-bytes).
+
+    Export forms recognised (the ES module export grammar, closed set):
+      export { a, b as c }            (also `export { a } from "x"`, `export type { T }`)
+      export * from "x"  /  export * as ns from "x"
+      export [declare] const|let|var|function|class|interface|type|enum|namespace|abstract|async NAME
+      export default ...
+    `export {}` (no names) counts 0. Anything else counts 0 and the entry is
+    reported by name: the check fails closed, it never skips an entry it cannot read.
+    """
+    text = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
+    text = re.sub(r"(?m)//.*$", "", text)
+    n = 0
+    for m in re.finditer(r"\bexport\s+(?:type\s+)?\{([^}]*)\}", text):
+        n += len([x for x in m.group(1).split(",") if x.strip()])
+    n += len(re.findall(r"\bexport\s*\*", text))
+    n += len(re.findall(
+        r"\bexport\s+(?:declare\s+)?(?:default\b|const\b|let\b|var\b|function\b|class\b|"
+        r"interface\b|type\b\s+\w|enum\b|namespace\b|abstract\b|async\b)",
+        text,
+    ))
+    return n
+
+
 def check_file(exports: dict, exports_key: str, package_root: Path, min_bytes: int):
     """
     Check one exports key (e.g. './react/forms').
@@ -177,6 +205,18 @@ def check_file(exports: dict, exports_key: str, package_root: Path, min_bytes: i
     size = dist_abs.stat().st_size
     if size < min_bytes:
         return f"file-empty"
+    # Content, not presence: consumers import symbols. Check BOTH surfaces they
+    # resolve through the exports map: the runtime entry ("import") and the type
+    # entry ("types"). A populated entry must export >= 1 symbol on each.
+    types_rel = entry.get("types")
+    if not types_rel:
+        return "no-types-field"
+    types_abs = (package_root / types_rel).resolve()
+    if not types_abs.exists():
+        return f"types-file-not-found ({types_rel})"
+    for rel, path in ((dist_rel, dist_abs), (types_rel, types_abs)):
+        if count_exported_symbols(path.read_text(encoding="utf-8")) == 0:
+            return f"exports-zero-symbols ({rel})"
     return None
 
 
@@ -242,7 +282,7 @@ def emit_human(result: dict, package_root: Path, registry_path: Path, categories
     if result["pass"]:
         print(f"PASS (0 missing entries)")
         print()
-        print(f"All {categories_count} categories have non-empty /react and /preact counterparts.")
+        print(f"All {categories_count} categories have /react and /preact counterparts exporting at least one symbol.")
     else:
         n = len(result["missing"])
         print(f"FAIL ({n} missing {'entry' if n == 1 else 'entries'})")
