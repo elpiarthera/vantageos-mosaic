@@ -5,7 +5,8 @@
     },
     "error": {
       "invalidProps": "ProgressBar: invalid props"
-    }
+    },
+    "title": "Progress"
   },
   "ConfirmDialog": {
     "button": {
@@ -14,7 +15,9 @@
     },
     "aria": {
       "dialog": "Confirmation dialog"
-    }
+    },
+    "title": "Confirmation",
+    "options": "Options"
   },
   "TableView": {
     "aria": {
@@ -37,7 +40,11 @@
       "row": "Select row",
       "all": "Select all rows"
     },
-    "loading": "Loading table"
+    "loading": "Loading table",
+    "title": "Data table",
+    "markdown": {
+      "more": "{n} more rows"
+    }
   },
   "MarkdownRenderer": {
     "aria": {
@@ -46,7 +53,8 @@
     "error": {
       "invalidProps": "MarkdownRenderer: invalid props",
       "tooLong": "Content exceeds maximum length"
-    }
+    },
+    "title": "Markdown content"
   },
   "TokenDisplayOnceModal": {
     "button": {
@@ -56,7 +64,8 @@
     "warning": {
       "once": "This token will only be shown once. Copy it now."
     },
-    "copied": "Copied"
+    "copied": "Copied",
+    "title": "Token (shown once)"
   },
   "Badge": {
     "aria": {
@@ -72,7 +81,8 @@
     },
     "error": {
       "invalidProps": "StatusBadge: invalid props"
-    }
+    },
+    "title": "Status"
   },
   "Skeleton": {
     "aria": {

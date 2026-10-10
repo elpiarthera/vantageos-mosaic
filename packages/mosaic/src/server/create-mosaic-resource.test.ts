@@ -56,8 +56,8 @@ describe("createMosaicResource — exports", () => {
     expect(MCP_UI_CAPABILITY_KEY).toBe("io.modelcontextprotocol/ui");
   });
 
-  it("lists all 6 supported component names", () => {
-    expect(MOSAIC_SUPPORTED_COMPONENTS).toHaveLength(6);
+  it("lists all 12 supported component names (6 original + 6 views)", () => {
+    expect(MOSAIC_SUPPORTED_COMPONENTS).toHaveLength(12);
     for (const name of [
       "ProgressBar",
       "ConfirmDialog",

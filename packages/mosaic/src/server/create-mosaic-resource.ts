@@ -123,3 +123,12 @@ export function createMosaicResource(
 
 export const MOSAIC_SUPPORTED_COMPONENTS: readonly SupportedComponent[] = COMPONENT_KEYS;
 export type { SupportedComponent };
+
+// RED stub: the A-1 tool-result helper lands with the implementation.
+export function createMosaicToolResult(
+  _componentName: SupportedComponent,
+  _props: unknown,
+  _locale: "en" | "fr" = "en",
+): { content: Array<Record<string, unknown>> } {
+  return { content: [] };
+}
