@@ -8,3 +8,8 @@ export function isHttpUrl(value: unknown): value is string {
     return false;
   }
 }
+
+// RED stub.
+export function normalizeHttpUrl(_value: unknown): string | undefined {
+  return undefined;
+}
