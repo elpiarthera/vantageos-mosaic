@@ -11,6 +11,10 @@
  */
 
 /** Display modes the MCP Apps spec defines. */
+import { type SafeAreaInsets, readSafeAreaInsets } from "./safe-area.js";
+
+export * from "./safe-area.js";
+
 export type HostDisplayMode = "inline" | "fullscreen" | "pip";
 /** Display modes a mosaic view may request. `pip` is typed out: it is never requested. */
 export type RequestableDisplayMode = "inline" | "fullscreen";
@@ -38,6 +42,8 @@ export interface MosaicHostContext {
    * (openai/mcp-extensions docs/spec.md l.149-210, `DeepLinkHostState`).
    */
   deepLink: { url: string } | undefined;
+  /** `hostContext.safeAreaInsets` (MCP Apps spec l.582-587), pixels; undefined when absent. */
+  safeAreaInsets: SafeAreaInsets | undefined;
   isChatGpt: boolean;
   raw: RawHostContext;
 }
@@ -122,6 +128,7 @@ export function readHostContext(
         ? (ctx.containerDimensions as HostContainerDimensions)
         : undefined,
     deepLink: typeof linkUrl === "string" ? { url: linkUrl } : undefined,
+    safeAreaInsets: readSafeAreaInsets(ctx),
     isChatGpt: isChatGptHost(ctx, capabilities),
     raw: ctx,
   };
