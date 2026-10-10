@@ -52,7 +52,13 @@ describe("StatCard (R08)", () => {
 describe("StatCard schema + A-1 markdown", () => {
   it("defaults every field so {} parses", () => {
     const p = StatCardPropsSchema.parse({});
-    expect(p).toMatchObject({ label: "", value: "", tone: "neutral", loading: false, locale: "en" });
+    expect(p).toMatchObject({
+      label: "",
+      value: "",
+      tone: "neutral",
+      loading: false,
+      locale: "en",
+    });
     expect(StatCardPropsSchema.safeParse({ trend: "sideways" }).success).toBe(false);
   });
 

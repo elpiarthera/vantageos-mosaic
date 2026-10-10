@@ -59,7 +59,7 @@ describe("BalanceCard (R09, composes StatCard)", () => {
 
   it("shows the USD value when given", () => {
     render(<BalanceCard {...base} usdValue="4321.5" />);
-    expect(screen.queryAllByText(/4321\.5/)).toHaveLength(1);
+    expect(screen.queryAllByText(/\$4,321\.50/)).toHaveLength(1);
   });
 
   it("has a Skeleton loading state, an empty-args default and an alert on invalid props", () => {

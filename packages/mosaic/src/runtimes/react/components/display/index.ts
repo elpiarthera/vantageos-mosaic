@@ -68,3 +68,29 @@ export {
   TableViewPropsSchema,
   validateTableViewProps,
 } from "../../../../components/display/TableView.schema.js";
+
+/**
+ * StatCard — shared cross-runtime implementation (the tsup preact pass aliases react -> preact/compat).
+ */
+export { StatCard } from "../../../../components/display/StatCard.js";
+export type {
+  StatCardProps,
+  StatCardPropsOutput,
+} from "../../../../components/display/StatCard.schema.js";
+export {
+  StatCardPropsSchema,
+  validateStatCardProps,
+} from "../../../../components/display/StatCard.schema.js";
+
+/**
+ * BalanceCard — shared cross-runtime implementation (the tsup preact pass aliases react -> preact/compat).
+ */
+export { BalanceCard } from "../../../../components/display/BalanceCard.js";
+export type {
+  BalanceCardProps,
+  BalanceCardPropsOutput,
+} from "../../../../components/display/BalanceCard.schema.js";
+export {
+  BalanceCardPropsSchema,
+  validateBalanceCardProps,
+} from "../../../../components/display/BalanceCard.schema.js";

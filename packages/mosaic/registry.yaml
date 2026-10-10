@@ -215,3 +215,17 @@ components:
     i18nKeys: ["MultiSelect.aria.label", "MultiSelect.aria.removeChip", "MultiSelect.error.required", "MultiSelect.error.maxItems", "MultiSelect.placeholder", "MultiSelect.search.placeholder", "MultiSelect.empty", "MultiSelect.error.invalidProps"]
     sizeLimit: "20KB"
     a11yLevel: WCAG-AA
+  - name: StatCard
+    category: display
+    schema: src/components/display/StatCard.schema.ts
+    zodExport: StatCardPropsSchema
+    i18nKeys: ["StatCard.title", "StatCard.trend.up", "StatCard.trend.down", "StatCard.trend.flat", "StatCard.empty.message", "StatCard.loading", "StatCard.error.invalidProps"]
+    sizeLimit: "15KB"
+    a11yLevel: WCAG-AA
+  - name: BalanceCard
+    category: display
+    schema: src/components/display/BalanceCard.schema.ts
+    zodExport: BalanceCardPropsSchema
+    i18nKeys: ["BalanceCard.title", "BalanceCard.network", "BalanceCard.testnet", "BalanceCard.address", "BalanceCard.contract", "BalanceCard.value", "BalanceCard.copy", "BalanceCard.copied", "BalanceCard.empty.message", "BalanceCard.loading", "BalanceCard.error.invalidProps"]
+    sizeLimit: "20KB"
+    a11yLevel: WCAG-AA
