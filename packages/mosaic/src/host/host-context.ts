@@ -47,12 +47,14 @@ export interface ModelContextParams {
   structuredContent?: Record<string, unknown>;
 }
 
+export type HostCapabilitiesLike = { experimental?: Record<string, unknown> };
+
 /** The slice of the ext-apps `App` this layer uses. */
 export interface HostAppLike {
   getHostContext(): RawHostContext | undefined;
   requestDisplayMode(params: { mode: HostDisplayMode }): Promise<{ mode: HostDisplayMode }>;
   updateModelContext(params: ModelContextParams): Promise<unknown>;
-  getHostCapabilities?(): { experimental?: Record<string, unknown> } | undefined;
+  getHostCapabilities?(): HostCapabilitiesLike | undefined;
   onhostcontextchanged?: ((params: RawHostContext) => void) | undefined;
 }
 
@@ -88,16 +90,16 @@ export function mapHostTheme(theme: unknown): MosaicTheme {
  * sniffing. A ChatGPT host that sends neither is not detected; `pip` is typed out regardless,
  * so the runtime refusal is a second line, not the only one.
  */
-export function isChatGptHost(
-  raw: unknown,
-  capabilities?: { experimental?: Record<string, unknown> } | null,
-): boolean {
+export function isChatGptHost(raw: unknown, capabilities?: HostCapabilitiesLike | null): boolean {
   const inNamespace = (o: object | undefined) =>
     o !== undefined && Object.keys(o).some((k) => k.startsWith("openai/"));
   return inNamespace(asRecord(raw)) || inNamespace(capabilities?.experimental);
 }
 
-export function readHostContext(raw: unknown): MosaicHostContext {
+export function readHostContext(
+  raw: unknown,
+  capabilities?: HostCapabilitiesLike | null,
+): MosaicHostContext {
   const ctx = asRecord(raw);
   const mode = ctx.displayMode;
   const displayMode: HostDisplayMode = DISPLAY_MODES.includes(mode as HostDisplayMode)
@@ -120,7 +122,7 @@ export function readHostContext(raw: unknown): MosaicHostContext {
         ? (ctx.containerDimensions as HostContainerDimensions)
         : undefined,
     deepLink: typeof linkUrl === "string" ? { url: linkUrl } : undefined,
-    isChatGpt: isChatGptHost(ctx),
+    isChatGpt: isChatGptHost(ctx, capabilities),
     raw: ctx,
   };
 }
@@ -152,22 +154,59 @@ export function updateModelContext(app: HostAppLike, params: ModelContextParams)
   return app.updateModelContext(params);
 }
 
+/** Read the live context of an app, with the same ChatGPT detection `requestDisplayMode` uses. */
+export function readAppHostContext(app: HostAppLike): MosaicHostContext {
+  return readHostContext(app.getHostContext(), app.getHostCapabilities?.());
+}
+
+interface Dispatcher {
+  /** The handler that was in the slot before the first subscriber. */
+  previous: HostAppLike["onhostcontextchanged"];
+  listeners: Set<(ctx: MosaicHostContext) => void>;
+  handler: (params: RawHostContext) => void;
+}
+
+// One dispatcher per app: the ext-apps `onhostcontextchanged` slot holds a single handler, so
+// subscribers must not chain through it (unsubscribing out of order would reinstall a dead
+// listener). The dispatcher is installed on the first subscribe and removed on the last
+// unsubscribe, restoring whatever handler the slot held before.
+const dispatchers = new WeakMap<HostAppLike, Dispatcher>();
+
 /**
- * Subscribe to host context changes. The ext-apps `onhostcontextchanged` slot holds one handler,
- * so this chains the previous one and restores it on unsubscribe.
+ * Subscribe to host context changes. Any number of subscribers, unsubscribed in any order.
+ * Notifications carry a partial context, merged over what the app already holds.
  */
 export function subscribeHostContext(
   app: HostAppLike,
   listener: (ctx: MosaicHostContext) => void,
 ): () => void {
-  const previous = app.onhostcontextchanged;
-  const handler = (params: RawHostContext) => {
-    previous?.(params);
-    // changed notifications carry a partial context: merge over what the app already holds
-    listener(readHostContext({ ...asRecord(app.getHostContext()), ...asRecord(params) }));
-  };
-  app.onhostcontextchanged = handler;
+  let d = dispatchers.get(app);
+  if (!d) {
+    const created: Dispatcher = {
+      previous: app.onhostcontextchanged,
+      listeners: new Set(),
+      handler: (params) => {
+        created.previous?.(params);
+        const ctx = readHostContext(
+          { ...asRecord(app.getHostContext()), ...asRecord(params) },
+          app.getHostCapabilities?.(),
+        );
+        for (const l of [...created.listeners]) l(ctx);
+      },
+    };
+    d = created;
+    dispatchers.set(app, d);
+    app.onhostcontextchanged = d.handler;
+  }
+  const active = d;
+  // a fresh wrapper per subscription keeps two subscriptions of the same function distinct
+  const entry = (ctx: MosaicHostContext) => listener(ctx);
+  active.listeners.add(entry);
   return () => {
-    if (app.onhostcontextchanged === handler) app.onhostcontextchanged = previous;
+    if (!active.listeners.delete(entry)) return; // idempotent
+    if (active.listeners.size === 0) {
+      if (app.onhostcontextchanged === active.handler) app.onhostcontextchanged = active.previous;
+      dispatchers.delete(app);
+    }
   };
 }
