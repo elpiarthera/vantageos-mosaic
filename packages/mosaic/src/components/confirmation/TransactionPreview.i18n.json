@@ -1,0 +1,84 @@
+{
+  "en": {
+    "TransactionPreview": {
+      "title": "Transaction preview",
+      "notice": "NOT SIGNED - preparation only",
+      "kind": {
+        "transfer": "Transfer",
+        "swap": "Swap"
+      },
+      "testnet": "Testnet",
+      "field": {
+        "network": "Network",
+        "from": "From",
+        "to": "To",
+        "amount": "Amount",
+        "fee": "Network fee",
+        "sell": "Sell",
+        "buy": "Buy",
+        "minReceived": "Minimum received",
+        "route": "Route",
+        "priceImpact": "Price impact",
+        "expires": "Quote expires"
+      },
+      "priceImpact": {
+        "high": "High price impact"
+      },
+      "simulation": {
+        "success": "Simulation succeeded",
+        "failed": "Simulation failed",
+        "unavailable": "Simulation unavailable"
+      },
+      "warnings": "Warnings",
+      "handoff": "Open in wallet",
+      "empty": {
+        "message": "No transaction to preview"
+      },
+      "loading": "Loading preview",
+      "error": {
+        "invalidProps": "TransactionPreview: invalid props"
+      }
+    }
+  },
+  "fr": {
+    "TransactionPreview": {
+      "title": "Aperçu de transaction",
+      "notice": "NON SIGNÉ - préparation uniquement",
+      "kind": {
+        "transfer": "Transfert",
+        "swap": "Échange"
+      },
+      "testnet": "Réseau de test",
+      "field": {
+        "network": "Réseau",
+        "from": "De",
+        "to": "À",
+        "amount": "Montant",
+        "fee": "Frais de réseau",
+        "sell": "Vendre",
+        "buy": "Acheter",
+        "minReceived": "Minimum reçu",
+        "route": "Itinéraire",
+        "priceImpact": "Impact sur le prix",
+        "expires": "Expiration du devis"
+      },
+      "priceImpact": {
+        "high": "Impact sur le prix élevé"
+      },
+      "simulation": {
+        "success": "Simulation réussie",
+        "failed": "Simulation échouée",
+        "unavailable": "Simulation indisponible"
+      },
+      "warnings": "Avertissements",
+      "handoff": "Ouvrir dans le portefeuille",
+      "empty": {
+        "message": "Aucune transaction à prévisualiser"
+      },
+      "loading": "Chargement de l'aperçu",
+      "error": {
+        "invalidProps": "TransactionPreview : propriétés invalides"
+      }
+    }
+  }
+}

@@ -333,5 +333,44 @@
       "stage": "Stage",
       "deals": "Deals"
     }
+  },
+  "TransactionPreview": {
+    "title": "Transaction preview",
+    "notice": "NOT SIGNED - preparation only",
+    "kind": {
+      "transfer": "Transfer",
+      "swap": "Swap"
+    },
+    "testnet": "Testnet",
+    "field": {
+      "network": "Network",
+      "from": "From",
+      "to": "To",
+      "amount": "Amount",
+      "fee": "Network fee",
+      "sell": "Sell",
+      "buy": "Buy",
+      "minReceived": "Minimum received",
+      "route": "Route",
+      "priceImpact": "Price impact",
+      "expires": "Quote expires"
+    },
+    "priceImpact": {
+      "high": "High price impact"
+    },
+    "simulation": {
+      "success": "Simulation succeeded",
+      "failed": "Simulation failed",
+      "unavailable": "Simulation unavailable"
+    },
+    "warnings": "Warnings",
+    "handoff": "Open in wallet",
+    "empty": {
+      "message": "No transaction to preview"
+    },
+    "loading": "Loading preview",
+    "error": {
+      "invalidProps": "TransactionPreview: invalid props"
+    }
   }
 }
