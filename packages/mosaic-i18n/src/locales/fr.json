@@ -241,5 +241,37 @@
       "many": "{n} lignes sélectionnées",
       "none": "Aucune ligne sélectionnée"
     }
+  },
+  "StatCard": {
+    "title": "Statistique",
+    "trend": {
+      "up": "En hausse",
+      "down": "En baisse",
+      "flat": "Stable"
+    },
+    "empty": {
+      "message": "Aucune statistique à afficher"
+    },
+    "loading": "Chargement de la statistique",
+    "error": {
+      "invalidProps": "StatCard : propriétés invalides"
+    }
+  },
+  "BalanceCard": {
+    "title": "Solde",
+    "network": "Réseau",
+    "testnet": "Réseau de test",
+    "address": "Adresse",
+    "contract": "Contrat du jeton",
+    "value": "Valeur",
+    "copy": "Copier l'adresse",
+    "copied": "Adresse copiée",
+    "empty": {
+      "message": "Aucun solde à afficher"
+    },
+    "loading": "Chargement du solde",
+    "error": {
+      "invalidProps": "BalanceCard : propriétés invalides"
+    }
   }
 }
