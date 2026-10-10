@@ -14,6 +14,7 @@
  * config `_meta`.
  */
 import { createHash } from "node:crypto";
+import { CLAUDE_HOST_FONT_ORIGIN } from "../host/style-variables.js";
 
 export const MCP_APP_MIME_TYPE = "text/html;profile=mcp-app" as const;
 
@@ -43,6 +44,9 @@ export interface McpAppOpenAiInput {
   entrypoints?: OpenAiEntrypoint[];
 }
 
+/** Who sees a tool: `"model"` (agent tool list) and/or `"app"` (callable from the view). */
+export type ToolVisibility = "model" | "app";
+
 export interface McpAppResourceInput {
   uri: `ui://${string}`;
   html: string;
@@ -51,6 +55,18 @@ export interface McpAppResourceInput {
   servedUrl?: string;
   prefersBorder?: boolean;
   openai?: McpAppOpenAiInput;
+  /**
+   * Tool-level `_meta.ui.visibility` (MCP Apps spec 2026-01-26, ext-apps-spec.mdx l.332,
+   * l.395-401). Omitted = the spec default `["model", "app"]`. `["app"]` makes an app-only tool
+   * (refresh, UI-only sort/filter; l.1490) that hosts MUST keep out of the agent's tool list.
+   * OpenAI: ignored when the App is invoked as an entrypoint.
+   */
+  visibility?: ToolVisibility[];
+  /**
+   * Allow Claude host fonts (`hostContext.styles.css.fonts`): adds `https://assets.claude.ai` to
+   * `csp.resourceDomains` (Claude transparent-theming page).
+   */
+  hostFonts?: boolean;
 }
 
 export interface McpAppResourceMetaUi {
@@ -73,7 +89,7 @@ export interface McpAppResourceOutput {
     };
   };
   toolMeta: {
-    ui: { resourceUri: `ui://${string}` };
+    ui: { resourceUri: `ui://${string}`; visibility?: ToolVisibility[] };
     "openai/outputTemplate"?: string;
     "openai/ui"?: { entrypoints: OpenAiEntrypoint[] };
   };
@@ -92,16 +108,29 @@ export function deriveClaudeAppDomain(servedUrl: string): string {
 }
 
 export function buildMcpAppResource(input: McpAppResourceInput): McpAppResourceOutput {
-  const { uri, html, csp, servedUrl, prefersBorder, openai } = input;
+  const { uri, html, csp, servedUrl, prefersBorder, openai, visibility, hostFonts } = input;
   const modes = [...(openai?.availableDisplayModes ?? []), openai?.preferredDisplayMode];
   if (modes.some((m) => (m as string | undefined) === "pip")) {
     throw new Error("buildMcpAppResource: display mode pip is refused (inline | fullscreen only)");
   }
 
+  let toolVisibility: ToolVisibility[] | undefined;
+  if (visibility !== undefined) {
+    const valid = visibility.every((v) => (v as string) === "model" || (v as string) === "app");
+    if (visibility.length === 0 || !valid) {
+      throw new Error('buildMcpAppResource: visibility must be a non-empty list of "model" | "app"');
+    }
+    toolVisibility = [...new Set(visibility)];
+  }
+  const resourceDomains = [...(csp?.resourceDomains ?? [])];
+  if (hostFonts && !resourceDomains.includes(CLAUDE_HOST_FONT_ORIGIN)) {
+    resourceDomains.push(CLAUDE_HOST_FONT_ORIGIN);
+  }
+
   const ui: McpAppResourceMetaUi = {
     csp: {
       connectDomains: csp?.connectDomains ?? [],
-      resourceDomains: csp?.resourceDomains ?? [],
+      resourceDomains,
       frameDomains: csp?.frameDomains ?? [],
       baseUriDomains: csp?.baseUriDomains ?? [],
     },
@@ -122,7 +151,9 @@ export function buildMcpAppResource(input: McpAppResourceInput): McpAppResourceO
     };
   }
 
-  const toolMeta: McpAppResourceOutput["toolMeta"] = { ui: { resourceUri: uri } };
+  const toolMeta: McpAppResourceOutput["toolMeta"] = {
+    ui: { resourceUri: uri, ...(toolVisibility ? { visibility: toolVisibility } : {}) },
+  };
   if (openai?.outputTemplate !== undefined) {
     toolMeta["openai/outputTemplate"] = openai.outputTemplate;
   }
