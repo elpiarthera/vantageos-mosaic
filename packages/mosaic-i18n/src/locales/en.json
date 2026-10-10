@@ -17,7 +17,7 @@
       "dialog": "Confirmation dialog"
     },
     "title": "Confirmation",
-    "options": "Options"
+    "options": "Answers"
   },
   "TableView": {
     "aria": {

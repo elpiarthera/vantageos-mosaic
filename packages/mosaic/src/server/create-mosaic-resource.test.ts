@@ -32,7 +32,7 @@ describe("createMosaicResource — happy path", () => {
       "fr",
     );
     const meta = r.resource._meta as { ui?: { fallback?: string } } | undefined;
-    expect(meta?.ui?.fallback).toMatch(/Mosaic/i);
+    expect(meta?.ui?.fallback).toContain("actif");
   });
 });
 
