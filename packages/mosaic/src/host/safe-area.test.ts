@@ -8,7 +8,9 @@ import { applySafeAreaInsets, readSafeAreaInsets, safeAreaPadding } from "./safe
 // scroll-snap containers.
 describe("safe-area insets (H01)", () => {
   it("reads the four pixel values from hostContext.safeAreaInsets", () => {
-    expect(readSafeAreaInsets({ safeAreaInsets: { top: 44, right: 0, bottom: 34, left: 8 } })).toEqual({
+    expect(
+      readSafeAreaInsets({ safeAreaInsets: { top: 44, right: 0, bottom: 34, left: 8 } }),
+    ).toEqual({
       top: 44,
       right: 0,
       bottom: 34,

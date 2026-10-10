@@ -71,7 +71,9 @@ export function buildModelContext(input: {
 }): ModelContextParams {
   return {
     ...(input.blocks !== undefined ? { content: input.blocks } : {}),
-    ...(input.structuredContent !== undefined ? { structuredContent: input.structuredContent } : {}),
+    ...(input.structuredContent !== undefined
+      ? { structuredContent: input.structuredContent }
+      : {}),
   };
 }
 

@@ -110,8 +110,8 @@ describe("ui/open-link helper (H18)", () => {
     await expect(
       openLink(app({ openLink: vi.fn(async () => ({ isError: true })) }), "https://x.example"),
     ).rejects.toMatchObject({ method: "ui/open-link" });
-    await expect(openLink(app({ openLink: undefined }), "https://x.example")).rejects.toBeInstanceOf(
-      HostRequestError,
-    );
+    await expect(
+      openLink(app({ openLink: undefined }), "https://x.example"),
+    ).rejects.toBeInstanceOf(HostRequestError);
   });
 });

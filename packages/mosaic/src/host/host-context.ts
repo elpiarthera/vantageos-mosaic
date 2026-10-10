@@ -10,9 +10,9 @@
  * access happens at import time; `applyMosaicTheme` takes the target element explicitly.
  */
 
+import { type ModelContextHostState, readModelContextState } from "./model-context.js";
 /** Display modes the MCP Apps spec defines. */
 import { type SafeAreaInsets, readSafeAreaInsets } from "./safe-area.js";
-import { type ModelContextHostState, readModelContextState } from "./model-context.js";
 import { type HostStyles, readHostStyles } from "./style-variables.js";
 
 export * from "./safe-area.js";
