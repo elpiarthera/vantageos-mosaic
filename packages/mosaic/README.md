@@ -262,6 +262,54 @@ capabilities (the spec defines no host-identification field; no user-agent sniff
 `updateModelContext`, `subscribeHostContext`, `applyMosaicTheme`) live in
 `@vantageos/mosaic/host`.
 
+### Host layout, messages and links (view)
+
+```tsx
+import { useMosaicHostLayout, useSendMessage, useOpenLink } from "@vantageos/mosaic/react/host";
+
+useMosaicHostLayout(app); // data-theme + safe-area padding + host style variables + host fonts
+const send = useSendMessage(app); // ui/message: await send("Show the overdue tasks")
+const open = useOpenLink(app);    // ui/open-link: await open("https://wallet.example/swap?q=1")
+```
+
+* **Safe-area insets** (`hostContext.safeAreaInsets`, MCP Apps spec): applied as root padding and as
+  `--mosaic-safe-area-<side>` variables (for `scroll-padding`).
+* **Host style variables** (`hostContext.styles.variables`, 76 standardized keys) are written on the
+  root and bridged onto the mosaic-tokens custom properties they correspond to (`HOST_TO_MOSAIC_TOKENS`);
+  variables the host does not pass leave the mosaic-tokens defaults untouched. Host fonts
+  (`styles.css.fonts`) are injected once; add the Claude font origin to `csp.resourceDomains` with
+  `buildMcpAppResource({ hostFonts: true })`. `applyTransparentBackground(document)` sets html/body to
+  `transparent` (Claude transparent theming).
+* **`sendMessage`**: options `{ target, send }` need the host to advertise `openai/message` and a
+  non-mobile platform; otherwise it THROWS rather than silently dropping `send: false`.
+* **`openLink`**: http(s) only; the host's denial reason is thrown (`HostRequestError`).
+* **Typed model context**: `textBlock(text, { title, thumbnail, background })` builds blocks with
+  `_meta["openai/title"]`, `_meta["openai/thumbnail"]` and `annotations.audience: ["assistant"]`;
+  `selectionModelContext(rows, columns, locale)` turns a table selection into one titled block (feed it
+  to `updateModelContext` from `onSelectionChange`); `hostContext["openai/modelContext"]` is read into
+  `ctx.modelContext` (`null` = cleared by the user).
+* **Tool visibility**: `buildMcpAppResource({ visibility: ["app"] })` emits `_meta.ui.visibility`
+  (omitted = the spec default `["model", "app"]`).
+* **Size reporting**: a view that talks to the host through the raw adapter calls
+  `startSizeReporting()` (`ui/notifications/size-changed` through a ResizeObserver). The ext-apps `App`
+  does this itself with `autoResize`.
+
+### Tool results with an A-1 markdown fallback (server)
+
+```ts
+import { createMosaicToolResult } from "@vantageos/mosaic/server";
+
+return createMosaicToolResult("PipelineBoard", { stages, currency: "EUR" }, "en");
+// { content: [ { type: "text", text: "# Pipeline\n\n| Stage | Deals | Total | ..." },
+//              { type: "resource", resource: { uri: "ui://mosaic/pipelineboard", ... } } ] }
+```
+
+The text block carries the view's DATA (App standard A-1: a client with no UI layer gets an equivalent,
+meaningful answer). All 12 supported components have a pure `<name>ToMarkdown(props, locale)`, also
+exported from `@vantageos/mosaic/server`. `_meta.ui.fallback` is kept (it is part of the published
+`createMosaicResource` result) and now holds the same text instead of a title and a note. A one-time
+token's text block is marked `annotations.audience: ["user"]`.
+
 ## Components
 
 ### What each subpath actually exports
@@ -277,10 +325,10 @@ node -e '...' # see the release PR for the exact script
 | Subpath | Exports |
 |---|---|
 | `forms` | Checkbox, ErrorDisplay, FieldArray, FormField, FormProvider, Input, MultiSelect, RadioGroup, Select, SubmitButton, Textarea |
-| `display` | Badge, EmptyState, Skeleton, StatusBadge, StreamingTableView, TableView, VirtualList |
-| `progress` | ProgressBar |
+| `display` | BalanceCard, Badge, EmptyState, MessageFeed, PipelineBoard, Skeleton, StatCard, StatusBadge, StreamingTableView, TableView, VirtualList |
+| `progress` | ProgressBar, Timeline |
 | `input` | Tabs |
-| `confirmation` | Alert, ConfirmDialog, ConfirmModal, TokenDisplayOnceModal |
+| `confirmation` | Alert, ConfirmDialog, ConfirmModal, TokenDisplayOnceModal, TransactionPreview |
 | `artifacts` | MarkdownRenderer |
 | `media` | *(none)* |
 
