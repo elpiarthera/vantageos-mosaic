@@ -39,7 +39,7 @@ components:
     category: confirmation
     schema: src/components/confirmation/TokenDisplayOnceModal.schema.ts
     zodExport: TokenDisplayOnceModalPropsSchema
-    i18nKeys: ["TokenDisplayOnceModal.button.copy", "TokenDisplayOnceModal.button.close", "TokenDisplayOnceModal.warning.once", "TokenDisplayOnceModal.copied"]
+    i18nKeys: ["TokenDisplayOnceModal.button.copy", "TokenDisplayOnceModal.button.close", "TokenDisplayOnceModal.warning.once", "TokenDisplayOnceModal.copied", "TokenDisplayOnceModal.notice.once", "TokenDisplayOnceModal.field.scope", "TokenDisplayOnceModal.field.expires", "TokenDisplayOnceModal.field.fingerprint"]
     sizeLimit: "30KB"
     a11yLevel: WCAG-AA
   - name: StatusBadge

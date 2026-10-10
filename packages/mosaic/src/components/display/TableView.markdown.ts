@@ -5,13 +5,16 @@ import { TableViewPropsSchema } from "./TableView.schema.js";
 /** Rows beyond this are summarised, not listed (a text client gets a readable table). */
 export const MARKDOWN_MAX_ROWS = 50;
 
+/** Shown in place of a `sensitive` column's values. */
+const MASK = "••••";
+
 /** A-1 fallback: the table as GFM (headers + the first rows) with the count of the rest. */
 export function tableViewToMarkdown(props: unknown, locale: "en" | "fr" = "en"): string {
   const p = TableViewPropsSchema.parse(props);
   const shown = p.rows.slice(0, MARKDOWN_MAX_ROWS);
   const table = mdTable(
     p.columns.map((c) => mdEscape(c.header)),
-    shown.map((r) => p.columns.map((c) => mdEscape(String(r[c.key] ?? "")))),
+    shown.map((r) => p.columns.map((c) => (c.sensitive ? MASK : mdEscape(String(r[c.key] ?? ""))))),
   );
   const rest = p.rows.length - shown.length;
   const more =

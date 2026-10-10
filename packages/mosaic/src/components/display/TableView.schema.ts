@@ -18,6 +18,11 @@ export const ColumnDefSchema = z.object({
   /** CSS width: a number is pixels. */
   width: z.union([z.string().min(1), z.number().positive()]).optional(),
   sortable: z.boolean().default(false),
+  /**
+   * Values of this column are masked in the A-1 markdown fallback and kept out of the HTML
+   * props of a tool result (delivered via the result `_meta`), never written to `content[]`.
+   */
+  sensitive: z.boolean().default(false),
   // render is a runtime function — excluded from Zod, typed separately
 });
 
@@ -28,6 +33,7 @@ export type ColumnDef<TRow extends Record<string, unknown> = Record<string, unkn
   align?: "start" | "center" | "end";
   width?: string | number;
   sortable?: boolean;
+  sensitive?: boolean;
   render?: (row: TRow) => ReactNode;
 };
 
