@@ -16,6 +16,7 @@ import { type HostStyles, readHostStyles } from "./style-variables.js";
 
 export * from "./safe-area.js";
 export * from "./style-variables.js";
+export * from "./messaging.js";
 
 export type HostDisplayMode = "inline" | "fullscreen" | "pip";
 /** Display modes a mosaic view may request. `pip` is typed out: it is never requested. */
@@ -65,6 +66,14 @@ export interface HostAppLike {
   requestDisplayMode(params: { mode: HostDisplayMode }): Promise<{ mode: HostDisplayMode }>;
   updateModelContext(params: ModelContextParams): Promise<unknown>;
   getHostCapabilities?(): HostCapabilitiesLike | undefined;
+  /** ext-apps `App.sendMessage` (`ui/message`, spec l.998-1030). */
+  sendMessage?(params: {
+    role: "user";
+    content: Array<{ type: string; [key: string]: unknown }>;
+    _meta?: Record<string, unknown>;
+  }): Promise<{ isError?: boolean }>;
+  /** ext-apps `App.openLink` (`ui/open-link`, spec l.965-995). */
+  openLink?(params: { url: string }): Promise<{ isError?: boolean }>;
   onhostcontextchanged?: ((params: RawHostContext) => void) | undefined;
 }
 
