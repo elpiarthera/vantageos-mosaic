@@ -213,3 +213,10 @@ export {
   pipelineBoardToMarkdown,
   transactionPreviewToMarkdown,
 };
+
+// RED stubs (secret-free fallback ruling): behaviour lands in the next commit.
+export const MOSAIC_NEVER_SERIALISE = {} as unknown as Record<
+  SupportedComponent,
+  readonly string[]
+>;
+export class MosaicSecretLeakError extends Error {}
