@@ -48,12 +48,14 @@ describe("host-context: reading", () => {
     }
   });
 
-  it("reads hostContext['openai/deepLink'] when present, additive", () => {
-    expect(readHostContext({ "openai/deepLink": "https://chatgpt.com/x" }).deepLink).toBe(
-      "https://chatgpt.com/x",
-    );
+  it("reads hostContext['openai/deepLink'] as the spec's { url } object, additive", () => {
+    // Spec: openai/mcp-extensions docs/spec.md l.149-210, interface DeepLinkHostState { url: string }
+    expect(readHostContext({ "openai/deepLink": { url: "/parts?tag=bolt" } }).deepLink).toEqual({
+      url: "/parts?tag=bolt",
+    });
     expect(readHostContext({ theme: "dark" }).deepLink).toBeUndefined();
-    expect(readHostContext({ "openai/deepLink": 42 }).deepLink).toBeUndefined();
+    expect(readHostContext({ "openai/deepLink": "https://x" }).deepLink).toBeUndefined();
+    expect(readHostContext({ "openai/deepLink": { url: 42 } }).deepLink).toBeUndefined();
   });
 });
 
@@ -84,7 +86,7 @@ describe("host-context: display mode request", () => {
   });
 
   it("refuses pip for a ChatGPT host, without calling the host", async () => {
-    const app = fakeApp({ "openai/deepLink": "https://chatgpt.com/x" });
+    const app = fakeApp({ "openai/deepLink": { url: "/x" } });
     await expect(
       // biome-ignore lint/suspicious/noExplicitAny: proving the runtime refusal past the type
       requestDisplayMode(app, "pip" as any),
@@ -98,11 +100,23 @@ describe("host-context: display mode request", () => {
     void requestDisplayMode(app, "pip");
   });
 
-  it("detects ChatGPT from openai/* context keys or the user agent", () => {
-    expect(isChatGptHost({ "openai/deepLink": "x" })).toBe(true);
-    expect(isChatGptHost({ userAgent: "ChatGPT/1.0" })).toBe(true);
+  it("detects ChatGPT from openai/* host context keys or experimental host capabilities", () => {
+    expect(isChatGptHost({ "openai/deepLink": { url: "/x" } })).toBe(true);
+    expect(isChatGptHost({ theme: "dark" }, { experimental: { "openai/files": {} } })).toBe(true);
     expect(isChatGptHost({ theme: "dark" })).toBe(false);
     expect(isChatGptHost(undefined)).toBe(false);
+  });
+
+  it("does not guess from the user agent (no spec-defined signal)", () => {
+    expect(isChatGptHost({ userAgent: "ChatGPT/1.0" })).toBe(false);
+  });
+
+  it("refuses pip when only the host capabilities identify ChatGPT", async () => {
+    const app = { ...fakeApp({}), getHostCapabilities: () => ({ experimental: { "openai/message": {} } }) };
+    await expect(
+      // biome-ignore lint/suspicious/noExplicitAny: proving the runtime refusal past the type
+      requestDisplayMode(app, "pip" as any),
+    ).rejects.toBeInstanceOf(DisplayModeRefusedError);
   });
 });
 
