@@ -132,6 +132,16 @@ const EN = {
   "BalanceCard.empty.message": "No balance to display",
   "BalanceCard.loading": "Loading balance",
   "BalanceCard.error.invalidProps": "BalanceCard: invalid props",
+  "Timeline.title": "Timeline",
+  "Timeline.status.done": "Done",
+  "Timeline.status.current": "In progress",
+  "Timeline.status.pending": "Pending",
+  "Timeline.status.blocked": "Blocked",
+  "Timeline.completed": "{n} completed",
+  "Timeline.more": "{n} more",
+  "Timeline.empty.message": "No steps to display",
+  "Timeline.loading": "Loading timeline",
+  "Timeline.error.invalidProps": "Timeline: invalid props",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -253,6 +263,16 @@ const FR: Record<keyof typeof EN, string> = {
   "BalanceCard.empty.message": "Aucun solde à afficher",
   "BalanceCard.loading": "Chargement du solde",
   "BalanceCard.error.invalidProps": "BalanceCard : propriétés invalides",
+  "Timeline.title": "Chronologie",
+  "Timeline.status.done": "Terminé",
+  "Timeline.status.current": "En cours",
+  "Timeline.status.pending": "À venir",
+  "Timeline.status.blocked": "Bloqué",
+  "Timeline.completed": "{n} terminé(s)",
+  "Timeline.more": "{n} de plus",
+  "Timeline.empty.message": "Aucune étape à afficher",
+  "Timeline.loading": "Chargement de la chronologie",
+  "Timeline.error.invalidProps": "Timeline : propriétés invalides",
 };
 
 export type MosaicI18nKey = keyof typeof EN;

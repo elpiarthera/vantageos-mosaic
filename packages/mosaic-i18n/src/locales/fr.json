@@ -273,5 +273,23 @@
     "error": {
       "invalidProps": "BalanceCard : propriétés invalides"
     }
+  },
+  "Timeline": {
+    "title": "Chronologie",
+    "status": {
+      "done": "Terminé",
+      "current": "En cours",
+      "pending": "À venir",
+      "blocked": "Bloqué"
+    },
+    "completed": "{n} terminé(s)",
+    "more": "{n} de plus",
+    "empty": {
+      "message": "Aucune étape à afficher"
+    },
+    "loading": "Chargement de la chronologie",
+    "error": {
+      "invalidProps": "Timeline : propriétés invalides"
+    }
   }
 }
