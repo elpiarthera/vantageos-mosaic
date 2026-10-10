@@ -253,3 +253,59 @@ describe("host-context: readHostContext capabilities", () => {
     expect(readHostContext({ theme: "dark" }, undefined).isChatGpt).toBe(false);
   });
 });
+
+describe("host-context: dispatcher re-arming (Eta #74 re-gate corrections)", () => {
+  const fire = (app: ReturnType<typeof fakeApp>, ctx: Ctx) => app.onhostcontextchanged?.(ctx);
+
+  it("subscribe, unsubscribe all, subscribe again, fire: the new listener fires", () => {
+    const app = fakeApp({ theme: "light" });
+    const first = vi.fn();
+    subscribeHostContext(app, first)();
+    expect(app.onhostcontextchanged).toBeUndefined();
+    const second = vi.fn();
+    subscribeHostContext(app, second);
+    fire(app, { theme: "dark" });
+    expect(second).toHaveBeenCalledTimes(1);
+    expect(first).not.toHaveBeenCalled();
+  });
+
+  it("re-adopts a slot overwritten by foreign code: foreign handler becomes `previous`, ours is reinstalled", () => {
+    const app = fakeApp({ theme: "light" });
+    const a = vi.fn();
+    const b = vi.fn();
+    const foreign = vi.fn();
+    subscribeHostContext(app, a);
+    app.onhostcontextchanged = foreign; // foreign code overwrote the single slot
+    subscribeHostContext(app, b);
+    fire(app, { theme: "dark" });
+    expect(a).toHaveBeenCalledTimes(1);
+    expect(b).toHaveBeenCalledTimes(1);
+    expect(foreign).toHaveBeenCalledTimes(1); // still chained, not dropped
+  });
+
+  it("after a re-adoption, the last unsubscribe restores the foreign handler, not the stale original", () => {
+    const app = fakeApp({});
+    const original = vi.fn();
+    app.onhostcontextchanged = original;
+    const offA = subscribeHostContext(app, vi.fn());
+    const foreign = vi.fn();
+    app.onhostcontextchanged = foreign;
+    const offB = subscribeHostContext(app, vi.fn());
+    offA();
+    offB();
+    expect(app.onhostcontextchanged).toBe(foreign);
+  });
+
+  it("does not re-adopt when the slot still holds our handler (no chain growth)", () => {
+    const app = fakeApp({});
+    const original = vi.fn();
+    app.onhostcontextchanged = original;
+    const offA = subscribeHostContext(app, vi.fn());
+    const offB = subscribeHostContext(app, vi.fn());
+    fire(app, {});
+    expect(original).toHaveBeenCalledTimes(1);
+    offA();
+    offB();
+    expect(app.onhostcontextchanged).toBe(original);
+  });
+});
