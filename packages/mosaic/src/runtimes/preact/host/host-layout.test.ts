@@ -23,7 +23,7 @@ describe("host layout preact hooks (parity)", () => {
     const host = document.createElement("div");
     const app = fakeApp({
       theme: "dark",
-      safeAreaInsets: { top: 10, right: 0, bottom: 20, left: 0 },
+      safeAreaInsets: { top: 10, right: 2, bottom: 20, left: 3 },
       styles: { variables: { "--color-background-primary": "rgb(1, 2, 3)" } },
     });
     function View() {
@@ -34,12 +34,12 @@ describe("host layout preact hooks (parity)", () => {
       render(h(View, null), host);
     });
     expect(root.getAttribute("data-theme")).toBe("dark");
-    expect(root.style.padding).toBe("10px 0px 20px 0px");
+    expect(root.style.padding).toBe("10px 2px 20px 3px");
     expect(root.style.getPropertyValue("--mosaic-color-background")).toBe("rgb(1, 2, 3)");
     await act(() => {
-      app.onhostcontextchanged?.({ safeAreaInsets: { top: 0, right: 0, bottom: 0, left: 5 } });
+      app.onhostcontextchanged?.({ safeAreaInsets: { top: 1, right: 2, bottom: 3, left: 5 } });
     });
-    expect(root.style.padding).toBe("0px 0px 0px 5px");
+    expect(root.style.padding).toBe("1px 2px 3px 5px");
   });
 
   it("sends a message and opens a link through the app", async () => {

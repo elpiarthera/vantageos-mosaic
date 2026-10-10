@@ -7,10 +7,16 @@ import {
   type ModelContextParams,
   type MosaicHostContext,
   type RequestableDisplayMode,
+  type SendMessageOptions,
+  applyHostFonts,
+  applyHostStyleVariables,
   applyMosaicTheme,
+  applySafeAreaInsets,
+  openLink,
   readAppHostContext,
   readHostContext,
   requestDisplayMode,
+  sendMessage,
   subscribeHostContext,
   updateModelContext,
 } from "../../../host/host-context.js";
@@ -63,17 +69,54 @@ export function useUpdateModelContext(app: HostAppLike | null | undefined) {
   );
 }
 
-// RED stubs: behaviour lands in the next commit.
+/**
+ * One hook for everything the host context styles: `data-theme` (mosaic-tokens dark overrides),
+ * safe-area insets as padding + CSS variables (H01), host style variables bridged onto
+ * mosaic-tokens and host fonts (H02). Follows `host-context-changed`; cleans up on unmount.
+ * `root` defaults to `<html>`.
+ */
 export function useMosaicHostLayout(
-  _app: HostAppLike | null | undefined,
-  _root?: HTMLElement,
+  app: HostAppLike | null | undefined,
+  root?: HTMLElement,
 ): MosaicHostContext {
-  return readHostContext(undefined);
+  const ctx = useHostContext(app);
+  useEffect(() => {
+    const target = root ?? (typeof document === "undefined" ? undefined : document.documentElement);
+    if (!target) return undefined;
+    applyMosaicTheme(ctx.theme, target);
+    applySafeAreaInsets(ctx.safeAreaInsets, target);
+    applyHostStyleVariables(ctx.styles, target);
+    return () => {
+      applySafeAreaInsets(undefined, target);
+      applyHostStyleVariables(undefined, target);
+    };
+  }, [ctx.theme, ctx.safeAreaInsets, ctx.styles, root]);
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+    applyHostFonts(ctx.styles?.fonts, document);
+    return () => applyHostFonts(undefined, document);
+  }, [ctx.styles?.fonts]);
+  return ctx;
 }
-export function useSendMessage(_app: HostAppLike | null | undefined) {
-  return (_text: string, _options?: { target?: "active" | "new"; send?: boolean }): Promise<void> =>
-    Promise.resolve();
+
+/** `ui/message` (H04): send a user message; options need `openai/message` (see core). */
+export function useSendMessage(app: HostAppLike | null | undefined) {
+  return useCallback(
+    (text: string, options?: SendMessageOptions) => {
+      if (!app) return Promise.reject(new Error("useSendMessage: no app connected"));
+      return sendMessage(app, text, options);
+    },
+    [app],
+  );
 }
-export function useOpenLink(_app: HostAppLike | null | undefined) {
-  return (_url: string): Promise<void> => Promise.resolve();
+
+/** `ui/open-link` (H18): ask the host to open an http(s) URL (wallet hand-off, deep links). */
+export function useOpenLink(app: HostAppLike | null | undefined) {
+  return useCallback(
+    (url: string) => {
+      if (!app) return Promise.reject(new Error("useOpenLink: no app connected"));
+      return openLink(app, url);
+    },
+    [app],
+  );
 }
