@@ -243,3 +243,10 @@ components:
     i18nKeys: ["MessageFeed.title", "MessageFeed.unread", "MessageFeed.attachment", "MessageFeed.showing", "MessageFeed.empty.message", "MessageFeed.loading", "MessageFeed.error.invalidProps"]
     sizeLimit: "25KB"
     a11yLevel: WCAG-AA
+  - name: PipelineBoard
+    category: display
+    schema: src/components/display/PipelineBoard.schema.ts
+    zodExport: PipelineBoardPropsSchema
+    i18nKeys: ["PipelineBoard.title", "PipelineBoard.deals.one", "PipelineBoard.deals.many", "PipelineBoard.total", "PipelineBoard.stage.empty", "PipelineBoard.filter.label", "PipelineBoard.summary.open", "PipelineBoard.more", "PipelineBoard.empty.message", "PipelineBoard.loading", "PipelineBoard.error.invalidProps", "PipelineBoard.col.stage", "PipelineBoard.col.deals"]
+    sizeLimit: "30KB"
+    a11yLevel: WCAG-AA

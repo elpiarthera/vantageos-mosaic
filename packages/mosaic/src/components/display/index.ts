@@ -55,3 +55,15 @@ export type {
 export { MessageFeedPropsSchema, validateMessageFeedProps } from "./MessageFeed.schema.js";
 export { messageFeedToMarkdown } from "./MessageFeed.markdown.js";
 export type { MessageFeedViewProps } from "./MessageFeed.js";
+
+// PipelineBoard
+export { PipelineBoard } from "./PipelineBoard.js";
+export type {
+  PipelineBoardProps,
+  PipelineBoardPropsOutput,
+  PipelineStage,
+  PipelineDeal,
+} from "./PipelineBoard.schema.js";
+export { PipelineBoardPropsSchema, validatePipelineBoardProps } from "./PipelineBoard.schema.js";
+export { pipelineBoardToMarkdown } from "./PipelineBoard.markdown.js";
+export type { PipelineBoardViewProps } from "./PipelineBoard.js";
