@@ -7,7 +7,7 @@ import { EmptyState } from "../../runtimes/react/components/display/EmptyState.j
 import { Skeleton } from "../../runtimes/react/components/display/Skeleton.js";
 import { getOptionLabelClasses } from "../forms/RadioGroup.logic.js";
 import { formatDecimalString } from "../shared/decimal.js";
-import { isHttpUrl } from "../shared/url.js";
+import { normalizeHttpUrl } from "../shared/url.js";
 import { SUMMARY_STAGE_LIMIT, stageSummary } from "./PipelineBoard.logic.js";
 import {
   type PipelineBoardProps,
@@ -159,10 +159,10 @@ export function PipelineBoard(raw: PipelineBoardViewProps = {}) {
               <ul className="m-0 flex list-none flex-col gap-2 p-0">
                 {s.deals.map((d) => (
                   <li key={d.id} className="rounded border border-slate-200 bg-white p-2">
-                    {raw.onOpenLink && isHttpUrl(d.url) ? (
+                    {raw.onOpenLink && normalizeHttpUrl(d.url) ? (
                       <button
                         type="button"
-                        onClick={() => raw.onOpenLink?.(d.url as string)}
+                        onClick={() => raw.onOpenLink?.(normalizeHttpUrl(d.url) as string)}
                         className="text-left font-medium text-blue-700 underline"
                       >
                         {d.title}

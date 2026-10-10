@@ -180,7 +180,7 @@ describe("TransactionPreview A-1 markdown", () => {
     const md = transactionPreviewToMarkdown({ ...swap, timeZone: "UTC" }, "en");
     expect(md).toContain("| Sell | 100 USDC |");
     expect(md).toContain("| Buy | 99.2 FUSE |");
-    expect(md).toContain("USDC > WFUSE > FUSE");
+    expect(md).toContain("USDC → WFUSE → FUSE");
     expect(md).toContain("1.35%");
     expect(md).toContain("Low liquidity");
     expect(md).toContain("https://wallet.example/swap?q=1");

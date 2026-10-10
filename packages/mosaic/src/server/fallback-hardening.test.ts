@@ -40,10 +40,10 @@ describe("short declared secrets are never skipped (Eta blocker 1)", () => {
     });
   }
 
-  it("an empty declared value is the only thing not needle-checked", () => {
+  it("a one-character secret that collides with other text refuses loudly instead of being skipped", () => {
     expect(() =>
       createMosaicToolResult("TokenDisplayOnceModal", tok("x", "Deploy key"), "en"),
-    ).not.toThrow();
+    ).toThrow(MosaicSecretLeakError); // "x" occurs in "text/html"
   });
 
   it("renders from publicProps: a renderer that needs a declared field refuses, never skips", () => {
@@ -87,12 +87,13 @@ describe("A-1 fallback does not emit untrusted strings as live markup (Eta block
     const md = textOf(feed({ content: `hi ![x](${ATTACKER})` }));
     expect(md).not.toContain("![x](");
     expect(html(md)).not.toContain("<img");
-    expect(html(md)).not.toContain("attacker.example");
+    // inert text may still NAME the host; it must not be a live link or image
+    expect(html(md)).not.toMatch(/(href|src)="https:\/\/attacker/);
   });
 
   it("probe 2: a raw <img> in message content is inert", () => {
     const md = textOf(feed({ content: "x <img src=https://attacker.example/p onerror=alert(1)>" }));
-    expect(md).not.toContain("<img");
+    expect(md).not.toMatch(/(?<!\\)</); // every "<" is backslash-escaped
     expect(html(md)).not.toMatch(/<img/i);
   });
 

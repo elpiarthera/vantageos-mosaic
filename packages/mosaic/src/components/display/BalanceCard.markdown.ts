@@ -1,6 +1,6 @@
 import { t } from "../../i18n/strings.js";
 import { formatDecimalString } from "../shared/decimal.js";
-import { mdEscape, mdHeading } from "../shared/markdown.js";
+import { mdCode, mdEscape, mdHeading } from "../shared/markdown.js";
 import { BalanceCardPropsSchema } from "./BalanceCard.schema.js";
 
 /** A-1 fallback: `token: balance (network, testnet)` plus the full address, as markdown. */
@@ -20,7 +20,8 @@ export function balanceCardToMarkdown(props: unknown, locale: "en" | "fr" = "en"
       `- ${t("BalanceCard.value", locale)}: ${mdEscape(formatDecimalString(p.usdValue, locale, p.currency))}`,
     );
   }
-  if (p.address) lines.push(`- ${t("BalanceCard.address", locale)}: \`${p.address}\``);
-  if (p.tokenAddress) lines.push(`- ${t("BalanceCard.contract", locale)}: \`${p.tokenAddress}\``);
+  if (p.address) lines.push(`- ${t("BalanceCard.address", locale)}: ${mdCode(p.address)}`);
+  if (p.tokenAddress)
+    lines.push(`- ${t("BalanceCard.contract", locale)}: ${mdCode(p.tokenAddress)}`);
   return `${title}\n\n${lines.join("\n")}\n`;
 }

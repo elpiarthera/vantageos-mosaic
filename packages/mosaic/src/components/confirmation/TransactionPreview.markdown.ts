@@ -1,7 +1,7 @@
 import { t } from "../../i18n/strings.js";
 import { formatTimestamp } from "../shared/datetime.js";
-import { mdEscape, mdHeading, mdTable } from "../shared/markdown.js";
-import { isHttpUrl } from "../shared/url.js";
+import { mdEscape, mdHeading, mdTable, mdUrl } from "../shared/markdown.js";
+import { normalizeHttpUrl } from "../shared/url.js";
 import {
   type TransactionAmount,
   TransactionPreviewPropsSchema,
@@ -39,7 +39,7 @@ export function transactionPreviewToMarkdown(props: unknown, locale: "en" | "fr"
     add("TransactionPreview.field.sell", amt(p.quote.sell));
     add("TransactionPreview.field.buy", amt(p.quote.buy));
     if (p.quote.minReceived) add("TransactionPreview.field.minReceived", amt(p.quote.minReceived));
-    if (p.quote.route) add("TransactionPreview.field.route", p.quote.route.join(" > "));
+    if (p.quote.route) add("TransactionPreview.field.route", p.quote.route.join(" → "));
     if (p.quote.priceImpact) add("TransactionPreview.field.priceImpact", `${p.quote.priceImpact}%`);
   }
   if (p.fee) add("TransactionPreview.field.fee", amt(p.fee));
@@ -59,8 +59,7 @@ export function transactionPreviewToMarkdown(props: unknown, locale: "en" | "fr"
       `${t("TransactionPreview.warnings", locale)}:\n${p.warnings.map((w) => `- ${mdEscape(w)}`).join("\n")}`,
     );
   }
-  if (p.handoff && isHttpUrl(p.handoff.url)) {
-    sections.push(`${t("TransactionPreview.handoff", locale)}: ${p.handoff.url}`);
-  }
+  const handoff = normalizeHttpUrl(p.handoff?.url);
+  if (handoff) sections.push(`${t("TransactionPreview.handoff", locale)}: <${mdUrl(handoff)}>`);
   return `${sections.join("\n\n")}\n`;
 }

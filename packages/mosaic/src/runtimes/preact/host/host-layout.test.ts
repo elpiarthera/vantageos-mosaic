@@ -61,6 +61,6 @@ describe("host layout preact hooks (parity)", () => {
       role: "user",
       content: [{ type: "text", text: "Hello" }],
     });
-    expect(app.openLink).toHaveBeenCalledWith({ url: "https://x.example" });
+    expect(app.openLink).toHaveBeenCalledWith({ url: "https://x.example/" });
   });
 });

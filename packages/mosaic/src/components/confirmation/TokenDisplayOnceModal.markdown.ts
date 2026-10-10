@@ -13,7 +13,8 @@ export function tokenDisplayOnceModalToMarkdown(
   props: unknown,
   locale: "en" | "fr" = "en",
 ): string {
-  const p = TokenDisplayOnceModalPropsSchema.parse(props);
+  // `token` is omitted on purpose: the renderer never needs it and is fed props without it.
+  const p = TokenDisplayOnceModalPropsSchema.omit({ token: true }).parse(props);
   const rows = [
     p.scope ? `- ${t("TokenDisplayOnceModal.field.scope", locale)}: ${mdEscape(p.scope)}` : "",
     p.expiresAt
