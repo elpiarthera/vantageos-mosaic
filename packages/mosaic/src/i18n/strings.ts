@@ -160,6 +160,8 @@ const EN = {
   "PipelineBoard.empty.message": "No pipeline to display",
   "PipelineBoard.loading": "Loading pipeline",
   "PipelineBoard.error.invalidProps": "PipelineBoard: invalid props",
+  "PipelineBoard.col.stage": "Stage",
+  "PipelineBoard.col.deals": "Deals",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -309,6 +311,8 @@ const FR: Record<keyof typeof EN, string> = {
   "PipelineBoard.empty.message": "Aucun pipeline à afficher",
   "PipelineBoard.loading": "Chargement du pipeline",
   "PipelineBoard.error.invalidProps": "PipelineBoard : propriétés invalides",
+  "PipelineBoard.col.stage": "Étape",
+  "PipelineBoard.col.deals": "Affaires",
 };
 
 export type MosaicI18nKey = keyof typeof EN;
