@@ -187,6 +187,14 @@ const EN = {
   "TransactionPreview.empty.message": "No transaction to preview",
   "TransactionPreview.loading": "Loading preview",
   "TransactionPreview.error.invalidProps": "TransactionPreview: invalid props",
+  "ProgressBar.title": "Progress",
+  "ConfirmDialog.title": "Confirmation",
+  "ConfirmDialog.options": "Options",
+  "TableView.title": "Data table",
+  "TableView.markdown.more": "{n} more rows",
+  "MarkdownRenderer.title": "Markdown content",
+  "TokenDisplayOnceModal.title": "Token (shown once)",
+  "StatusBadge.title": "Status",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -363,6 +371,14 @@ const FR: Record<keyof typeof EN, string> = {
   "TransactionPreview.empty.message": "Aucune transaction à prévisualiser",
   "TransactionPreview.loading": "Chargement de l'aperçu",
   "TransactionPreview.error.invalidProps": "TransactionPreview : propriétés invalides",
+  "ProgressBar.title": "Progression",
+  "ConfirmDialog.title": "Confirmation",
+  "ConfirmDialog.options": "Options",
+  "TableView.title": "Tableau de données",
+  "TableView.markdown.more": "{n} lignes de plus",
+  "MarkdownRenderer.title": "Contenu Markdown",
+  "TokenDisplayOnceModal.title": "Jeton (affiché une fois)",
+  "StatusBadge.title": "Statut",
 };
 
 export type MosaicI18nKey = keyof typeof EN;
