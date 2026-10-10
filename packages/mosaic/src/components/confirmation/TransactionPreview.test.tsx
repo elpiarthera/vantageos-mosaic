@@ -78,12 +78,7 @@ describe("TransactionPreview (R11)", () => {
   });
 
   it("does not flag price impact below 1%", () => {
-    render(
-      <TransactionPreview
-        {...swap}
-        quote={{ ...swap.quote, priceImpact: "0.42" }}
-      />,
-    );
+    render(<TransactionPreview {...swap} quote={{ ...swap.quote, priceImpact: "0.42" }} />);
     expect(screen.queryAllByText("High price impact")).toHaveLength(0);
   });
 
@@ -125,7 +120,8 @@ describe("TransactionPreview (R11)", () => {
 
 // R12 refusal: PROPERTY — whatever the props, the view carries no control that signs, sends,
 // approves, confirms or executes.
-const FORBIDDEN_CONTROL = /sign|send|approve|confirm|execute|submit|broadcast|authori[sz]e|\bpay\b|signer|envoyer|approuver|confirmer|exécuter|valider|autoriser|payer|diffuser/i;
+const FORBIDDEN_CONTROL =
+  /sign|send|approve|confirm|execute|submit|broadcast|authori[sz]e|\bpay\b|signer|envoyer|approuver|confirmer|exécuter|valider|autoriser|payer|diffuser/i;
 const variants: Array<Record<string, unknown>> = [
   transfer,
   swap,
@@ -188,7 +184,9 @@ describe("TransactionPreview A-1 markdown", () => {
     expect(md).toContain("1.35%");
     expect(md).toContain("Low liquidity");
     expect(md).toContain("https://wallet.example/swap?q=1");
-    expect(transactionPreviewToMarkdown(swap, "fr")).toContain("NON SIGNÉ - préparation uniquement");
+    expect(transactionPreviewToMarkdown(swap, "fr")).toContain(
+      "NON SIGNÉ - préparation uniquement",
+    );
   });
 
   it("is meaningful when empty and always keeps the sentence", () => {

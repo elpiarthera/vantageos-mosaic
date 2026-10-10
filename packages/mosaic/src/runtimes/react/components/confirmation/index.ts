@@ -47,3 +47,19 @@ export {
   TokenDisplayOnceModalPropsSchema,
   validateTokenDisplayOnceModalProps,
 } from "../../../../components/confirmation/TokenDisplayOnceModal.schema.js";
+
+/**
+ * TransactionPreview — shared cross-runtime implementation (the tsup preact pass aliases react -> preact/compat).
+ */
+export { TransactionPreview } from "../../../../components/confirmation/TransactionPreview.js";
+export type {
+  TransactionPreviewProps,
+  TransactionPreviewPropsOutput,
+  TransactionAmount,
+  TransactionQuote,
+} from "../../../../components/confirmation/TransactionPreview.schema.js";
+export {
+  TransactionPreviewPropsSchema,
+  validateTransactionPreviewProps,
+} from "../../../../components/confirmation/TransactionPreview.schema.js";
+export type { TransactionPreviewViewProps } from "../../../../components/confirmation/TransactionPreview.js";
