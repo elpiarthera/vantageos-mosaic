@@ -18,7 +18,7 @@ components:
     category: display
     schema: src/components/display/TableView.schema.ts
     zodExport: TableViewPropsSchema
-    i18nKeys: ["TableView.aria.table", "TableView.pagination.next", "TableView.pagination.prev", "TableView.empty.message", "TableView.error.invalidProps"]
+    i18nKeys: ["TableView.aria.table", "TableView.pagination.next", "TableView.pagination.prev", "TableView.empty.message", "TableView.error.invalidProps", "TableView.sort.by", "TableView.select.row", "TableView.select.all", "TableView.loading"]
     sizeLimit: "80KB"
     a11yLevel: WCAG-AA
   - name: Badge

@@ -48,9 +48,22 @@ export {
  */
 export { StreamingTableView, TableView } from "./TableView.js";
 export type {
+  ColumnDef,
   StreamingTableViewProps,
+  TableViewOptions,
   TableViewProps,
 } from "../../../../components/display/TableView.schema.js";
+export type {
+  ColumnKind,
+  SelectionMode,
+  SortDirection,
+  SortState,
+} from "../../../../components/display/TableView.logic.js";
+export {
+  compareDecimalStrings,
+  nextSort,
+  sortItems,
+} from "../../../../components/display/TableView.logic.js";
 export {
   TableViewPropsSchema,
   validateTableViewProps,
