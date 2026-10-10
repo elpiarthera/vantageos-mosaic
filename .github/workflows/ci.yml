@@ -125,9 +125,9 @@ jobs:
       # package.json exports (./react/<cat>, ./preact/<cat>) for non-emptiness.
       - run: pnpm --filter @vantageos/mosaic-tokens build
       - run: pnpm --filter @vantageos/mosaic build
-      # python3 ships on ubuntu-latest. No pip install: the vendored check has a
-      # graceful no-PyYAML fallback (HAS_YAML=False skips the registry
-      # cross-check; package.json-exports coverage still runs and gates).
+      # python3 ships on ubuntu-latest. No pip install: the vendored check reads the
+      # registry itself when PyYAML is absent, so the registry cross-check always runs.
+      # Exit 2 => an input could not be read (fail-closed); exit 1 => a coverage gap.
       # --ga-mode treats only explicit subpaths (suppresses wildcard keys).
       # Exit 1 => a bare category is missing a non-empty /react or /preact
       # counterpart => CI fails. This is the CI-side equivalent of the B-PR2

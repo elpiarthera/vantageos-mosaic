@@ -17,10 +17,12 @@ const EXPORT = (rt: string, cat: string) => ({
   types: `./dist/${rt}/${cat}.d.ts`,
   import: `./dist/${rt}/${cat}.js`,
 });
-const BODY = 'export { a, b };\n//# sourceMappingURL=x.map ........................\n';
+const BODY = "export { a, b };\n//# sourceMappingURL=x.map ........................\n";
 
 /** A self-contained fake package: scripts/<copy of the script>, package.json, dist/, registry.yaml. */
-function fakePackage(opts: { registry?: string | null; breakPreact?: boolean; noCategories?: boolean } = {}) {
+function fakePackage(
+  opts: { registry?: string | null; breakPreact?: boolean; noCategories?: boolean } = {},
+) {
   const root = mkdtempSync(join(tmpdir(), "gate4-"));
   roots.push(root);
   mkdirSync(join(root, "scripts"));
@@ -47,8 +49,12 @@ function fakePackage(opts: { registry?: string | null; breakPreact?: boolean; no
   return root;
 }
 
-function run(args: string[], cwd: string, script = SCRIPT) {
-  const r = spawnSync("python3", [script, ...args], { cwd, encoding: "utf8" });
+function run(args: string[], cwd: string, script = SCRIPT, env: NodeJS.ProcessEnv = {}) {
+  const r = spawnSync("python3", [script, ...args], {
+    cwd,
+    encoding: "utf8",
+    env: { ...process.env, ...env },
+  });
   return { status: r.status, out: `${r.stdout}${r.stderr}` };
 }
 
@@ -97,11 +103,30 @@ describe("Gate 4 script is fail-closed on unreadable input (exit 2, names the in
 
   it("the registry cross-check runs without PyYAML (built-in reader), and still fails on a gap", () => {
     const root = fakePackage({
-      registry: 'version: "1"\ncomponents:\n  - name: X\n    category: forms\n  - name: Y\n    category: ghosts\n',
+      registry:
+        'version: "1"\ncomponents:\n  - name: X\n    category: forms\n  - name: Y\n    category: ghosts\n',
     });
     const r = run(["--package-root", root], tmpdir());
     expect(r.status).toBe(1);
     expect(r.out).toContain("ghosts");
+  });
+});
+
+describe("Gate 4 script without PyYAML (CI has none installed)", () => {
+  it("still runs the registry cross-check through the built-in reader, and still fails on a gap", () => {
+    const blocker = mkdtempSync(join(tmpdir(), "noyaml-"));
+    roots.push(blocker);
+    writeFileSync(join(blocker, "yaml.py"), 'raise ImportError("yaml blocked for this test")\n');
+    const env = { PYTHONPATH: blocker };
+    const ok = run(["--package-root", fakePackage()], tmpdir(), SCRIPT, env);
+    expect(ok.status).toBe(0);
+    const gap = fakePackage({
+      registry: 'version: "1"\ncomponents:\n  - name: Y\n    category: ghosts\n',
+    });
+    const r = run(["--package-root", gap], tmpdir(), SCRIPT, env);
+    expect(r.status).toBe(1);
+    expect(r.out).toContain("ghosts");
+    expect(r.out).not.toMatch(/skipping registry/i);
   });
 });
 
