@@ -264,6 +264,17 @@ function splitSecrets(
 }
 
 /**
+ * Comparison form for the leak check: Unicode NFKC (compatibility forms such as full-width
+ * letters collapse) then lower case, applied to BOTH sides. A secret echoed as "ABCD", "abcd" or
+ * "ＡＢＣＤ" is the same secret. Cost, accepted: a short secret can also match differently-cased
+ * unrelated text and then REFUSES loudly (the issuer keeps it out of the other props); there is no
+ * case in which a case-folded match is silently allowed.
+ */
+function fold(text: string): string {
+  return text.normalize("NFKC").toLowerCase();
+}
+
+/**
  * EVERY declared secret value, whatever its length (a one-time code is 4-6 characters). Only an
  * empty value carries nothing to look for. A short value that collides with other text makes the
  * call REFUSE (loudly): the issuer keeps it out of the other props. Never a skip.
@@ -340,9 +351,12 @@ export function createMosaicToolResult(
     { type: "text", text: markdown },
     ui,
   ];
-  const serialised = JSON.stringify(content);
+  const serialised = fold(JSON.stringify(content));
   for (const { field, needle } of secretNeedles(secrets)) {
-    if (serialised.includes(needle) || serialised.includes(JSON.stringify(needle).slice(1, -1))) {
+    if (
+      serialised.includes(fold(needle)) ||
+      serialised.includes(fold(JSON.stringify(needle).slice(1, -1)))
+    ) {
       throw new MosaicSecretLeakError(field);
     }
   }

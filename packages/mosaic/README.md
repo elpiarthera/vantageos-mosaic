@@ -308,7 +308,14 @@ The text block carries the view's DATA (App standard A-1: a client with no UI la
 meaningful answer). All 12 supported components have a pure `<name>ToMarkdown(props, locale)`, also
 exported from `@vantageos/mosaic/server`. `_meta.ui.fallback` is kept (it is part of the published
 `createMosaicResource` result) and now holds the same text instead of a title and a note. A one-time
-token's text block is marked `annotations.audience: ["user"]`.
+token's value is never written into `content[]`.
+
+**Secret guard.** `MOSAIC_NEVER_SERIALISE` lists, per view, the fields whose value must never reach
+`content[]`. `createMosaicToolResult` renders the fallback from the props without them, delivers them in
+the result `_meta["mosaic/secrets"]`, and refuses (`MosaicSecretLeakError`) if any non-empty declared
+value still appears, at any length. The comparison is case-folded and NFKC-normalised on both sides, so
+`ABCD` is an echo of `abcd`; a very short secret can therefore also collide with unrelated text and
+refuse loudly (the issuer keeps it out of the other props).
 
 ## Components
 
