@@ -1,13 +1,17 @@
+// Preact runtime parity for R25 (the preact forms components are mirrored copies of the react ones).
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { z } from "zod";
-import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
-import { MultiSelect } from "../../../runtimes/react/components/forms/MultiSelect";
-import { RadioGroup } from "../../../runtimes/react/components/forms/RadioGroup";
-import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
-import { MultiSelectPropsSchema } from "../MultiSelect.schema";
-import { getGroupClasses, getOptionRowClasses } from "../RadioGroup.logic";
-import { RadioGroupPropsSchema } from "../RadioGroup.schema";
+import { MultiSelectPropsSchema } from "../../../../../components/forms/MultiSelect.schema";
+import {
+  getGroupClasses,
+  getOptionRowClasses,
+} from "../../../../../components/forms/RadioGroup.logic";
+import { RadioGroupPropsSchema } from "../../../../../components/forms/RadioGroup.schema";
+import { FormProvider } from "../FormProvider";
+import { MultiSelect } from "../MultiSelect";
+import { RadioGroup } from "../RadioGroup";
+import { useMosaicForm } from "../useMosaicForm";
 
 afterEach(cleanup);
 

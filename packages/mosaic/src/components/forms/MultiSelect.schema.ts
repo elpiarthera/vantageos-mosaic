@@ -19,6 +19,8 @@ export const MultiSelectPropsSchema = z.object({
   disabled: z.boolean().optional(),
   searchable: z.boolean().optional(),
   maxItems: z.number().int().positive().optional(),
+  /** `chips`: every option is a visible toggle button (aria-pressed), no dropdown. */
+  appearance: z.enum(["default", "chips"]).default("default"),
 });
 
 export type MultiSelectOption = z.infer<typeof MultiSelectOptionSchema>;

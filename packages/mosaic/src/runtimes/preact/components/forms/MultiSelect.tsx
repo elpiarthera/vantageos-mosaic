@@ -21,6 +21,8 @@ export interface MultiSelectProps {
   disabled?: boolean;
   searchable?: boolean;
   maxItems?: number;
+  /** `chips`: every option is a visible toggle button (aria-pressed), no dropdown. */
+  appearance?: "default" | "chips";
   className?: string;
 }
 
@@ -40,8 +42,9 @@ export function MultiSelect(props: MultiSelectProps) {
     disabled: props.disabled,
     searchable: props.searchable,
     maxItems: props.maxItems,
+    appearance: props.appearance,
   });
-  const { name, label, options, placeholder, disabled, searchable, maxItems } = parsed;
+  const { name, label, options, placeholder, disabled, searchable, maxItems, appearance } = parsed;
 
   const reactId = useId();
   const triggerId = `${reactId}-trigger`;
@@ -53,6 +56,21 @@ export function MultiSelect(props: MultiSelectProps) {
       {({ field }) => {
         // RHF field.value is `unknown` (erased generic). We tighten to string[].
         const value: string[] = Array.isArray(field.value) ? (field.value as string[]) : [];
+        if (appearance === "chips") {
+          return (
+            <ChipToggles
+              labelId={labelId}
+              label={label}
+              options={options}
+              value={value}
+              disabled={disabled}
+              maxItems={maxItems}
+              onChange={(next) => field.onChange(next)}
+              onBlur={() => field.onBlur()}
+              className={props.className}
+            />
+          );
+        }
         return (
           <Inner
             triggerId={triggerId}
@@ -72,6 +90,61 @@ export function MultiSelect(props: MultiSelectProps) {
         );
       }}
     </FormField>
+  );
+}
+
+interface ChipTogglesProps {
+  labelId: string;
+  label: string;
+  options: MultiSelectOption[];
+  value: string[];
+  disabled?: boolean;
+  maxItems?: number;
+  className?: string;
+  onChange: (next: string[]) => void;
+  onBlur: () => void;
+}
+
+/** `appearance="chips"`: all options visible as toggle buttons (no menu to clip in the iframe). */
+function ChipToggles(p: ChipTogglesProps) {
+  const atMax = isAtMaxItems(p.value, p.maxItems);
+  return (
+    <fieldset
+      aria-labelledby={p.labelId}
+      data-appearance="chips"
+      className={`m-0 min-w-0 border-0 p-0 ${p.className ?? "mosaic-multiselect mosaic-multiselect--chips"}`}
+      onBlur={p.onBlur}
+    >
+      <span id={p.labelId} className="mosaic-multiselect-label">
+        {p.label}
+      </span>
+      <div className="flex flex-row flex-wrap gap-2">
+        {p.options.map((opt) => {
+          const on = p.value.includes(opt.value);
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              aria-pressed={on}
+              disabled={p.disabled || (!on && atMax)}
+              data-chip-value={opt.value}
+              className={`mosaic-multiselect-chip inline-flex items-center rounded-full border px-3 py-1 text-sm ${
+                on
+                  ? "border-slate-900 bg-slate-900 text-white"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              } disabled:cursor-not-allowed disabled:opacity-50`}
+              onClick={() =>
+                p.onChange(
+                  on ? removeValue(p.value, opt.value) : addValue(p.value, opt.value, p.maxItems),
+                )
+              }
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
 

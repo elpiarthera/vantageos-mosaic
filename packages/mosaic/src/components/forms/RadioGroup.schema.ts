@@ -37,6 +37,12 @@ export const RadioGroupPropsSchema = z.object({
   label: z.string().min(1),
   options: z.array(RadioGroupOptionSchema).min(1),
   orientation: z.enum(["vertical", "horizontal"]).default("vertical"),
+  /**
+   * `segmented` / `chips` render the options as always-visible controls (Claude design
+   * guidelines prefer visible options over menus, which clip inside the iframe). The ARIA
+   * radiogroup semantics are identical in every appearance.
+   */
+  appearance: z.enum(["default", "segmented", "chips"]).default("default"),
   disabled: z.boolean().optional().default(false),
   locale: z.enum(["en", "fr"]).default("en"),
 });
