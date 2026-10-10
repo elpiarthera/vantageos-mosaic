@@ -44,3 +44,14 @@ export { BalanceCard } from "./BalanceCard.js";
 export type { BalanceCardProps, BalanceCardPropsOutput } from "./BalanceCard.schema.js";
 export { BalanceCardPropsSchema, validateBalanceCardProps } from "./BalanceCard.schema.js";
 export { balanceCardToMarkdown } from "./BalanceCard.markdown.js";
+
+// MessageFeed
+export { MessageFeed } from "./MessageFeed.js";
+export type {
+  MessageFeedProps,
+  MessageFeedPropsOutput,
+  FeedMessage,
+} from "./MessageFeed.schema.js";
+export { MessageFeedPropsSchema, validateMessageFeedProps } from "./MessageFeed.schema.js";
+export { messageFeedToMarkdown } from "./MessageFeed.markdown.js";
+export type { MessageFeedViewProps } from "./MessageFeed.js";

@@ -236,3 +236,10 @@ components:
     i18nKeys: ["Timeline.title", "Timeline.status.done", "Timeline.status.current", "Timeline.status.pending", "Timeline.status.blocked", "Timeline.completed", "Timeline.more", "Timeline.empty.message", "Timeline.loading", "Timeline.error.invalidProps"]
     sizeLimit: "15KB"
     a11yLevel: WCAG-AA
+  - name: MessageFeed
+    category: display
+    schema: src/components/display/MessageFeed.schema.ts
+    zodExport: MessageFeedPropsSchema
+    i18nKeys: ["MessageFeed.title", "MessageFeed.unread", "MessageFeed.attachment", "MessageFeed.showing", "MessageFeed.empty.message", "MessageFeed.loading", "MessageFeed.error.invalidProps"]
+    sizeLimit: "25KB"
+    a11yLevel: WCAG-AA

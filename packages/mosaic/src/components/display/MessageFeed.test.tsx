@@ -66,7 +66,12 @@ describe("MessageFeed (R03)", () => {
     render(
       <MessageFeed
         messages={[
-          { id: "x", sender: "a", content: "<img src=x onerror=alert(1)>", timestamp: "2026-10-10T08:00:00Z" },
+          {
+            id: "x",
+            sender: "a",
+            content: "<img src=x onerror=alert(1)>",
+            timestamp: "2026-10-10T08:00:00Z",
+          },
         ]}
       />,
     );
