@@ -37,7 +37,7 @@ describe("host-context react hooks", () => {
   });
 
   it("exposes a display mode requester that refuses pip on ChatGPT", async () => {
-    const app = fakeApp({ "openai/deepLink": "https://chatgpt.com/x" });
+    const app = fakeApp({ "openai/deepLink": { url: "/x" } });
     const { result } = renderHook(() => useRequestDisplayMode(app as never));
     await expect(result.current("fullscreen")).resolves.toEqual({ mode: "fullscreen" });
     // biome-ignore lint/suspicious/noExplicitAny: proving the runtime refusal past the type
