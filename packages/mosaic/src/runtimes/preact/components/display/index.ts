@@ -95,3 +95,18 @@ export {
   BalanceCardPropsSchema,
   validateBalanceCardProps,
 } from "../../../../components/display/BalanceCard.schema.js";
+
+/**
+ * MessageFeed — shared cross-runtime implementation (the tsup preact pass aliases react -> preact/compat).
+ */
+export { MessageFeed } from "../../../../components/display/MessageFeed.js";
+export type {
+  MessageFeedProps,
+  MessageFeedPropsOutput,
+  FeedMessage,
+} from "../../../../components/display/MessageFeed.schema.js";
+export {
+  MessageFeedPropsSchema,
+  validateMessageFeedProps,
+} from "../../../../components/display/MessageFeed.schema.js";
+export type { MessageFeedViewProps } from "../../../../components/display/MessageFeed.js";
