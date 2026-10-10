@@ -273,5 +273,23 @@
     "error": {
       "invalidProps": "BalanceCard: invalid props"
     }
+  },
+  "Timeline": {
+    "title": "Timeline",
+    "status": {
+      "done": "Done",
+      "current": "In progress",
+      "pending": "Pending",
+      "blocked": "Blocked"
+    },
+    "completed": "{n} completed",
+    "more": "{n} more",
+    "empty": {
+      "message": "No steps to display"
+    },
+    "loading": "Loading timeline",
+    "error": {
+      "invalidProps": "Timeline: invalid props"
+    }
   }
 }
