@@ -14,7 +14,9 @@ type Ctx = Record<string, unknown>;
 function fakeApp(ctx: Ctx | undefined) {
   return {
     getHostContext: vi.fn(() => ctx),
-    requestDisplayMode: vi.fn(async ({ mode }: { mode: string }) => ({ mode })),
+    requestDisplayMode: vi.fn(async ({ mode }: { mode: "inline" | "fullscreen" | "pip" }) => ({
+      mode,
+    })),
     updateModelContext: vi.fn(async () => ({})),
     onhostcontextchanged: undefined as ((p: Ctx) => void) | undefined,
   };
