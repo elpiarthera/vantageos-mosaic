@@ -62,3 +62,18 @@ export function useUpdateModelContext(app: HostAppLike | null | undefined) {
     [app],
   );
 }
+
+// RED stubs: behaviour lands in the next commit.
+export function useMosaicHostLayout(
+  _app: HostAppLike | null | undefined,
+  _root?: HTMLElement,
+): MosaicHostContext {
+  return readHostContext(undefined);
+}
+export function useSendMessage(_app: HostAppLike | null | undefined) {
+  return (_text: string, _options?: { target?: "active" | "new"; send?: boolean }): Promise<void> =>
+    Promise.resolve();
+}
+export function useOpenLink(_app: HostAppLike | null | undefined) {
+  return (_url: string): Promise<void> => Promise.resolve();
+}
