@@ -58,7 +58,9 @@ describe("host style variables bridge (H02)", () => {
     const el = document.createElement("div");
     applyHostStyleVariables(
       readHostStyles({
-        styles: { variables: { "--color-background-primary": "rgb(1, 2, 3)", "--font-sans": "Foo" } },
+        styles: {
+          variables: { "--color-background-primary": "rgb(1, 2, 3)", "--font-sans": "Foo" },
+        },
       }),
       el,
     );
@@ -69,7 +71,10 @@ describe("host style variables bridge (H02)", () => {
 
   it("leaves mosaic tokens untouched for variables the host does not pass (fallback = mosaic default)", () => {
     const el = document.createElement("div");
-    applyHostStyleVariables(readHostStyles({ styles: { variables: { "--font-sans": "Foo" } } }), el);
+    applyHostStyleVariables(
+      readHostStyles({ styles: { variables: { "--font-sans": "Foo" } } }),
+      el,
+    );
     expect(el.style.getPropertyValue("--mosaic-color-background")).toBe("");
   });
 

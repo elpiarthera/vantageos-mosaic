@@ -118,7 +118,9 @@ export function buildMcpAppResource(input: McpAppResourceInput): McpAppResourceO
   if (visibility !== undefined) {
     const valid = visibility.every((v) => (v as string) === "model" || (v as string) === "app");
     if (visibility.length === 0 || !valid) {
-      throw new Error('buildMcpAppResource: visibility must be a non-empty list of "model" | "app"');
+      throw new Error(
+        'buildMcpAppResource: visibility must be a non-empty list of "model" | "app"',
+      );
     }
     toolVisibility = [...new Set(visibility)];
   }
