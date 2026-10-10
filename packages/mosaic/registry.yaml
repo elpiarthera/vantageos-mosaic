@@ -229,3 +229,10 @@ components:
     i18nKeys: ["BalanceCard.title", "BalanceCard.network", "BalanceCard.testnet", "BalanceCard.address", "BalanceCard.contract", "BalanceCard.value", "BalanceCard.copy", "BalanceCard.copied", "BalanceCard.empty.message", "BalanceCard.loading", "BalanceCard.error.invalidProps"]
     sizeLimit: "20KB"
     a11yLevel: WCAG-AA
+  - name: Timeline
+    category: progress
+    schema: src/components/progress/Timeline.schema.ts
+    zodExport: TimelinePropsSchema
+    i18nKeys: ["Timeline.title", "Timeline.status.done", "Timeline.status.current", "Timeline.status.pending", "Timeline.status.blocked", "Timeline.completed", "Timeline.more", "Timeline.empty.message", "Timeline.loading", "Timeline.error.invalidProps"]
+    sizeLimit: "15KB"
+    a11yLevel: WCAG-AA
