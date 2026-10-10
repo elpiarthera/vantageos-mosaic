@@ -16,6 +16,9 @@ function TokenDisplayOnceModalInner({
   warningMessage,
   copyLabel,
   closeLabel,
+  scope,
+  expiresAt,
+  fingerprint,
   locale,
   onClose,
 }: TokenDisplayOnceModalProps) {
@@ -86,6 +89,28 @@ function TokenDisplayOnceModalInner({
         >
           {warningMessage}
         </p>
+        {scope || expiresAt || fingerprint ? (
+          <dl className="m-0 text-sm text-gray-700">
+            {scope ? (
+              <div>
+                <dt className="inline">{t("TokenDisplayOnceModal.field.scope", locale)}: </dt>
+                <dd className="m-0 inline">{scope}</dd>
+              </div>
+            ) : null}
+            {expiresAt ? (
+              <div>
+                <dt className="inline">{t("TokenDisplayOnceModal.field.expires", locale)}: </dt>
+                <dd className="m-0 inline">{expiresAt}</dd>
+              </div>
+            ) : null}
+            {fingerprint ? (
+              <div>
+                <dt className="inline">{t("TokenDisplayOnceModal.field.fingerprint", locale)}: </dt>
+                <dd className="m-0 inline font-mono">{fingerprint}</dd>
+              </div>
+            ) : null}
+          </dl>
+        ) : null}
         <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
           <code className="flex-1 text-sm font-mono text-gray-800 break-all select-all">
             {secureToken}

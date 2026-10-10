@@ -65,7 +65,15 @@
       "once": "This token will only be shown once. Copy it now."
     },
     "copied": "Copied",
-    "title": "Token (shown once)"
+    "title": "Token (shown once)",
+    "notice": {
+      "once": "The value is shown once, in the app view only."
+    },
+    "field": {
+      "scope": "Scope",
+      "expires": "Expires",
+      "fingerprint": "Fingerprint"
+    }
   },
   "Badge": {
     "aria": {

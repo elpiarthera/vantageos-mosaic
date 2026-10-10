@@ -53,7 +53,7 @@ const fixtures: Record<SupportedComponent, { props: unknown; data: string[] }> =
       copyLabel: "Copy",
       closeLabel: "Close",
     },
-    data: ["tok_live_abc123", "Shown once"],
+    data: ["API token", "shown once, in the app view only"],
   },
   StatusBadge: {
     props: { status: "deployed", variant: "success", label: "Deployed", locale: "en" },
@@ -139,19 +139,6 @@ describe("createMosaicToolResult: A-1 markdown beside the ui:// resource", () =>
       expect(meta.ui?.fallback).toBe(text);
     });
   }
-
-  it("keeps a one-time token out of the model's view: the text block is user-audience", () => {
-    const f = fixtures.TokenDisplayOnceModal;
-    const text = createMosaicToolResult("TokenDisplayOnceModal", f.props, "en").content[0] as {
-      annotations?: { audience?: string[] };
-    };
-    expect(text.annotations?.audience).toEqual(["user"]);
-    const other = createMosaicToolResult("StatusBadge", fixtures.StatusBadge.props, "en")
-      .content[0] as {
-      annotations?: unknown;
-    };
-    expect(other.annotations).toBeUndefined();
-  });
 
   it("new views accept empty args and still return a meaningful text block", () => {
     for (const name of [

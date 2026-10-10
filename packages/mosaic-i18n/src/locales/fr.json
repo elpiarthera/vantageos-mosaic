@@ -65,7 +65,15 @@
       "once": "Ce jeton ne sera affiché qu'une seule fois. Copiez-le maintenant."
     },
     "copied": "Copié",
-    "title": "Jeton (affiché une fois)"
+    "title": "Jeton (affiché une fois)",
+    "notice": {
+      "once": "La valeur n'est affichée qu'une fois, dans la vue de l'application uniquement."
+    },
+    "field": {
+      "scope": "Portée",
+      "expires": "Expire le",
+      "fingerprint": "Empreinte"
+    }
   },
   "Badge": {
     "aria": {

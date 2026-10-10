@@ -195,6 +195,10 @@ const EN = {
   "MarkdownRenderer.title": "Markdown content",
   "TokenDisplayOnceModal.title": "Token (shown once)",
   "StatusBadge.title": "Status",
+  "TokenDisplayOnceModal.notice.once": "The value is shown once, in the app view only.",
+  "TokenDisplayOnceModal.field.scope": "Scope",
+  "TokenDisplayOnceModal.field.expires": "Expires",
+  "TokenDisplayOnceModal.field.fingerprint": "Fingerprint",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -379,6 +383,11 @@ const FR: Record<keyof typeof EN, string> = {
   "MarkdownRenderer.title": "Contenu Markdown",
   "TokenDisplayOnceModal.title": "Jeton (affiché une fois)",
   "StatusBadge.title": "Statut",
+  "TokenDisplayOnceModal.notice.once":
+    "La valeur n'est affichée qu'une fois, dans la vue de l'application uniquement.",
+  "TokenDisplayOnceModal.field.scope": "Portée",
+  "TokenDisplayOnceModal.field.expires": "Expire le",
+  "TokenDisplayOnceModal.field.fingerprint": "Empreinte",
 };
 
 export type MosaicI18nKey = keyof typeof EN;

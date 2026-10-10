@@ -9,6 +9,11 @@ export const TokenDisplayOnceModalPropsSchema = z.object({
   warningMessage: z.string().min(1),
   copyLabel: z.string().min(1),
   closeLabel: z.string().min(1),
+  /** Non-secret metadata, shown in the view AND carried by the A-1 fallback. */
+  scope: z.string().optional(),
+  expiresAt: z.string().optional(),
+  /** Supplied by the issuer; NEVER derived from the secret. */
+  fingerprint: z.string().optional(),
   locale: z.enum(["en", "fr"]).default("en"),
 });
 
