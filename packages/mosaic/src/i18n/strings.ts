@@ -142,6 +142,13 @@ const EN = {
   "Timeline.empty.message": "No steps to display",
   "Timeline.loading": "Loading timeline",
   "Timeline.error.invalidProps": "Timeline: invalid props",
+  "MessageFeed.title": "Messages",
+  "MessageFeed.unread": "Unread",
+  "MessageFeed.attachment": "Attachment",
+  "MessageFeed.showing": "Showing the latest {n} of {total}",
+  "MessageFeed.empty.message": "No messages",
+  "MessageFeed.loading": "Loading messages",
+  "MessageFeed.error.invalidProps": "MessageFeed: invalid props",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -273,6 +280,13 @@ const FR: Record<keyof typeof EN, string> = {
   "Timeline.empty.message": "Aucune étape à afficher",
   "Timeline.loading": "Chargement de la chronologie",
   "Timeline.error.invalidProps": "Timeline : propriétés invalides",
+  "MessageFeed.title": "Messages",
+  "MessageFeed.unread": "Non lu",
+  "MessageFeed.attachment": "Pièce jointe",
+  "MessageFeed.showing": "Affichage des {n} derniers sur {total}",
+  "MessageFeed.empty.message": "Aucun message",
+  "MessageFeed.loading": "Chargement des messages",
+  "MessageFeed.error.invalidProps": "MessageFeed : propriétés invalides",
 };
 
 export type MosaicI18nKey = keyof typeof EN;

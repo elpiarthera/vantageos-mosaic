@@ -1,0 +1,32 @@
+{
+  "en": {
+    "MessageFeed": {
+      "title": "Messages",
+      "unread": "Unread",
+      "attachment": "Attachment",
+      "showing": "Showing the latest {n} of {total}",
+      "empty": {
+        "message": "No messages"
+      },
+      "loading": "Loading messages",
+      "error": {
+        "invalidProps": "MessageFeed: invalid props"
+      }
+    }
+  },
+  "fr": {
+    "MessageFeed": {
+      "title": "Messages",
+      "unread": "Non lu",
+      "attachment": "Pièce jointe",
+      "showing": "Affichage des {n} derniers sur {total}",
+      "empty": {
+        "message": "Aucun message"
+      },
+      "loading": "Chargement des messages",
+      "error": {
+        "invalidProps": "MessageFeed : propriétés invalides"
+      }
+    }
+  }
+}

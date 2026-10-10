@@ -291,5 +291,18 @@
     "error": {
       "invalidProps": "Timeline : propriétés invalides"
     }
+  },
+  "MessageFeed": {
+    "title": "Messages",
+    "unread": "Non lu",
+    "attachment": "Pièce jointe",
+    "showing": "Affichage des {n} derniers sur {total}",
+    "empty": {
+      "message": "Aucun message"
+    },
+    "loading": "Chargement des messages",
+    "error": {
+      "invalidProps": "MessageFeed : propriétés invalides"
+    }
   }
 }
