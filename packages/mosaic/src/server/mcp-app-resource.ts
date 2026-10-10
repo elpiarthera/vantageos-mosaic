@@ -5,6 +5,13 @@
  * ({ csp, prefersBorder?, domain? }) and tool `_meta.ui.resourceUri`. `openai/*` keys are
  * strictly additive and appear only when the caller passes the matching input; a client that
  * ignores them loses nothing.
+ *
+ * Composition with `@modelcontextprotocol/ext-apps/server` (read at 2.0.3): `registerAppResource`
+ * only defaults the MIME type and `registerAppTool` only back-fills the deprecated flat
+ * `ui/resourceUri` key; neither computes csp defaults, the Claude `domain`, or any `openai/*`
+ * key. This helper produces the metadata those registrars pass through: use `resource._meta` as
+ * the resource config `_meta` and the read-result content `_meta`, and `toolMeta` as the tool
+ * config `_meta`.
  */
 import { createHash } from "node:crypto";
 
@@ -22,14 +29,17 @@ export type OpenAiEntrypoint =
   | { type: "thread" }
   | { type: "file"; extensions: string[] };
 
+/** ChatGPT display modes. `pip` is not one (openai/mcp-extensions docs/spec.md l.843-890). */
+export type ChatGptDisplayMode = "inline" | "fullscreen";
+
 export interface McpAppOpenAiInput {
-  /** `openai/outputTemplate`: compatibility alias of `_meta.ui.resourceUri` (tool level). */
+  /** `openai/outputTemplate`: compatibility alias of `_meta.ui.resourceUri` (tool level; fleet ruling, additive). */
   outputTemplate?: string;
-  /** `openai/widgetDescription` (resource level). */
-  widgetDescription?: string;
-  /** `openai/preferredDisplayMode` (resource level). inline | fullscreen only, never pip. */
-  preferredDisplayMode?: "inline" | "fullscreen";
-  /** `openai/ui` entrypoints (tool level). */
+  /** `_meta["openai/ui"].availableDisplayModes` on the resource content item (spec l.843-890). */
+  availableDisplayModes?: ChatGptDisplayMode[];
+  /** `_meta["openai/ui"].preferredDisplayMode` on the resource content item (spec l.843-890). */
+  preferredDisplayMode?: ChatGptDisplayMode;
+  /** `_meta["openai/ui"].entrypoints` on the tool descriptor (spec l.59, l.116). */
   entrypoints?: OpenAiEntrypoint[];
 }
 
@@ -56,8 +66,10 @@ export interface McpAppResourceOutput {
     text: string;
     _meta: {
       ui: McpAppResourceMetaUi;
-      "openai/widgetDescription"?: string;
-      "openai/preferredDisplayMode"?: "inline" | "fullscreen";
+      "openai/ui"?: {
+        availableDisplayModes?: ChatGptDisplayMode[];
+        preferredDisplayMode?: ChatGptDisplayMode;
+      };
     };
   };
   toolMeta: {
@@ -68,8 +80,11 @@ export interface McpAppResourceOutput {
 }
 
 /**
- * Claude's stable app origin: `{sha256(mcpServerUrl) first 32 hex}.claudemcpcontent.com`
- * (the derivation documented in `@modelcontextprotocol/ext-apps/server`).
+ * Claude's stable app origin: `{sha256(mcpServerUrl) first 32 hex}.claudemcpcontent.com`.
+ * Source: https://claude.com/docs/connectors/building/mcp-apps/getting-started, section
+ * "Set ui.domain for Claude" (same derivation as the `@modelcontextprotocol/ext-apps/server`
+ * example). Known answer: "https://example.com/mcp" ->
+ * "c3d80a4ed901ee05b21755a88273b4a4.claudemcpcontent.com".
  */
 export function deriveClaudeAppDomain(servedUrl: string): string {
   const hash = createHash("sha256").update(servedUrl).digest("hex").slice(0, 32);
@@ -78,10 +93,9 @@ export function deriveClaudeAppDomain(servedUrl: string): string {
 
 export function buildMcpAppResource(input: McpAppResourceInput): McpAppResourceOutput {
   const { uri, html, csp, servedUrl, prefersBorder, openai } = input;
-  if ((openai?.preferredDisplayMode as string | undefined) === "pip") {
-    throw new Error(
-      'buildMcpAppResource: preferredDisplayMode "pip" is refused (inline | fullscreen only)',
-    );
+  const modes = [...(openai?.availableDisplayModes ?? []), openai?.preferredDisplayMode];
+  if (modes.some((m) => (m as string | undefined) === "pip")) {
+    throw new Error("buildMcpAppResource: display mode pip is refused (inline | fullscreen only)");
   }
 
   const ui: McpAppResourceMetaUi = {
@@ -97,11 +111,15 @@ export function buildMcpAppResource(input: McpAppResourceInput): McpAppResourceO
 
   // Standard key first, vendor keys after, only when passed.
   const resourceMeta: McpAppResourceOutput["resource"]["_meta"] = { ui };
-  if (openai?.widgetDescription !== undefined) {
-    resourceMeta["openai/widgetDescription"] = openai.widgetDescription;
-  }
-  if (openai?.preferredDisplayMode !== undefined) {
-    resourceMeta["openai/preferredDisplayMode"] = openai.preferredDisplayMode;
+  if (openai?.availableDisplayModes !== undefined || openai?.preferredDisplayMode !== undefined) {
+    resourceMeta["openai/ui"] = {
+      ...(openai.availableDisplayModes !== undefined
+        ? { availableDisplayModes: openai.availableDisplayModes }
+        : {}),
+      ...(openai.preferredDisplayMode !== undefined
+        ? { preferredDisplayMode: openai.preferredDisplayMode }
+        : {}),
+    };
   }
 
   const toolMeta: McpAppResourceOutput["toolMeta"] = { ui: { resourceUri: uri } };

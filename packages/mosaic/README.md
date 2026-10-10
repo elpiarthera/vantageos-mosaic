@@ -229,15 +229,20 @@ const { resource, toolMeta } = buildMcpAppResource({
   csp: { connectDomains: ["https://api.example.com"] }, // the 4 arrays are always emitted
   servedUrl: "https://example.com/mcp",  // Claude `ui.domain` is DERIVED from it, never typed
   prefersBorder: true,
-  openai: { outputTemplate: "ui://mosaic/tasks", widgetDescription: "Tasks" }, // optional
+  openai: { outputTemplate: "ui://mosaic/tasks", preferredDisplayMode: "inline" }, // optional
 });
-// resource._meta = { ui: { csp, prefersBorder, domain }, "openai/widgetDescription"? }
-// toolMeta       = { ui: { resourceUri }, "openai/outputTemplate"?, "openai/ui"? }
+// resource._meta = { ui: { csp, prefersBorder, domain }, "openai/ui"?: { availableDisplayModes?, preferredDisplayMode? } }
+// toolMeta       = { ui: { resourceUri }, "openai/outputTemplate"?, "openai/ui"?: { entrypoints } }
 ```
 
 `domain` is `{sha256(servedUrl) first 32 hex}.claudemcpcontent.com` and is absent when
-`servedUrl` is not given. `openai.preferredDisplayMode` accepts `inline` | `fullscreen`
-only; `pip` throws.
+`servedUrl` is not given. `openai.availableDisplayModes` / `preferredDisplayMode` accept
+`inline` | `fullscreen` only; `pip` throws.
+
+It composes with `@modelcontextprotocol/ext-apps/server`: `registerAppResource` and
+`registerAppTool` pass `_meta` through (they only default the MIME type and back-fill the
+deprecated flat `ui/resourceUri`), so feed them `resource._meta` and `toolMeta`; this helper adds
+the csp defaults, the derived Claude `domain` and the additive `openai/*` keys they do not produce.
 
 ### Host context (view)
 
@@ -251,8 +256,9 @@ const tellModel = useUpdateModelContext(app);      // ui/update-model-context
 ```
 
 `ctx.theme` is mapped onto mosaic-tokens (`data-theme` light/dark, applied to `<html>`).
-`ctx.deepLink` reads `hostContext["openai/deepLink"]` when present and is `undefined`
-otherwise. Framework-free equivalents (`readHostContext`, `requestDisplayMode`,
+`ctx.deepLink` reads `hostContext["openai/deepLink"]` (`{ url }`) when present and is `undefined`
+otherwise. ChatGPT is detected from `openai/*` keys in the host context or experimental host
+capabilities (the spec defines no host-identification field; no user-agent sniffing). Framework-free equivalents (`readHostContext`, `requestDisplayMode`,
 `updateModelContext`, `subscribeHostContext`, `applyMosaicTheme`) live in
 `@vantageos/mosaic/host`.
 

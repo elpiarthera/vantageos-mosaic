@@ -112,7 +112,10 @@ describe("host-context: display mode request", () => {
   });
 
   it("refuses pip when only the host capabilities identify ChatGPT", async () => {
-    const app = { ...fakeApp({}), getHostCapabilities: () => ({ experimental: { "openai/message": {} } }) };
+    const app = {
+      ...fakeApp({}),
+      getHostCapabilities: () => ({ experimental: { "openai/message": {} } }),
+    };
     await expect(
       // biome-ignore lint/suspicious/noExplicitAny: proving the runtime refusal past the type
       requestDisplayMode(app, "pip" as any),

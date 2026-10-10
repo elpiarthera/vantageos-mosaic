@@ -33,8 +33,11 @@ export interface MosaicHostContext {
   availableDisplayModes: HostDisplayMode[];
   locale: string | undefined;
   containerDimensions: HostContainerDimensions | undefined;
-  /** `hostContext["openai/deepLink"]` when the host (ChatGPT) provides it. */
-  deepLink: string | undefined;
+  /**
+   * `hostContext["openai/deepLink"]` when the host provides it: `{ url }`, an app-relative URL
+   * (openai/mcp-extensions docs/spec.md l.149-210, `DeepLinkHostState`).
+   */
+  deepLink: { url: string } | undefined;
   isChatGpt: boolean;
   raw: RawHostContext;
 }
@@ -49,6 +52,7 @@ export interface HostAppLike {
   getHostContext(): RawHostContext | undefined;
   requestDisplayMode(params: { mode: HostDisplayMode }): Promise<{ mode: HostDisplayMode }>;
   updateModelContext(params: ModelContextParams): Promise<unknown>;
+  getHostCapabilities?(): { experimental?: Record<string, unknown> } | undefined;
   onhostcontextchanged?: ((params: RawHostContext) => void) | undefined;
 }
 
@@ -74,15 +78,23 @@ export function mapHostTheme(theme: unknown): MosaicTheme {
 }
 
 /**
- * ChatGPT host: any `openai/*` key in the host context, or a user agent naming ChatGPT/OpenAI.
- * Read from the context only; `window.openai` is deliberately not consulted (the view must not
- * depend on it).
+ * ChatGPT host detection.
+ *
+ * DECLARED DIVERGENCE: the OpenAI spec defines no host-identification value (`hostInfo.name` is
+ * free-form, e.g. "example-host"), so there is no spec signal to read. The best available
+ * evidence is the vendor namespace the spec reserves for ChatGPT: any `openai/*` key in the
+ * host context (e.g. `openai/deepLink`, `openai/modelContext`) or in
+ * `hostCapabilities.experimental` (e.g. `openai/files`, `openai/message`). No user-agent
+ * sniffing. A ChatGPT host that sends neither is not detected; `pip` is typed out regardless,
+ * so the runtime refusal is a second line, not the only one.
  */
-export function isChatGptHost(raw: unknown): boolean {
-  const ctx = asRecord(raw);
-  if (Object.keys(ctx).some((k) => k.startsWith("openai/"))) return true;
-  const ua = ctx.userAgent;
-  return typeof ua === "string" && /chatgpt|openai/i.test(ua);
+export function isChatGptHost(
+  raw: unknown,
+  capabilities?: { experimental?: Record<string, unknown> } | null,
+): boolean {
+  const inNamespace = (o: object | undefined) =>
+    o !== undefined && Object.keys(o).some((k) => k.startsWith("openai/"));
+  return inNamespace(asRecord(raw)) || inNamespace(capabilities?.experimental);
 }
 
 export function readHostContext(raw: unknown): MosaicHostContext {
@@ -96,7 +108,8 @@ export function readHostContext(raw: unknown): MosaicHostContext {
         DISPLAY_MODES.includes(m as HostDisplayMode),
       ) as HostDisplayMode[])
     : [];
-  const deepLink = ctx["openai/deepLink"];
+  const rawLink = ctx["openai/deepLink"];
+  const linkUrl = asRecord(rawLink).url;
   return {
     theme: mapHostTheme(ctx.theme),
     displayMode,
@@ -106,7 +119,7 @@ export function readHostContext(raw: unknown): MosaicHostContext {
       ctx.containerDimensions && typeof ctx.containerDimensions === "object"
         ? (ctx.containerDimensions as HostContainerDimensions)
         : undefined,
-    deepLink: typeof deepLink === "string" ? deepLink : undefined,
+    deepLink: typeof linkUrl === "string" ? { url: linkUrl } : undefined,
     isChatGpt: isChatGptHost(ctx),
     raw: ctx,
   };
@@ -125,7 +138,10 @@ export async function requestDisplayMode(
   app: HostAppLike,
   mode: RequestableDisplayMode,
 ): Promise<{ mode: HostDisplayMode }> {
-  if ((mode as string) === "pip" && isChatGptHost(app.getHostContext())) {
+  if (
+    (mode as string) === "pip" &&
+    isChatGptHost(app.getHostContext(), app.getHostCapabilities?.())
+  ) {
     throw new DisplayModeRefusedError(mode);
   }
   return app.requestDisplayMode({ mode });
