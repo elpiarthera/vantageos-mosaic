@@ -1,0 +1,40 @@
+{
+  "en": {
+    "BalanceCard": {
+      "title": "Balance",
+      "network": "Network",
+      "testnet": "Testnet",
+      "address": "Address",
+      "contract": "Token contract",
+      "value": "Value",
+      "copy": "Copy address",
+      "copied": "Address copied",
+      "empty": {
+        "message": "No balance to display"
+      },
+      "loading": "Loading balance",
+      "error": {
+        "invalidProps": "BalanceCard: invalid props"
+      }
+    }
+  },
+  "fr": {
+    "BalanceCard": {
+      "title": "Solde",
+      "network": "Réseau",
+      "testnet": "Réseau de test",
+      "address": "Adresse",
+      "contract": "Contrat du jeton",
+      "value": "Valeur",
+      "copy": "Copier l'adresse",
+      "copied": "Adresse copiée",
+      "empty": {
+        "message": "Aucun solde à afficher"
+      },
+      "loading": "Chargement du solde",
+      "error": {
+        "invalidProps": "BalanceCard : propriétés invalides"
+      }
+    }
+  }
+}

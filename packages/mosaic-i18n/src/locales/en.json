@@ -241,5 +241,37 @@
       "many": "{n} rows selected",
       "none": "No rows selected"
     }
+  },
+  "StatCard": {
+    "title": "Statistic",
+    "trend": {
+      "up": "Up",
+      "down": "Down",
+      "flat": "Flat"
+    },
+    "empty": {
+      "message": "No statistic to display"
+    },
+    "loading": "Loading statistic",
+    "error": {
+      "invalidProps": "StatCard: invalid props"
+    }
+  },
+  "BalanceCard": {
+    "title": "Balance",
+    "network": "Network",
+    "testnet": "Testnet",
+    "address": "Address",
+    "contract": "Token contract",
+    "value": "Value",
+    "copy": "Copy address",
+    "copied": "Address copied",
+    "empty": {
+      "message": "No balance to display"
+    },
+    "loading": "Loading balance",
+    "error": {
+      "invalidProps": "BalanceCard: invalid props"
+    }
   }
 }

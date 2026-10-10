@@ -1,0 +1,36 @@
+{
+  "en": {
+    "StatCard": {
+      "title": "Statistic",
+      "trend": {
+        "up": "Up",
+        "down": "Down",
+        "flat": "Flat"
+      },
+      "empty": {
+        "message": "No statistic to display"
+      },
+      "loading": "Loading statistic",
+      "error": {
+        "invalidProps": "StatCard: invalid props"
+      }
+    }
+  },
+  "fr": {
+    "StatCard": {
+      "title": "Statistique",
+      "trend": {
+        "up": "En hausse",
+        "down": "En baisse",
+        "flat": "Stable"
+      },
+      "empty": {
+        "message": "Aucune statistique à afficher"
+      },
+      "loading": "Chargement de la statistique",
+      "error": {
+        "invalidProps": "StatCard : propriétés invalides"
+      }
+    }
+  }
+}
