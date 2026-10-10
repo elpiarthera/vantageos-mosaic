@@ -304,5 +304,30 @@
     "error": {
       "invalidProps": "MessageFeed: invalid props"
     }
+  },
+  "PipelineBoard": {
+    "title": "Pipeline",
+    "deals": {
+      "one": "1 deal",
+      "many": "{n} deals"
+    },
+    "total": "Total",
+    "stage": {
+      "empty": "No deals"
+    },
+    "filter": {
+      "label": "Show stages"
+    },
+    "summary": {
+      "open": "Open full board"
+    },
+    "more": "{n} more stages",
+    "empty": {
+      "message": "No pipeline to display"
+    },
+    "loading": "Loading pipeline",
+    "error": {
+      "invalidProps": "PipelineBoard: invalid props"
+    }
   }
 }

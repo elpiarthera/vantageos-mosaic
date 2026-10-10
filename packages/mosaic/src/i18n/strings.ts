@@ -149,6 +149,17 @@ const EN = {
   "MessageFeed.empty.message": "No messages",
   "MessageFeed.loading": "Loading messages",
   "MessageFeed.error.invalidProps": "MessageFeed: invalid props",
+  "PipelineBoard.title": "Pipeline",
+  "PipelineBoard.deals.one": "1 deal",
+  "PipelineBoard.deals.many": "{n} deals",
+  "PipelineBoard.total": "Total",
+  "PipelineBoard.stage.empty": "No deals",
+  "PipelineBoard.filter.label": "Show stages",
+  "PipelineBoard.summary.open": "Open full board",
+  "PipelineBoard.more": "{n} more stages",
+  "PipelineBoard.empty.message": "No pipeline to display",
+  "PipelineBoard.loading": "Loading pipeline",
+  "PipelineBoard.error.invalidProps": "PipelineBoard: invalid props",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -287,6 +298,17 @@ const FR: Record<keyof typeof EN, string> = {
   "MessageFeed.empty.message": "Aucun message",
   "MessageFeed.loading": "Chargement des messages",
   "MessageFeed.error.invalidProps": "MessageFeed : propriétés invalides",
+  "PipelineBoard.title": "Pipeline",
+  "PipelineBoard.deals.one": "1 affaire",
+  "PipelineBoard.deals.many": "{n} affaires",
+  "PipelineBoard.total": "Total",
+  "PipelineBoard.stage.empty": "Aucune affaire",
+  "PipelineBoard.filter.label": "Afficher les étapes",
+  "PipelineBoard.summary.open": "Ouvrir le tableau complet",
+  "PipelineBoard.more": "{n} étapes de plus",
+  "PipelineBoard.empty.message": "Aucun pipeline à afficher",
+  "PipelineBoard.loading": "Chargement du pipeline",
+  "PipelineBoard.error.invalidProps": "PipelineBoard : propriétés invalides",
 };
 
 export type MosaicI18nKey = keyof typeof EN;
