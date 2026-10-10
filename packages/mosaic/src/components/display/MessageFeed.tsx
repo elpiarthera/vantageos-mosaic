@@ -7,7 +7,7 @@ import { EmptyState } from "../../runtimes/react/components/display/EmptyState.j
 import { Skeleton } from "../../runtimes/react/components/display/Skeleton.js";
 import { VirtualList } from "../../runtimes/react/components/display/VirtualList.js";
 import { formatTimestamp } from "../shared/datetime.js";
-import { isHttpUrl } from "../shared/url.js";
+import { normalizeHttpUrl } from "../shared/url.js";
 import {
   type FeedMessage,
   type MessageFeedProps,
@@ -30,8 +30,8 @@ function Attachment({
 }: { m: FeedMessage; locale: MosaicLocale; onOpenLink?: (url: string) => void }) {
   if (!m.attachmentUrl) return null;
   const label = m.attachmentLabel ?? t("MessageFeed.attachment", locale);
-  if (!isHttpUrl(m.attachmentUrl)) return <span className="text-sm text-slate-500">{label}</span>;
-  const url = m.attachmentUrl;
+  const url = normalizeHttpUrl(m.attachmentUrl);
+  if (!url) return <span className="text-sm text-slate-500">{label}</span>;
   return onOpenLink ? (
     <button
       type="button"

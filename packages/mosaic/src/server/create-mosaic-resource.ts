@@ -1,4 +1,5 @@
 import { type UIResource, createUIResource } from "@mcp-ui/server";
+import { ZodError } from "zod";
 import { markdownRendererToMarkdown } from "../components/artifacts/MarkdownRenderer.markdown.js";
 import { MarkdownRendererPropsSchema } from "../components/artifacts/MarkdownRenderer.schema.js";
 import { tokenDisplayOnceModalToMarkdown } from "../components/confirmation/TokenDisplayOnceModal.markdown.js";
@@ -102,7 +103,7 @@ function escapeHtml(s: string): string {
 function buildHtml(componentName: SupportedComponent, props: unknown, locale: "en" | "fr"): string {
   const propsJson = escapeHtml(JSON.stringify(props));
   const title = escapeHtml(t(`${componentName}.title`, locale));
-  return `<!DOCTYPE html><html lang="${locale}"><head><meta charset="utf-8"><title>${title}</title></head><body><div id="mosaic-root" data-component="${componentName}" data-props='${propsJson}'></div></body></html>`;
+  return `<!DOCTYPE html><html lang="${locale === "fr" ? "fr" : "en"}"><head><meta charset="utf-8"><title>${title}</title></head><body><div id="mosaic-root" data-component="${componentName}" data-props='${propsJson}'></div></body></html>`;
 }
 
 export interface CreateMosaicResourceOptions {
@@ -146,7 +147,7 @@ export function createMosaicResource(
   const embedded = options.includeSecrets
     ? validated
     : splitSecrets(componentName, validated, []).publicProps;
-  const fallback = options.markdownFallback ?? MARKDOWN_BY_NAME[componentName](validated, locale);
+  const fallback = options.markdownFallback ?? MARKDOWN_BY_NAME[componentName](embedded, locale);
   return buildResource(componentName, embedded, locale, fallback, options.uri);
 }
 
@@ -203,11 +204,14 @@ export const MOSAIC_NEVER_SERIALISE: Record<SupportedComponent, readonly string[
   TransactionPreview: [],
 };
 
-/** Thrown when a declared never-serialise value is found in `content[]`. Never prints the value. */
+/**
+ * Thrown when a declared never-serialise field would reach `content[]`, or the fallback cannot be
+ * rendered once the field is removed. Names the field; never prints the value.
+ */
 export class MosaicSecretLeakError extends Error {
   readonly field: string;
-  constructor(field: string) {
-    super(`createMosaicToolResult: the value of "${field}" would be serialised into content[]`);
+  constructor(field: string, reason = "would be serialised into content[]") {
+    super(`createMosaicToolResult: the value of "${field}" ${reason}`);
     this.name = "MosaicSecretLeakError";
     this.field = field;
   }
@@ -259,14 +263,25 @@ function splitSecrets(
   return { publicProps, secrets };
 }
 
-/** Secret VALUES that must be checked for: strings/numbers of the declared fields (>= 6 chars). */
+/**
+ * EVERY declared secret value, whatever its length (a one-time code is 4-6 characters). Only an
+ * empty value carries nothing to look for. A short value that collides with other text makes the
+ * call REFUSE (loudly): the issuer keeps it out of the other props. Never a skip.
+ */
 function secretNeedles(secrets: Secrets): Array<{ field: string; needle: string }> {
   const out: Array<{ field: string; needle: string }> = [];
   for (const [field, v] of Object.entries(secrets)) {
     const values = field === "cells" && v && typeof v === "object" ? Object.values(v) : [v];
     for (const x of values) {
-      const needle = typeof x === "string" ? x : typeof x === "number" ? String(x) : "";
-      if (needle.length >= 6) out.push({ field, needle });
+      const needle =
+        typeof x === "string"
+          ? x
+          : typeof x === "number" || typeof x === "boolean"
+            ? String(x)
+            : x === null || x === undefined
+              ? ""
+              : JSON.stringify(x);
+      if (needle.length > 0) out.push({ field, needle });
     }
   }
   return out;
@@ -285,7 +300,8 @@ export type { SupportedComponent };
  * columns) are removed from the embedded props, delivered to the view through
  * `_meta["mosaic/secrets"]`, and asserted absent from the serialised `content[]`; a leak throws
  * {@link MosaicSecretLeakError}. A declared field the view does not have throws (a typo would
- * otherwise assert nothing). Values shorter than 6 characters are not needle-checked.
+ * otherwise assert nothing). The fallback is RENDERED FROM THE PUBLIC PROPS (declared secrets
+ * removed first), and every non-empty declared value is then checked at any length.
  */
 export function createMosaicToolResult(
   componentName: SupportedComponent,
@@ -306,7 +322,19 @@ export function createMosaicToolResult(
     validated,
     options.neverSerialise ?? [],
   );
-  const markdown = MARKDOWN_BY_NAME[componentName](validated, locale);
+  let markdown: string;
+  try {
+    markdown = MARKDOWN_BY_NAME[componentName](publicProps, locale);
+  } catch (err) {
+    const declared = Object.keys(secrets).filter((k) => k !== "cells")[0];
+    if (declared && err instanceof ZodError) {
+      throw new MosaicSecretLeakError(
+        declared,
+        "is required by the fallback renderer and cannot be declared secret",
+      );
+    }
+    throw err;
+  }
   const ui = buildResource(componentName, publicProps, locale, markdown);
   const content: [{ type: "text"; text: string }, UIResource] = [
     { type: "text", text: markdown },

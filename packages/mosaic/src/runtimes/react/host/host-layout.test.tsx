@@ -62,7 +62,7 @@ describe("useSendMessage / useOpenLink", () => {
     });
     const open = renderHook(() => useOpenLink(app as never));
     await open.result.current("https://x.example");
-    expect(app.openLink).toHaveBeenCalledWith({ url: "https://x.example" });
+    expect(app.openLink).toHaveBeenCalledWith({ url: "https://x.example/" });
   });
 
   it("reject with no app connected", async () => {

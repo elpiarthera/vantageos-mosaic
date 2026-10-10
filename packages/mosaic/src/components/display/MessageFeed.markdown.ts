@@ -1,7 +1,7 @@
 import { t } from "../../i18n/strings.js";
 import { formatTimestamp } from "../shared/datetime.js";
-import { mdEscape, mdHeading } from "../shared/markdown.js";
-import { isHttpUrl } from "../shared/url.js";
+import { mdEscape, mdHeading, mdUrl } from "../shared/markdown.js";
+import { normalizeHttpUrl } from "../shared/url.js";
 import { MessageFeedPropsSchema, latestMessages } from "./MessageFeed.schema.js";
 
 /** A-1 fallback: each message as a blockquote with sender, time, channel, content, attachment. */
@@ -17,9 +17,9 @@ export function messageFeedToMarkdown(props: unknown, locale: "en" | "fr" = "en"
     const when = [formatTimestamp(m.timestamp, locale, timeZone), m.channel ?? ""]
       .filter(Boolean)
       .join(", ");
-    const attachment = m.attachmentUrl
-      ? ` [${mdEscape(m.attachmentLabel ?? t("MessageFeed.attachment", locale))}](${isHttpUrl(m.attachmentUrl) ? m.attachmentUrl : ""})`
-      : "";
+    const href = normalizeHttpUrl(m.attachmentUrl);
+    const label = mdEscape(m.attachmentLabel ?? t("MessageFeed.attachment", locale));
+    const attachment = m.attachmentUrl ? (href ? ` [${label}](${mdUrl(href)})` : ` ${label}`) : "";
     return `> **${mdEscape(m.sender)}** (${mdEscape(when)}): ${mdEscape(m.content)}${attachment}`;
   });
   const cut =

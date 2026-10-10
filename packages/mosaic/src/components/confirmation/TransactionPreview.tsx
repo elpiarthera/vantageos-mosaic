@@ -7,7 +7,7 @@ import { EmptyState } from "../../runtimes/react/components/display/EmptyState.j
 import { Skeleton } from "../../runtimes/react/components/display/Skeleton.js";
 import { compareDecimalStrings } from "../display/TableView.logic.js";
 import { formatTimestamp } from "../shared/datetime.js";
-import { isHttpUrl } from "../shared/url.js";
+import { normalizeHttpUrl } from "../shared/url.js";
 import {
   type TransactionAmount,
   type TransactionPreviewProps,
@@ -56,7 +56,7 @@ export function TransactionPreview(raw: TransactionPreviewViewProps = {}) {
   }
   const highImpact =
     p.quote?.priceImpact !== undefined && compareDecimalStrings(p.quote.priceImpact, "1") >= 0;
-  const handoff = p.handoff && isHttpUrl(p.handoff.url) ? p.handoff.url : undefined;
+  const handoff = normalizeHttpUrl(p.handoff?.url);
   return (
     <section
       aria-label={t("TransactionPreview.title", p.locale)}

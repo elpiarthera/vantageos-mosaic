@@ -17,6 +17,7 @@
  * A non-default option the host cannot honour is REFUSED, never silently dropped: dropping
  * `send: false` would send the message the caller meant to leave as a draft.
  */
+import { normalizeHttpUrl } from "../components/shared/url.js";
 import type { HostAppLike } from "./host-context.js";
 
 /** Failure of a host request (`ui/message`, `ui/open-link`): carries the method and the reason. */
@@ -98,18 +99,12 @@ export async function openLink(app: MessagingAppLike, url: string): Promise<void
   if (typeof app.openLink !== "function") {
     throw new HostRequestError(method, "the host app exposes no openLink");
   }
-  let parsed: URL;
-  try {
-    parsed = new URL(url);
-  } catch {
-    throw new HostRequestError(method, "Invalid URL");
-  }
-  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
-    throw new HostRequestError(method, "Invalid URL");
-  }
+  // Hand the host the PARSED href: a raw string may embed newlines or spaces the parser normalises.
+  const href = normalizeHttpUrl(url);
+  if (!href) throw new HostRequestError(method, "Invalid URL");
   let result: { isError?: boolean };
   try {
-    result = await app.openLink({ url });
+    result = await app.openLink({ url: href });
   } catch (err) {
     throw new HostRequestError(method, reasonOf(err));
   }

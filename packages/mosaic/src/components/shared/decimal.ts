@@ -29,9 +29,10 @@ export function sumDecimalStrings(values: readonly string[]): string | undefined
 }
 
 /**
- * Locale formatting of a decimal string. `Intl.NumberFormat#format` accepts a numeric string and
- * keeps its digits exactly (ES2023 Intl.NumberFormat v3); on anything unformattable the raw
- * string is returned unchanged, so a bad value is visible rather than replaced by a guess.
+ * Locale formatting of a decimal string for DISPLAY. The input is parsed from its digits (no
+ * float round trip), but the OUTPUT IS ROUNDED to the currency's fraction digits (`0.125` USD
+ * shows `$0.13`); amounts that must stay exact are shown as the raw string, not through this.
+ * On anything unformattable the raw string is returned unchanged, so a bad value is visible.
  */
 export function formatDecimalString(value: string, locale: string, currency?: string): string {
   if (!DECIMAL.test(value)) return value;
