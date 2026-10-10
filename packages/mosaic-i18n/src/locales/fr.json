@@ -304,5 +304,30 @@
     "error": {
       "invalidProps": "MessageFeed : propriétés invalides"
     }
+  },
+  "PipelineBoard": {
+    "title": "Pipeline",
+    "deals": {
+      "one": "1 affaire",
+      "many": "{n} affaires"
+    },
+    "total": "Total",
+    "stage": {
+      "empty": "Aucune affaire"
+    },
+    "filter": {
+      "label": "Afficher les étapes"
+    },
+    "summary": {
+      "open": "Ouvrir le tableau complet"
+    },
+    "more": "{n} étapes de plus",
+    "empty": {
+      "message": "Aucun pipeline à afficher"
+    },
+    "loading": "Chargement du pipeline",
+    "error": {
+      "invalidProps": "PipelineBoard : propriétés invalides"
+    }
   }
 }
