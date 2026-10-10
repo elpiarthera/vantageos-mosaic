@@ -19,3 +19,11 @@ export function mdTable(headers: readonly string[], rows: readonly (readonly str
 export function mdHeading(text: string, level = 1): string {
   return `${"#".repeat(level)} ${text}`;
 }
+
+// RED stubs.
+export function mdUrl(href: string): string {
+  return href;
+}
+export function mdCode(text: string): string {
+  return text;
+}
