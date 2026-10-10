@@ -291,5 +291,18 @@
     "error": {
       "invalidProps": "Timeline: invalid props"
     }
+  },
+  "MessageFeed": {
+    "title": "Messages",
+    "unread": "Unread",
+    "attachment": "Attachment",
+    "showing": "Showing the latest {n} of {total}",
+    "empty": {
+      "message": "No messages"
+    },
+    "loading": "Loading messages",
+    "error": {
+      "invalidProps": "MessageFeed: invalid props"
+    }
   }
 }
