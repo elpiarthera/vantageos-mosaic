@@ -8,6 +8,7 @@ import {
   type MosaicHostContext,
   type RequestableDisplayMode,
   applyMosaicTheme,
+  readAppHostContext,
   readHostContext,
   requestDisplayMode,
   subscribeHostContext,
@@ -18,10 +19,12 @@ export * from "../../../host/host-context.js";
 
 /** Live host context for an ext-apps `App` (re-renders on `host-context-changed`). */
 export function useHostContext(app: HostAppLike | null | undefined): MosaicHostContext {
-  const [ctx, setCtx] = useState<MosaicHostContext>(() => readHostContext(app?.getHostContext()));
+  const [ctx, setCtx] = useState<MosaicHostContext>(() =>
+    app ? readAppHostContext(app) : readHostContext(undefined),
+  );
   useEffect(() => {
     if (!app) return undefined;
-    setCtx(readHostContext(app.getHostContext()));
+    setCtx(readAppHostContext(app));
     return subscribeHostContext(app, setCtx);
   }, [app]);
   return ctx;
