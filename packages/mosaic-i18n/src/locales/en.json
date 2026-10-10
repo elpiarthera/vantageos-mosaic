@@ -226,5 +226,12 @@
       "required": "Select an option",
       "invalidProps": "Select: invalid props"
     }
+  },
+  "ModelContext": {
+    "selection": {
+      "one": "1 row selected",
+      "many": "{n} rows selected",
+      "none": "No rows selected"
+    }
   }
 }
