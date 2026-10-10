@@ -250,3 +250,10 @@ components:
     i18nKeys: ["PipelineBoard.title", "PipelineBoard.deals.one", "PipelineBoard.deals.many", "PipelineBoard.total", "PipelineBoard.stage.empty", "PipelineBoard.filter.label", "PipelineBoard.summary.open", "PipelineBoard.more", "PipelineBoard.empty.message", "PipelineBoard.loading", "PipelineBoard.error.invalidProps", "PipelineBoard.col.stage", "PipelineBoard.col.deals"]
     sizeLimit: "30KB"
     a11yLevel: WCAG-AA
+  - name: TransactionPreview
+    category: confirmation
+    schema: src/components/confirmation/TransactionPreview.schema.ts
+    zodExport: TransactionPreviewPropsSchema
+    i18nKeys: ["TransactionPreview.title", "TransactionPreview.notice", "TransactionPreview.kind.transfer", "TransactionPreview.kind.swap", "TransactionPreview.testnet", "TransactionPreview.field.network", "TransactionPreview.field.from", "TransactionPreview.field.to", "TransactionPreview.field.amount", "TransactionPreview.field.fee", "TransactionPreview.field.sell", "TransactionPreview.field.buy", "TransactionPreview.field.minReceived", "TransactionPreview.field.route", "TransactionPreview.field.priceImpact", "TransactionPreview.field.expires", "TransactionPreview.priceImpact.high", "TransactionPreview.simulation.success", "TransactionPreview.simulation.failed", "TransactionPreview.simulation.unavailable", "TransactionPreview.warnings", "TransactionPreview.handoff", "TransactionPreview.empty.message", "TransactionPreview.loading", "TransactionPreview.error.invalidProps"]
+    sizeLimit: "30KB"
+    a11yLevel: WCAG-AA
