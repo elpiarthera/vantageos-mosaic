@@ -107,6 +107,9 @@ const EN = {
   "Select.empty": "No options available",
   "Select.error.required": "Select an option",
   "Select.error.invalidProps": "Select: invalid props",
+  "ModelContext.selection.one": "1 row selected",
+  "ModelContext.selection.many": "{n} rows selected",
+  "ModelContext.selection.none": "No rows selected",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -203,6 +206,9 @@ const FR: Record<keyof typeof EN, string> = {
   "Select.empty": "Aucune option disponible",
   "Select.error.required": "Sélectionnez une option",
   "Select.error.invalidProps": "Select : propriétés invalides",
+  "ModelContext.selection.one": "1 ligne sélectionnée",
+  "ModelContext.selection.many": "{n} lignes sélectionnées",
+  "ModelContext.selection.none": "Aucune ligne sélectionnée",
 };
 
 export type MosaicI18nKey = keyof typeof EN;

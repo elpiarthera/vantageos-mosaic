@@ -226,5 +226,12 @@
       "required": "Sélectionnez une option",
       "invalidProps": "Select : propriétés invalides"
     }
+  },
+  "ModelContext": {
+    "selection": {
+      "one": "1 ligne sélectionnée",
+      "many": "{n} lignes sélectionnées",
+      "none": "Aucune ligne sélectionnée"
+    }
   }
 }
