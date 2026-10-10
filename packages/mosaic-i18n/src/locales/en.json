@@ -328,6 +328,10 @@
     "loading": "Loading pipeline",
     "error": {
       "invalidProps": "PipelineBoard: invalid props"
+    },
+    "col": {
+      "stage": "Stage",
+      "deals": "Deals"
     }
   }
 }

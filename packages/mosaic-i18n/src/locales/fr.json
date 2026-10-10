@@ -328,6 +328,10 @@
     "loading": "Chargement du pipeline",
     "error": {
       "invalidProps": "PipelineBoard : propriétés invalides"
+    },
+    "col": {
+      "stage": "Étape",
+      "deals": "Affaires"
     }
   }
 }

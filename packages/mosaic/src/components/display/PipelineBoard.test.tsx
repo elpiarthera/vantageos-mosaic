@@ -55,8 +55,13 @@ describe("PipelineBoard board layout (R06)", () => {
     expect(within(lead).queryAllByText("€0.30")).toHaveLength(1);
     const won = screen.getAllByRole("region", { name: "Won" })[0] as HTMLElement;
     expect(within(won).queryAllByText("1 deal")).toHaveLength(1);
-    expect(within(won).queryAllByText("€1,000.50")).toHaveLength(1);
-    expect(within(screen.getAllByRole("region", { name: "Lost" })[0] as HTMLElement).queryAllByText("No deals")).toHaveLength(1);
+    // the stage total and its single deal carry the same amount
+    expect(within(won).queryAllByText("€1,000.50")).toHaveLength(2);
+    expect(
+      within(screen.getAllByRole("region", { name: "Lost" })[0] as HTMLElement).queryAllByText(
+        "No deals",
+      ),
+    ).toHaveLength(1);
   });
 
   it("is read-only: no drag handles and no stage-change controls", () => {
@@ -72,8 +77,12 @@ describe("PipelineBoard board layout (R06)", () => {
     fireEvent.click(lead);
     expect(screen.queryAllByRole("region", { name: "Lead" })).toHaveLength(0);
     expect(screen.queryAllByRole("region", { name: "Won" })).toHaveLength(1);
-    fireEvent.click(screen.getAllByRole("button", { name: "Won", pressed: true })[0] as HTMLElement);
-    fireEvent.click(screen.getAllByRole("button", { name: "Lost", pressed: true })[0] as HTMLElement);
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Won", pressed: true })[0] as HTMLElement,
+    );
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Lost", pressed: true })[0] as HTMLElement,
+    );
     expect(screen.queryAllByRole("region", { name: "Lost" })).toHaveLength(1);
   });
 
@@ -103,7 +112,9 @@ describe("PipelineBoard board layout (R06)", () => {
 describe("PipelineBoard summary layout (inline)", () => {
   it("shows stage totals only, and an Open full board action when fullscreen is requestable", () => {
     const onRequestFullscreen = vi.fn();
-    render(<PipelineBoard stages={stages} layout="summary" onRequestFullscreen={onRequestFullscreen} />);
+    render(
+      <PipelineBoard stages={stages} layout="summary" onRequestFullscreen={onRequestFullscreen} />,
+    );
     expect(screen.queryAllByText("Acme")).toHaveLength(0);
     expect(screen.queryAllByText("2 deals")).toHaveLength(1);
     fireEvent.click(screen.getAllByRole("button", { name: "Open full board" })[0] as HTMLElement);
@@ -116,7 +127,11 @@ describe("PipelineBoard summary layout (inline)", () => {
   });
 
   it("names the stages beyond the inline limit instead of rendering them", () => {
-    const many = Array.from({ length: 7 }, (_, i) => ({ id: `s${i}`, name: `Stage ${i}`, deals: [] }));
+    const many = Array.from({ length: 7 }, (_, i) => ({
+      id: `s${i}`,
+      name: `Stage ${i}`,
+      deals: [],
+    }));
     render(<PipelineBoard stages={many} layout="summary" />);
     expect(screen.queryAllByText("2 more stages")).toHaveLength(1);
     expect(screen.queryAllByText("Stage 6")).toHaveLength(0);
