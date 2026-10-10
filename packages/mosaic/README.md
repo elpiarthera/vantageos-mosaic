@@ -38,6 +38,9 @@ This constraint is codified locally via the `build` script (the `NODE_OPTIONS` p
 | `@vantageos/mosaic/preact/<cat>` | Preact 10 | Tree-shakable category imports under preact/ prefix |
 | `@vantageos/mosaic/tokens` | runtime-free | Re-export of `@vantageos/mosaic-tokens` |
 | `@vantageos/mosaic/server` | Node | `createMosaicResource()` MCP UI builder (runtime-agnostic) |
+| `@vantageos/mosaic/server/resource` | Node | `buildMcpAppResource()` MCP Apps `_meta` helper (pure, no React, no DOM) |
+| `@vantageos/mosaic/host` | runtime-free | Host-context core (theme, display mode, locale, model context) |
+| `@vantageos/mosaic/react/host` · `/preact/host` | React 19 · Preact 10 | Hooks over the host-context core |
 
 `<cat>` = `progress` | `input` | `display` | `artifacts` | `confirmation` | `media`.
 
@@ -207,6 +210,51 @@ const resource = createMosaicResource({
 // returns a SEP-1865-compliant MCP UI resource with text/html;profile=mcp-app MIME
 ```
 
+
+## MCP Apps host layer (ChatGPT and Claude)
+
+Standard MCP Apps keys come first; `openai/*` keys are strictly additive. A view built
+on this layer works with no `openai` key at all, and never requests `pip` for ChatGPT.
+`@modelcontextprotocol/ext-apps` is **not** a dependency: the core types the `App`
+structurally, so any `App` instance fits.
+
+### Resource helper (server, pure)
+
+```ts
+import { buildMcpAppResource } from "@vantageos/mosaic/server/resource";
+
+const { resource, toolMeta } = buildMcpAppResource({
+  uri: "ui://mosaic/tasks",
+  html,                                  // your bundled single-file view
+  csp: { connectDomains: ["https://api.example.com"] }, // the 4 arrays are always emitted
+  servedUrl: "https://example.com/mcp",  // Claude `ui.domain` is DERIVED from it, never typed
+  prefersBorder: true,
+  openai: { outputTemplate: "ui://mosaic/tasks", widgetDescription: "Tasks" }, // optional
+});
+// resource._meta = { ui: { csp, prefersBorder, domain }, "openai/widgetDescription"? }
+// toolMeta       = { ui: { resourceUri }, "openai/outputTemplate"?, "openai/ui"? }
+```
+
+`domain` is `{sha256(servedUrl) first 32 hex}.claudemcpcontent.com` and is absent when
+`servedUrl` is not given. `openai.preferredDisplayMode` accepts `inline` | `fullscreen`
+only; `pip` throws.
+
+### Host context (view)
+
+```tsx
+import { useMosaicHostTheme, useRequestDisplayMode, useUpdateModelContext } from "@vantageos/mosaic/react/host";
+// Preact: the same names from "@vantageos/mosaic/preact/host"
+
+const ctx = useMosaicHostTheme(app); // theme, displayMode, locale, containerDimensions, deepLink
+const goFullscreen = useRequestDisplayMode(app);   // "inline" | "fullscreen"; pip refused for ChatGPT
+const tellModel = useUpdateModelContext(app);      // ui/update-model-context
+```
+
+`ctx.theme` is mapped onto mosaic-tokens (`data-theme` light/dark, applied to `<html>`).
+`ctx.deepLink` reads `hostContext["openai/deepLink"]` when present and is `undefined`
+otherwise. Framework-free equivalents (`readHostContext`, `requestDisplayMode`,
+`updateModelContext`, `subscribeHostContext`, `applyMosaicTheme`) live in
+`@vantageos/mosaic/host`.
 
 ## Components
 
