@@ -22,3 +22,18 @@ export function createPostMessageObservable<T>(): Observable<Partial<T>> {
   }
   return subject.asObservable();
 }
+
+// RED stub: behaviour lands in the next commit.
+export const SIZE_CHANGED_METHOD = "" as string;
+export interface ReportedSize {
+  width: number;
+  height: number;
+}
+export function postSizeChanged(_size: ReportedSize, _target?: Window): void {}
+export function startSizeReporting(_options: {
+  element?: Element;
+  send?: (size: ReportedSize) => void;
+  ResizeObserverImpl?: typeof ResizeObserver | null;
+}): () => void {
+  return () => {};
+}
