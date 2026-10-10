@@ -62,12 +62,8 @@ describe("host-context resource helper: standard MCP Apps keys first", () => {
 
 describe("host-context resource helper: domain is derived, never typed", () => {
   it("derives {sha256(url)[0..32]}.claudemcpcontent.com from servedUrl", () => {
-    // sha256("https://example.com/mcp") first 32 hex chars, independently computed
     expect(deriveClaudeAppDomain("https://example.com/mcp")).toBe(
-      "b7dc3d7e0f6a4bb1d7a4e7f1c1f0a9b5.claudemcpcontent.com".replace(
-        /^[0-9a-f]{32}/,
-        expectedHash("https://example.com/mcp"),
-      ),
+      `${expectedHash("https://example.com/mcp")}.claudemcpcontent.com`,
     );
     const { resource } = buildMcpAppResource({ ...base, servedUrl: "https://example.com/mcp" });
     expect(resource._meta.ui.domain).toBe(

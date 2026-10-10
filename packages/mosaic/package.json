@@ -48,6 +48,11 @@
       "import": "./dist/forms.js",
       "require": "./dist/forms.cjs"
     },
+    "./host": {
+      "types": "./dist/host.d.ts",
+      "import": "./dist/host.js",
+      "require": "./dist/host.cjs"
+    },
     "./react": {
       "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js",
@@ -88,6 +93,11 @@
       "import": "./dist/react/forms.js",
       "require": "./dist/react/forms.cjs"
     },
+    "./react/host": {
+      "types": "./dist/react/host.d.ts",
+      "import": "./dist/react/host.js",
+      "require": "./dist/react/host.cjs"
+    },
     "./preact": {
       "types": "./dist/preact/index.d.ts",
       "import": "./dist/preact/index.js"
@@ -120,6 +130,10 @@
       "types": "./dist/preact/forms.d.ts",
       "import": "./dist/preact/forms.js"
     },
+    "./preact/host": {
+      "types": "./dist/preact/host.d.ts",
+      "import": "./dist/preact/host.js"
+    },
     "./tokens": {
       "types": "./dist/tokens.d.ts",
       "import": "./dist/tokens.js",
@@ -129,6 +143,11 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js",
       "require": "./dist/server.cjs"
+    },
+    "./server/resource": {
+      "types": "./dist/server/resource.d.ts",
+      "import": "./dist/server/resource.js",
+      "require": "./dist/server/resource.cjs"
     },
     "./registry.yaml": "./registry.yaml"
   },
