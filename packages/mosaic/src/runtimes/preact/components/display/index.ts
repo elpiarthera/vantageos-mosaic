@@ -110,3 +110,19 @@ export {
   validateMessageFeedProps,
 } from "../../../../components/display/MessageFeed.schema.js";
 export type { MessageFeedViewProps } from "../../../../components/display/MessageFeed.js";
+
+/**
+ * PipelineBoard — shared cross-runtime implementation (the tsup preact pass aliases react -> preact/compat).
+ */
+export { PipelineBoard } from "../../../../components/display/PipelineBoard.js";
+export type {
+  PipelineBoardProps,
+  PipelineBoardPropsOutput,
+  PipelineStage,
+  PipelineDeal,
+} from "../../../../components/display/PipelineBoard.schema.js";
+export {
+  PipelineBoardPropsSchema,
+  validatePipelineBoardProps,
+} from "../../../../components/display/PipelineBoard.schema.js";
+export type { PipelineBoardViewProps } from "../../../../components/display/PipelineBoard.js";
