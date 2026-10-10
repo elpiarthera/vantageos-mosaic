@@ -128,12 +128,33 @@ export function getOptionDescriptionId(
 }
 
 /** Tailwind classes for the root radiogroup container. */
-export function getGroupClasses(orientation: RadioOrientation): string {
+export type RadioAppearance = "default" | "segmented" | "chips";
+
+export function getGroupClasses(
+  orientation: RadioOrientation,
+  appearance: RadioAppearance = "default",
+): string {
+  if (appearance === "segmented") {
+    return "inline-flex flex-row overflow-hidden rounded-md border border-slate-300";
+  }
+  if (appearance === "chips") return "flex flex-row flex-wrap gap-2";
   return orientation === "vertical" ? "flex flex-col gap-2" : "flex flex-row flex-wrap gap-4";
 }
 
 /** Tailwind classes for a single radio row (label + control + description). */
-export function getOptionRowClasses(isDisabled: boolean, orientation: RadioOrientation): string {
+export function getOptionRowClasses(
+  isDisabled: boolean,
+  orientation: RadioOrientation,
+  appearance: RadioAppearance = "default",
+): string {
+  const state0 = isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
+  if (appearance !== "default") {
+    // the native input is visually hidden: the focus ring is drawn on the row
+    return [
+      "relative inline-flex items-center focus-within:outline focus-within:outline-2 focus-within:outline-blue-600",
+      state0,
+    ].join(" ");
+  }
   const base = "flex items-start gap-2";
   const orient = orientation === "vertical" ? "flex-row" : "flex-row";
   const state = isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
@@ -155,4 +176,15 @@ export function getRadioControlClasses(isSelected: boolean, isDisabled: boolean)
 /** Whether a keyboard event should activate the focused radio (Space / Enter). */
 export function isActivationKey(key: string): boolean {
   return key === " " || key === "Space" || key === "Enter";
+}
+
+/** Classes of the visible option label in the segmented / chips appearances. */
+export function getOptionLabelClasses(appearance: RadioAppearance, isSelected: boolean): string {
+  if (appearance === "default") return "mosaic-forms-radiogroup-option-label";
+  const base = "mosaic-forms-radiogroup-option-label inline-flex items-center px-3 py-1 text-sm";
+  const shape = appearance === "chips" ? "rounded-full border" : "";
+  const tone = isSelected
+    ? "bg-slate-900 text-white border-slate-900"
+    : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50";
+  return [base, shape, tone].filter(Boolean).join(" ");
 }

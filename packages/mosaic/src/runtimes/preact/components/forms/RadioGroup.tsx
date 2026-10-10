@@ -9,6 +9,7 @@ import {
   getGroupLabelId,
   getNavKeys,
   getOptionDescriptionId,
+  getOptionLabelClasses,
   getOptionLabelId,
   getOptionRowClasses,
   getRovingTabIndex,
@@ -28,6 +29,8 @@ export interface RadioGroupProps {
   }>;
   orientation?: "vertical" | "horizontal";
   disabled?: boolean;
+  /** `segmented` / `chips`: always-visible options; same radiogroup semantics. */
+  appearance?: "default" | "segmented" | "chips";
   className?: string;
 }
 
@@ -47,9 +50,10 @@ export function RadioGroup(props: RadioGroupProps) {
     options: props.options,
     orientation: props.orientation,
     disabled: props.disabled,
+    appearance: props.appearance,
   });
 
-  const { name, label, options, orientation, disabled } = validated;
+  const { name, label, options, orientation, disabled, appearance } = validated;
 
   const instanceId = useId();
   const groupLabelId = getGroupLabelId(instanceId, name);
@@ -117,7 +121,8 @@ export function RadioGroup(props: RadioGroupProps) {
               aria-labelledby={groupLabelId}
               aria-orientation={orientation}
               aria-disabled={disabled || undefined}
-              className={getGroupClasses(orientation)}
+              data-appearance={appearance === "default" ? undefined : appearance}
+              className={getGroupClasses(orientation, appearance)}
             >
               {options.map((option, index) => {
                 const isSelected = selectedValue === option.value;
@@ -129,7 +134,10 @@ export function RadioGroup(props: RadioGroupProps) {
                 const tabIdx = index === rovingIdx ? 0 : -1;
 
                 return (
-                  <div key={option.value} className={getOptionRowClasses(isDisabled, orientation)}>
+                  <div
+                    key={option.value}
+                    className={getOptionRowClasses(isDisabled, orientation, appearance)}
+                  >
                     <input
                       ref={(el: HTMLInputElement | null) => {
                         radioRefs.current[index] = el;
@@ -153,7 +161,11 @@ export function RadioGroup(props: RadioGroupProps) {
                       onBlur={field.onBlur}
                     />
                     <div className="flex flex-col gap-0.5">
-                      <span id={optLabelId} className="mosaic-forms-radiogroup-option-label">
+                      <span
+                        id={optLabelId}
+                        data-selected={isSelected ? "true" : undefined}
+                        className={getOptionLabelClasses(appearance, isSelected)}
+                      >
                         {option.label}
                       </span>
                       {option.description ? (
