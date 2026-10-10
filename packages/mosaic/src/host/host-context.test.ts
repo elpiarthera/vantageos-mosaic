@@ -144,3 +144,112 @@ describe("host-context: updateModelContext + subscription", () => {
     expect(app.onhostcontextchanged).toBe(prev);
   });
 });
+
+describe("host-context: subscription lifecycle (one dispatcher per app)", () => {
+  const fire = (app: ReturnType<typeof fakeApp>, ctx: Ctx) => app.onhostcontextchanged?.(ctx);
+
+  for (const order of ["AB", "BA"] as const) {
+    it(`unsubscribing in order ${order} leaves no listener and restores the original handler`, () => {
+      const app = fakeApp({ theme: "light" });
+      const original = vi.fn();
+      app.onhostcontextchanged = original;
+      const a = vi.fn();
+      const b = vi.fn();
+      const offs = { A: subscribeHostContext(app, a), B: subscribeHostContext(app, b) };
+      fire(app, { theme: "dark" });
+      expect(a).toHaveBeenCalledTimes(1);
+      expect(b).toHaveBeenCalledTimes(1);
+      expect(original).toHaveBeenCalledTimes(1);
+      for (const k of order) {
+        offs[k as "A" | "B"]();
+        const stillMounted = order.indexOf(k) === 0 ? (k === "A" ? b : a) : null;
+        a.mockClear();
+        b.mockClear();
+        if (stillMounted) {
+          fire(app, { theme: "light" });
+          // the one just unsubscribed never fires again; the other still does
+          expect((k === "A" ? a : b).mock.calls.length).toBe(0);
+          expect(stillMounted).toHaveBeenCalledTimes(1);
+        }
+      }
+      a.mockClear();
+      b.mockClear();
+      original.mockClear();
+      expect(app.onhostcontextchanged).toBe(original);
+      fire(app, { theme: "dark" });
+      expect(a).not.toHaveBeenCalled();
+      expect(b).not.toHaveBeenCalled();
+      expect(original).toHaveBeenCalledTimes(1);
+    });
+  }
+
+  it("three subscribers, middle one unsubscribes first: only it stops", () => {
+    const app = fakeApp({});
+    const [a, b, c] = [vi.fn(), vi.fn(), vi.fn()];
+    const offA = subscribeHostContext(app, a);
+    const offB = subscribeHostContext(app, b);
+    const offC = subscribeHostContext(app, c);
+    offB();
+    fire(app, { theme: "dark" });
+    expect([a, b, c].map((f) => f.mock.calls.length)).toEqual([1, 0, 1]);
+    offA();
+    offC();
+    expect(app.onhostcontextchanged).toBeUndefined();
+  });
+
+  it("restores an undefined original slot when the last listener leaves", () => {
+    const app = fakeApp({});
+    const off = subscribeHostContext(app, vi.fn());
+    expect(app.onhostcontextchanged).toBeTypeOf("function");
+    off();
+    expect(app.onhostcontextchanged).toBeUndefined();
+  });
+
+  it("N subscribe/unsubscribe cycles do not grow the chain (original called exactly once)", () => {
+    const app = fakeApp({});
+    const original = vi.fn();
+    app.onhostcontextchanged = original;
+    const live = vi.fn();
+    const offLive = subscribeHostContext(app, live);
+    for (let i = 0; i < 50; i++) subscribeHostContext(app, vi.fn())();
+    fire(app, { theme: "dark" });
+    expect(original).toHaveBeenCalledTimes(1);
+    expect(live).toHaveBeenCalledTimes(1);
+    offLive();
+    expect(app.onhostcontextchanged).toBe(original);
+  });
+
+  it("an unsubscribe is idempotent", () => {
+    const app = fakeApp({});
+    const a = vi.fn();
+    const offA = subscribeHostContext(app, a);
+    const offB = subscribeHostContext(app, vi.fn());
+    offA();
+    offA();
+    fire(app, {});
+    expect(a).not.toHaveBeenCalled();
+    offB();
+    expect(app.onhostcontextchanged).toBeUndefined();
+  });
+
+  it("listeners see the capability signal through the same detection as requestDisplayMode", () => {
+    const app = {
+      ...fakeApp({}),
+      getHostCapabilities: () => ({ experimental: { "openai/files": {} } }),
+    };
+    const seen: boolean[] = [];
+    subscribeHostContext(app, (c) => seen.push(c.isChatGpt));
+    app.onhostcontextchanged?.({ theme: "dark" });
+    expect(seen).toEqual([true]);
+  });
+});
+
+describe("host-context: readHostContext capabilities", () => {
+  it("sets isChatGpt from experimental openai/* capabilities, like isChatGptHost", () => {
+    const caps = { experimental: { "openai/files": {} } };
+    expect(readHostContext({ theme: "dark" }, caps).isChatGpt).toBe(true);
+    expect(readHostContext({ theme: "dark" }).isChatGpt).toBe(false);
+    expect(readHostContext({ theme: "dark" }, { experimental: {} }).isChatGpt).toBe(false);
+    expect(readHostContext({ theme: "dark" }, undefined).isChatGpt).toBe(false);
+  });
+});

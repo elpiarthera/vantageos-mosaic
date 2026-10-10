@@ -43,4 +43,25 @@ describe("host-context react hooks", () => {
     // biome-ignore lint/suspicious/noExplicitAny: proving the runtime refusal past the type
     await expect(result.current("pip" as any)).rejects.toThrow(/pip/);
   });
+
+  it("two components on one app: unmounting one (subscription order) leaves only the mounted one updating", () => {
+    const app = fakeApp({ theme: "light" });
+    const a = renderHook(() => useHostContext(app as never));
+    const b = renderHook(() => useHostContext(app as never));
+    a.unmount(); // cleanups run in subscription order: the failing path
+    act(() => app.onhostcontextchanged?.({ theme: "dark" }));
+    expect(b.result.current.theme).toBe("dark");
+    expect(a.result.current.theme).toBe("light"); // frozen at unmount: no stale setState
+    b.unmount();
+    expect(app.onhostcontextchanged).toBeUndefined();
+  });
+
+  it("reports isChatGpt from experimental capabilities through the hook", () => {
+    const app = {
+      ...fakeApp({ theme: "light" }),
+      getHostCapabilities: () => ({ experimental: { "openai/files": {} } }),
+    };
+    const { result } = renderHook(() => useHostContext(app as never));
+    expect(result.current.isChatGpt).toBe(true);
+  });
 });
