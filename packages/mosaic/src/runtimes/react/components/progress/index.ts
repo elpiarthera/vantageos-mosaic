@@ -16,3 +16,17 @@ export {
   ProgressBarPropsSchema,
   validateProps,
 } from "../../../../components/progress/ProgressBar.schema.js";
+
+/**
+ * Timeline — shared cross-runtime implementation (the tsup preact pass aliases react -> preact/compat).
+ */
+export { Timeline } from "../../../../components/progress/Timeline.js";
+export type {
+  TimelineProps,
+  TimelinePropsOutput,
+  TimelineStep,
+} from "../../../../components/progress/Timeline.schema.js";
+export {
+  TimelinePropsSchema,
+  validateTimelineProps,
+} from "../../../../components/progress/Timeline.schema.js";
