@@ -68,7 +68,8 @@ describe("TableView extension: sort (R01)", () => {
   it("sorts amount columns as exact decimals", () => {
     render(<TableView columns={columns} rows={rows} ariaLabel="t" />);
     fireEvent.click(screen.getAllByRole("button", { name: /sort by amount/i })[0] as HTMLElement);
-    expect(bodyNames()).toEqual(["alpha", "Bravo", "Charlie"]);
+    // 1.10 < 9 < 10 as decimals (a text sort would give 1.10, 10, 9)
+    expect(bodyNames()).toEqual(["Bravo", "alpha", "Charlie"]);
   });
 
   it("reports sort changes and honours a controlled sort", () => {
@@ -199,7 +200,13 @@ describe("TableView extension: selection (R01)", () => {
 
   it("localises selection labels (FR)", () => {
     render(
-      <TableView columns={columns} rows={rows} ariaLabel="t" selectionMode="multiple" locale="fr" />,
+      <TableView
+        columns={columns}
+        rows={rows}
+        ariaLabel="t"
+        selectionMode="multiple"
+        locale="fr"
+      />,
     );
     expect(screen.queryAllByRole("checkbox", { name: /tout sélectionner/i })).toHaveLength(1);
     expect(screen.queryAllByRole("checkbox", { name: /sélectionner la ligne/i })).toHaveLength(3);

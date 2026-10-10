@@ -10,7 +10,9 @@
  */
 export { StreamingTableView, TableView } from "../../../../components/display/TableView.js";
 export type {
+  ColumnDef,
   StreamingTableViewProps,
+  TableViewOptions,
   TableViewProps,
 } from "../../../../components/display/TableView.schema.js";
 export {

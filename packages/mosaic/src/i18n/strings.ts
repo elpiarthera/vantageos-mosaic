@@ -110,6 +110,10 @@ const EN = {
   "ModelContext.selection.one": "1 row selected",
   "ModelContext.selection.many": "{n} rows selected",
   "ModelContext.selection.none": "No rows selected",
+  "TableView.sort.by": "Sort by",
+  "TableView.select.row": "Select row",
+  "TableView.select.all": "Select all rows",
+  "TableView.loading": "Loading table",
 } as const;
 
 const FR: Record<keyof typeof EN, string> = {
@@ -209,6 +213,10 @@ const FR: Record<keyof typeof EN, string> = {
   "ModelContext.selection.one": "1 ligne sélectionnée",
   "ModelContext.selection.many": "{n} lignes sélectionnées",
   "ModelContext.selection.none": "Aucune ligne sélectionnée",
+  "TableView.sort.by": "Trier par",
+  "TableView.select.row": "Sélectionner la ligne",
+  "TableView.select.all": "Tout sélectionner",
+  "TableView.loading": "Chargement du tableau",
 };
 
 export type MosaicI18nKey = keyof typeof EN;

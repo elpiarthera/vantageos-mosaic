@@ -1,18 +1,52 @@
 {
   "en": {
     "TableView": {
-      "aria": { "table": "Data table" },
-      "pagination": { "next": "Next page", "prev": "Previous page" },
-      "empty": { "message": "No data to display" },
-      "error": { "invalidProps": "TableView: invalid props" }
+      "aria": {
+        "table": "Data table"
+      },
+      "pagination": {
+        "next": "Next page",
+        "prev": "Previous page"
+      },
+      "empty": {
+        "message": "No data to display"
+      },
+      "error": {
+        "invalidProps": "TableView: invalid props"
+      },
+      "sort": {
+        "by": "Sort by"
+      },
+      "select": {
+        "row": "Select row",
+        "all": "Select all rows"
+      },
+      "loading": "Loading table"
     }
   },
   "fr": {
     "TableView": {
-      "aria": { "table": "Tableau de données" },
-      "pagination": { "next": "Page suivante", "prev": "Page précédente" },
-      "empty": { "message": "Aucune donnée à afficher" },
-      "error": { "invalidProps": "TableView : propriétés invalides" }
+      "aria": {
+        "table": "Tableau de données"
+      },
+      "pagination": {
+        "next": "Page suivante",
+        "prev": "Page précédente"
+      },
+      "empty": {
+        "message": "Aucune donnée à afficher"
+      },
+      "error": {
+        "invalidProps": "TableView : propriétés invalides"
+      },
+      "sort": {
+        "by": "Trier par"
+      },
+      "select": {
+        "row": "Sélectionner la ligne",
+        "all": "Tout sélectionner"
+      },
+      "loading": "Chargement du tableau"
     }
   }
 }

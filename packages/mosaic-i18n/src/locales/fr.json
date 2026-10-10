@@ -29,7 +29,15 @@
     },
     "error": {
       "invalidProps": "TableView : propriétés invalides"
-    }
+    },
+    "sort": {
+      "by": "Trier par"
+    },
+    "select": {
+      "row": "Sélectionner la ligne",
+      "all": "Tout sélectionner"
+    },
+    "loading": "Chargement du tableau"
   },
   "MarkdownRenderer": {
     "aria": {

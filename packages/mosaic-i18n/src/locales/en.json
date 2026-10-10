@@ -29,7 +29,15 @@
     },
     "error": {
       "invalidProps": "TableView: invalid props"
-    }
+    },
+    "sort": {
+      "by": "Sort by"
+    },
+    "select": {
+      "row": "Select row",
+      "all": "Select all rows"
+    },
+    "loading": "Loading table"
   },
   "MarkdownRenderer": {
     "aria": {
