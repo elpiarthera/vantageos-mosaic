@@ -198,6 +198,14 @@ export function subscribeHostContext(
     dispatchers.set(app, d);
     app.onhostcontextchanged = d.handler;
   }
+  // Foreign code overwrote the single ext-apps slot after we installed our dispatcher: adopt what
+  // it holds now as `previous` (so it stays chained and is what we restore) and reinstall ours.
+  // Only a LIVE dispatcher (>= 1 listener) is re-armed: an emptied one is removed from the map on
+  // the last unsubscribe (`dispatchers.delete`), and is never revived from here.
+  if (d.listeners.size > 0 && app.onhostcontextchanged !== d.handler) {
+    d.previous = app.onhostcontextchanged;
+    app.onhostcontextchanged = d.handler;
+  }
   const active = d;
   // a fresh wrapper per subscription keeps two subscriptions of the same function distinct
   const entry = (ctx: MosaicHostContext) => listener(ctx);
