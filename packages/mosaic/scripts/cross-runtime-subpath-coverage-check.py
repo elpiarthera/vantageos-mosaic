@@ -41,7 +41,9 @@ Usage:
   python3 check.py [--package-root <path>] [--registry <path>]
                    [--ga-mode] [--json] [--min-bytes <N>]
 
-Exit code: 0 if pass, 1 if fail or error.
+Exit code: 0 pass; 1 a genuine coverage gap; 2 an input could not be read (fail-closed:
+unreadable package root / package.json / registry / built entry, a registry that yields no
+categories, or the two registry readers disagreeing).
 
 Skill canonical source: VantageRegistry (get_skill_content name=mosaic-cross-runtime-subpath-coverage-check)
 Mission: k57b6d1b  Parent task: k17by79cyj0010p5tphwbyhr9d88jf6n
@@ -97,7 +99,8 @@ def _subpath(cat: str, runtime: str) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Verify Mosaic cross-runtime subpath coverage (bare → /react + /preact)"
+        description="Verify Mosaic cross-runtime subpath coverage (bare → /react + /preact)",
+        epilog="exit codes: 0 pass, 1 coverage gap, 2 an input could not be read",
     )
     parser.add_argument(
         "--package-root",
@@ -175,26 +178,87 @@ def discover_categories(exports: dict, ga_mode: bool) -> list[str]:
     return sorted(categories)
 
 
+class RegistryReadError(Exception):
+    """The registry text cannot be read as a registry by the built-in reader."""
+
+
+_CATEGORY_LINE = re.compile(r"^\s*(?:-\s+)?category\s*:")
+# value forms found in the real registry.yaml: a bare word; also quoted forms and a trailing
+# `# comment`, all valid YAML. Block/flow/alias/tag indicators are NOT read: they are refused.
+_CATEGORY_VALUE = re.compile(
+    r"""^\s*(?:-\s+)?category\s*:\s*(?:"([^"]*)"|'([^']*)'|([^\s#"'>|&*\[{!][^\s#]*))\s*(?:#.*)?$"""
+)
+
+
+def read_registry_builtin(text: str) -> list:
+    """
+    Dependency-free reader for the registry shape: a top-level `components:` key whose items carry
+    `category: <value>` lines. Every `category:` line must parse (comments and quotes accepted);
+    a line it cannot read, a missing `components:` key, or zero categories raises
+    RegistryReadError. It never returns a partial or empty answer.
+    """
+    lines = text.splitlines()
+    if not any(re.match(r"^components\s*:\s*(?:#.*)?$", ln) for ln in lines):
+        raise RegistryReadError('no top-level "components:" list (unknown registry shape)')
+    parsed = []
+    for ln in lines:
+        if not _CATEGORY_LINE.match(ln):
+            continue
+        m = _CATEGORY_VALUE.match(ln)
+        if not m:
+            raise RegistryReadError(f"cannot read category line {ln.strip()!r}")
+        parsed.append(next(g for g in m.groups() if g is not None))
+    if not parsed:
+        raise RegistryReadError("the registry declares no categories")
+    return parsed
+
+
 def load_registry(registry_path: Path) -> set:
     """
-    Category names declared in the registry YAML. Reads the file itself (no PyYAML needed: the
-    registry shape is `components:` -> items with a `category:` line), so the cross-check can
-    never be silently skipped. An unreadable registry is exit 2.
+    Category names declared in the registry. Never an empty answer: a registry that yields no
+    categories, has no `components` list, or is read differently by the two readers is exit 2.
+    With PyYAML present BOTH readers run and must agree, so the dependency-free fallback used in
+    CI can never silently diverge from the real parser.
     """
     if not registry_path.is_file():
         die(f"registry not found at {registry_path} (pass --skip-registry-check to opt out)")
     try:
         text = registry_path.read_text(encoding="utf-8")
-    except OSError as err:
+    except (OSError, UnicodeDecodeError) as err:
         die(f"could not read registry {registry_path}: {err}")
-    if HAS_YAML:
-        try:
-            data = yaml.safe_load(text)
-        except yaml.YAMLError as err:
-            die(f"registry {registry_path} is not valid YAML: {err}")
-        components = (data or {}).get("components", []) if isinstance(data, dict) else []
-        return {c["category"] for c in components if isinstance(c, dict) and "category" in c}
-    return set(re.findall(r"(?m)^\s+category:\s*[\"']?([\w-]+)[\"']?\s*$", text))
+
+    try:
+        builtin = read_registry_builtin(text)
+        builtin_error = None
+    except RegistryReadError as err:
+        builtin, builtin_error = None, err
+
+    if not HAS_YAML:
+        if builtin is None:
+            die(f"could not read registry {registry_path}: {builtin_error}")
+        return set(builtin)
+
+    try:
+        data = yaml.safe_load(text)
+    except yaml.YAMLError as err:
+        die(f"registry {registry_path} is not valid YAML: {err}")
+    components = data.get("components") if isinstance(data, dict) else None
+    if not isinstance(components, list) or not components:
+        die(f'registry {registry_path} has no non-empty "components" list')
+    categories = [c.get("category") for c in components if isinstance(c, dict)]
+    if not categories or not all(isinstance(c, str) and c for c in categories):
+        die(f"registry {registry_path}: every component needs a string category")
+    if builtin is None:
+        die(
+            f"the two registry readers disagree on {registry_path}: PyYAML read it, "
+            f"the built-in reader could not ({builtin_error})"
+        )
+    if set(builtin) != set(categories):
+        die(
+            f"the two registry readers disagree on {registry_path}: PyYAML read "
+            f"{sorted(set(categories))}, the built-in reader read {sorted(set(builtin))}"
+        )
+    return set(categories)
 
 
 def count_exported_symbols(text: str) -> int:
