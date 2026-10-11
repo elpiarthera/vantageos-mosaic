@@ -6,10 +6,10 @@ Fleet-wide MCP UI design system. Zod-validated, taxonomy-organized (7 categories
 
 ```sh
 # React 19
-npm install @vantageos/mosaic@^0.4.0 @vantageos/mosaic-tokens@^0.7.0 react react-dom
+npm install @vantageos/mosaic@^0.5.0 @vantageos/mosaic-tokens@^0.7.0 react react-dom
 
 # Preact 10
-npm install @vantageos/mosaic@^0.4.0 @vantageos/mosaic-tokens@^0.7.0 preact
+npm install @vantageos/mosaic@^0.5.0 @vantageos/mosaic-tokens@^0.7.0 preact
 ```
 
 All runtime peers are marked optional via `peerDependenciesMeta` — install only what your runtime needs.
