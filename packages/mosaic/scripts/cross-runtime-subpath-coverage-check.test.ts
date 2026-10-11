@@ -155,3 +155,74 @@ describe("Gate 4 script: exit codes stay distinct and the pass case holds (posit
     expect(run(["--package-root", fakePackage({ breakPreact: true })], tmpdir()).status).toBe(1);
   });
 });
+
+// Eta (#76): a registry that yields ZERO categories was a silent PASS. Every probe below carries
+// an unexported category ("zzzcat") the gate must catch: exit 2 when the registry cannot be read
+// as a registry, exit 1 when it is readable and the category is a real gap. Each runs with
+// PyYAML and with PyYAML blocked, and the status is the script's own (spawnSync, no pipe).
+function blockedYamlEnv() {
+  const blocker = mkdtempSync(join(tmpdir(), "noyaml-"));
+  roots.push(blocker);
+  writeFileSync(join(blocker, "yaml.py"), 'raise ImportError("yaml blocked for this test")\n');
+  return { PYTHONPATH: blocker };
+}
+
+describe.each([
+  ["with PyYAML", {} as NodeJS.ProcessEnv],
+  ["without PyYAML", blockedYamlEnv()],
+])("Gate 4 registry reading is fail-closed (%s)", (_label, env) => {
+  const go = (registry: string) =>
+    run(["--package-root", fakePackage({ registry })], tmpdir(), SCRIPT, env);
+
+  it("probe a: an emptied registry file exits 2 and names the registry", () => {
+    const r = go("");
+    expect(r.status).toBe(2);
+    expect(r.out).toContain("registry.yaml");
+  });
+
+  it("probe b: `components:` renamed to `items:` (unknown shape) exits 2", () => {
+    const r = go('version: "1"\nitems:\n  - name: X\n    category: zzzcat\n');
+    expect(r.status).toBe(2);
+    expect(r.out).toContain("components");
+  });
+
+  it("probe c: a trailing # comment on the category line is read, so the gap is caught (exit 1)", () => {
+    const r = go('version: "1"\ncomponents:\n  - name: X\n    category: zzzcat  # moved\n');
+    expect(r.status).toBe(1);
+    expect(r.out).toContain("zzzcat");
+  });
+
+  it("a `components:` list that parses to zero categories exits 2", () => {
+    expect(go('version: "1"\ncomponents: []\n').status).toBe(2);
+    expect(go('version: "1"\ncomponents:\n  - name: X\n').status).toBe(2);
+  });
+
+  it("flow-style components (a form the reader does not know) exit 2, never a pass", () => {
+    expect(go('version: "1"\ncomponents: [{name: X, category: zzzcat}]\n').status).toBe(2);
+  });
+
+  it("positive control: comments and quotes in a readable registry pass", () => {
+    const r = go(
+      '# header\nversion: "1"\ncomponents:\n  # forms\n  - name: Input\n    category: "forms"  # ok\n  - name: Select\n    category: forms\n',
+    );
+    expect(r.status).toBe(0);
+  });
+
+  it("the real registry.yaml of this package is readable: a gap (1), never unreadable (2) or a pass (0)", () => {
+    const real = join(import.meta.dirname, "..", "registry.yaml");
+    const root = fakePackage();
+    const r = run(["--package-root", root, "--registry", real], tmpdir(), SCRIPT, env);
+    // the fake package only exports `forms`; the real registry declares more
+    expect(r.status).toBe(1);
+  });
+});
+
+describe("the two readers must agree", () => {
+  it("with PyYAML present, a registry the built-in reader reads differently exits 2", () => {
+    const registry =
+      'version: "1"\ncomponents:\n  - name: X\n    category: forms\n  - name: Y\n    category: >-\n      ghosts\n';
+    const r = run(["--package-root", fakePackage({ registry })], tmpdir());
+    expect(r.status).toBe(2);
+    expect(r.out.toLowerCase()).toContain("disagree");
+  });
+});
