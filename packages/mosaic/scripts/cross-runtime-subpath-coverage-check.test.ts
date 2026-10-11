@@ -201,6 +201,11 @@ describe.each([
     expect(go('version: "1"\ncomponents: [{name: X, category: zzzcat}]\n').status).toBe(2);
   });
 
+  it("a block-scalar category value is a form nobody reads: exit 2, never a bogus category", () => {
+    const r = go('version: "1"\ncomponents:\n  - name: X\n    category: >-\n      zzzcat\n');
+    expect(r.status).toBe(2);
+  });
+
   it("positive control: comments and quotes in a readable registry pass", () => {
     const r = go(
       '# header\nversion: "1"\ncomponents:\n  # forms\n  - name: Input\n    category: "forms"  # ok\n  - name: Select\n    category: forms\n',
@@ -224,5 +229,16 @@ describe("the two readers must agree", () => {
     const r = run(["--package-root", fakePackage({ registry })], tmpdir());
     expect(r.status).toBe(2);
     expect(r.out.toLowerCase()).toContain("disagree");
+  });
+
+  it("with PyYAML present, a `category:` line inside a block scalar is a divergence (exit 2)", () => {
+    // both readers succeed, but differently: the line reader sees `ghosts` inside the `notes: |`
+    // block, PyYAML does not
+    const registry =
+      'version: "1"\ncomponents:\n  - name: X\n    category: forms\n    notes: |\n      category: ghosts\n';
+    const r = run(["--package-root", fakePackage({ registry })], tmpdir());
+    expect(r.status).toBe(2);
+    expect(r.out.toLowerCase()).toContain("disagree");
+    expect(r.out).toContain("ghosts");
   });
 });
