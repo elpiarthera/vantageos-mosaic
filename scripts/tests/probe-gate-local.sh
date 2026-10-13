@@ -240,7 +240,7 @@ echo "== EVERY SKIP RULE has a fixture it alone skips, and a mutation that turns
 #   JOB_SKIP_RULES. The loop below asserts that the set of ids in the runner equals the set
 #   of ids this probe covers, so a rule added to the runner without a case here is a FAIL.
 RULE_IDS_RUNNER="$(grep -E '^    id: "' "$RUNNER" | sed -E 's/^    id: "([^"]+)".*/\1/' | sort | tr '\n' ' ')"
-RULE_IDS_PROBE="needs-browser os-install publish publishing-job secrets step-output-producer uses-action "
+RULE_IDS_PROBE="needs-browser os-install publishing-job secrets step-output-producer uses-action "
 [ "$RULE_IDS_RUNNER" = "$RULE_IDS_PROBE" ] \
   && pass "rule ids in the runner == rule ids covered by this probe ($RULE_IDS_RUNNER)" \
   || fail "rule-id census drift: runner has [$RULE_IDS_RUNNER], probe covers [$RULE_IDS_PROBE]"
@@ -286,19 +286,25 @@ $HDR
         env:
           T: \${{ secrets.TOK }}
 YML
-add_case publish git-push 'publishes or mutates the remote' <<YML
+add_case publishing-job git-push 'job `j` publishes to the remote' <<YML
 $HDR
       - name: target
+        run: exit 3
+      - name: the-publish
         run: git push origin main
 YML
-add_case publish gh-release 'publishes or mutates the remote' <<YML
+add_case publishing-job gh-release 'job `j` publishes to the remote' <<YML
 $HDR
       - name: target
+        run: exit 3
+      - name: the-publish
         run: gh release create v1
 YML
-add_case publish npm-publish 'publishes or mutates the remote' <<YML
+add_case publishing-job npm-publish 'job `j` publishes to the remote' <<YML
 $HDR
       - name: target
+        run: exit 3
+      - name: the-publish
         run: npm publish
 YML
 add_case needs-browser playwright 'drives headless Chromium' <<YML
