@@ -10,12 +10,14 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "size-limit": "turbo run size-limit",
-    "registry-drift": "node packages/mosaic/scripts/mosaic-registry-drift-check.mjs"
+    "registry-drift": "node packages/mosaic/scripts/mosaic-registry-drift-check.mjs",
+    "gate:local": "node scripts/gate-local.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "turbo": "2.5.4",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "yaml": "^2.9.1"
   },
   "engines": {
     "node": ">=20.0.0",
