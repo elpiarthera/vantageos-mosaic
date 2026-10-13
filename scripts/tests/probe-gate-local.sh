@@ -18,7 +18,9 @@ RUNNER="$ROOT/scripts/gate-local.mjs"
 REAL_CI="$ROOT/.github/workflows/ci.yml"
 TMP="$(mktemp -d)"
 case "$TMP" in /*/?*) ;; *) echo "PROBE SETUP FAILURE: bad mktemp dir '$TMP'" >&2; exit 1 ;; esac
-trap 'rm -rf -- "$TMP"' EXIT
+MUTS=()
+cleanup() { rm -rf -- "$TMP"; [ "${#MUTS[@]}" -gt 0 ] && rm -f -- "${MUTS[@]}"; return 0; }
+trap cleanup EXIT
 
 FAILS=0
 PASSES=0
@@ -230,6 +232,167 @@ if landed "$TMP/browser.yml" "playwright test" "browser steps"; then
   grep -qF "gate:local — 2 run / 2 total, 0 skipped, 0 failed" "$TMP/browser-on.out" \
     && pass "--install-browsers un-skips both" \
     || fail "--install-browsers did not un-skip: $(head -c 400 "$TMP/browser-on.out")"
+fi
+
+echo "== EVERY SKIP RULE has a fixture it alone skips, and a mutation that turns the probe red =="
+# Census (derived from the runner's own tables, not from memory):
+#   $ grep -E '^    id: "' scripts/gate-local.mjs   -> the id of every entry of SKIP_RULES and
+#   JOB_SKIP_RULES. The loop below asserts that the set of ids in the runner equals the set
+#   of ids this probe covers, so a rule added to the runner without a case here is a FAIL.
+RULE_IDS_RUNNER="$(grep -E '^    id: "' "$RUNNER" | sed -E 's/^    id: "([^"]+)".*/\1/' | sort | tr '\n' ' ')"
+RULE_IDS_PROBE="needs-browser os-install publish publishing-job secrets step-output-producer uses-action "
+[ "$RULE_IDS_RUNNER" = "$RULE_IDS_PROBE" ] \
+  && pass "rule ids in the runner == rule ids covered by this probe ($RULE_IDS_RUNNER)" \
+  || fail "rule-id census drift: runner has [$RULE_IDS_RUNNER], probe covers [$RULE_IDS_PROBE]"
+
+# Cases: "rule|fixture-file|reason-needle". The fixture's target step is named `target`.
+RULE_CASES=()
+# add_case <rule> <form> <needle> <yaml via stdin>
+add_case() {
+  local f="$TMP/rule-$1-$2.yml"
+  cat >"$f"
+  RULE_CASES+=("$1|$f|$3")
+}
+HDR='name: fixture
+on: [push]
+jobs:
+  j:
+    runs-on: ubuntu-latest
+    steps:'
+
+add_case uses-action checkout 'uses: actions/checkout@v4 — CI-runner provisioning' <<YML
+$HDR
+      - name: target
+        uses: actions/checkout@v4
+YML
+add_case step-output-producer producer 'produces step output `prod`' <<YML
+$HDR
+      - name: target
+        id: prod
+        run: echo ok
+      - name: consumer
+        run: echo ok
+        if: steps.prod.outputs.x == 'y'
+YML
+add_case secrets run 'needs secrets' <<YML
+$HDR
+      - name: target
+        run: echo \${{ secrets.TOK }}
+YML
+add_case secrets env 'needs secrets' <<YML
+$HDR
+      - name: target
+        run: echo hi
+        env:
+          T: \${{ secrets.TOK }}
+YML
+add_case publish git-push 'publishes or mutates the remote' <<YML
+$HDR
+      - name: target
+        run: git push origin main
+YML
+add_case publish gh-release 'publishes or mutates the remote' <<YML
+$HDR
+      - name: target
+        run: gh release create v1
+YML
+add_case publish npm-publish 'publishes or mutates the remote' <<YML
+$HDR
+      - name: target
+        run: npm publish
+YML
+add_case needs-browser playwright 'drives headless Chromium' <<YML
+$HDR
+      - name: target
+        run: pnpm exec playwright test
+YML
+add_case needs-browser storybook 'drives headless Chromium' <<YML
+$HDR
+      - name: target
+        run: pnpm exec test-storybook
+YML
+add_case os-install apt 'OS-level install' <<YML
+$HDR
+      - name: target
+        run: apt-get install -y foo
+YML
+add_case os-install sudo 'OS-level install' <<YML
+$HDR
+      - name: target
+        run: sudo true
+YML
+add_case os-install with-deps 'OS-level install' <<YML
+$HDR
+      - name: target
+        run: pnpm exec playwright install --with-deps chromium
+YML
+add_case publishing-job job 'job `j` publishes to the remote' <<YML
+$HDR
+      - name: target
+        run: exit 3
+      - name: the-publish
+        run: npm publish
+YML
+
+# case_holds <runner> <fixture> <needle> : 0 iff the step named `target` is printed as
+# `--- SKIP <job>#<n> target` and the reason line right after it contains the needle.
+case_holds() {
+  local runner="$1" f="$2" needle="$3" out="$TMP/ch.out"
+  node "$runner" --list --workflow "$f" "${HEAD_ARGS[@]}" >"$out" 2>&1
+  awk -v n="$needle" '
+    /^--- SKIP [^ ]+#[0-9]+ target$/ { want = 1; next }
+    want { if (index($0, n)) ok = 1; want = 0 }
+    END { exit ok ? 0 : 1 }' "$out"
+}
+
+# 1. Every fixture is skipped, with its rule'"'"'s printed reason, by the REAL runner.
+for c in "${RULE_CASES[@]}"; do
+  IFS='|' read -r rule f needle <<<"$c"
+  landed "$f" "target" "$rule fixture" || continue
+  case_holds "$RUNNER" "$f" "$needle" \
+    && pass "($rule/$(basename "$f" .yml)) skipped with reason '$needle'" \
+    || fail "($rule/$(basename "$f" .yml)) NOT skipped with reason '$needle': $(head -c 500 "$TMP/ch.out")"
+done
+
+# 2. Mutation per rule: disable ONLY that rule's predicate in a copy of the runner (the
+#    copy lives in scripts/ so REPO_ROOT and the `yaml` import resolve), assert the
+#    mutation landed on that rule's own block, then every case of that rule must go red.
+echo "-- mutation table: rule | landed | red-on-every-case --"
+for rule in $RULE_IDS_PROBE; do
+  mut="$ROOT/scripts/.gate-local.mut-$rule.mjs"
+  MUTS+=("$mut")
+  sed -E "/^    id: \"$rule\",/,/^    test:/ s/^(    test: \(c\) =>)/\1 false, __orig: (c) =>/" "$RUNNER" >"$mut"
+  idl="$(grep -nE "^    id: \"$rule\"," "$mut" | cut -d: -f1)"
+  mutl="$(grep -nF 'test: (c) => false, __orig:' "$mut" | cut -d: -f1 | tr '\n' ' ')"
+  nmut="$(grep -cF 'test: (c) => false, __orig:' "$mut")"
+  # landed: exactly one line differs from the runner, it is the first `test:` after this rule's id.
+  nd="$(diff "$RUNNER" "$mut" | grep -c '^>')"
+  between="$(awk -v a="$idl" -v b="${mutl%% *}" 'NR>a && NR<b && /^    id: "/ {c++} END {print c+0}' "$mut")"
+  if [ "$nmut" -eq 1 ] && [ "$nd" -eq 1 ] && [ -n "$idl" ] && [ "${mutl%% *}" -gt "$idl" ] && [ "$between" -eq 0 ]; then
+    pass "mutation for '$rule' landed (runner line ${mutl%% *}, after id at line $idl, 1 line changed)"
+  else
+    fail "SETUP: mutation for '$rule' did not land cleanly (id line '$idl', mutated lines '$mutl', changed=$nd, other-ids-between=$between)"
+    continue
+  fi
+  red=0; total=0
+  for c in "${RULE_CASES[@]}"; do
+    IFS='|' read -r r f needle <<<"$c"
+    [ "$r" = "$rule" ] || continue
+    total=$((total + 1))
+    if case_holds "$mut" "$f" "$needle"; then
+      fail "($rule/$(basename "$f" .yml)) still skipped with its reason although '$rule' is disabled — the rule is not what skips it"
+    else
+      red=$((red + 1))
+    fi
+  done
+  [ "$total" -gt 0 ] && [ "$red" -eq "$total" ] \
+    && pass "'$rule' disabled => $red/$total of its cases go red" \
+    || fail "'$rule' disabled => only $red/$total of its cases go red"
+done
+if git -C "$ROOT" diff --quiet -- scripts/gate-local.mjs; then
+  pass "restored: git diff --quiet -- scripts/gate-local.mjs (the mutations only ever touched copies)"
+else
+  fail "scripts/gate-local.mjs differs from the index after the mutation section"
 fi
 
 echo
