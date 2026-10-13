@@ -89,6 +89,10 @@ const publishes = (run) =>
   /\bgh\s+(pr|release)\s+(create|merge|edit|close)\b/.test(run) ||
   /\bgit\s+push\b/.test(run);
 
+// DECLARED: there is no step-level `publish` rule. Any step whose `run` publishes makes
+// its whole job match `publishing-job` (JOB_SKIP_RULES), and a job-level skip wins over a
+// step rule, so a step-level rule could never be the one that skips. The donor carried it;
+// here it was unreachable (no fixture could make it the skipping rule) and is removed.
 export const SKIP_RULES = [
   {
     id: "uses-action",
@@ -105,11 +109,6 @@ export const SKIP_RULES = [
     id: "secrets",
     reason: () => "needs secrets (`${{ secrets.* }}` in run or env)",
     test: (c) => /\$\{\{[^}]*\bsecrets\./.test(c.text),
-  },
-  {
-    id: "publish",
-    reason: () => "publishes or mutates the remote (npm publish / gh pr|release / git push)",
-    test: (c) => publishes(c.run),
   },
   {
     id: "needs-browser",
