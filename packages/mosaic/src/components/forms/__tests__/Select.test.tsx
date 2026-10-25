@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
 import { Select } from "../../../runtimes/react/components/forms/Select";
 import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
@@ -287,7 +287,7 @@ function Harness({
   label?: string;
 }) {
   const schema = z.object({
-    country: z.string({ required_error: "required" }).min(1, "required"),
+    country: z.string({ error: "required" }).min(1, "required"),
   });
   const form = useMosaicForm({ schema, defaultValues });
   return (

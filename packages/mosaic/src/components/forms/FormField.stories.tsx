@@ -1,6 +1,6 @@
 // Storybook documentation for FormField
 import type { Meta, StoryObj } from "@storybook/react";
-import { z } from "zod";
+import * as z from "zod";
 import { FormField } from "../../runtimes/react/components/forms/FormField.js";
 import { FormProvider } from "../../runtimes/react/components/forms/FormProvider.js";
 import { useMosaicForm } from "../../runtimes/react/components/forms/useMosaicForm.js";

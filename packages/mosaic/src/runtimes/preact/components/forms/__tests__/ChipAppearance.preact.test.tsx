@@ -1,7 +1,7 @@
 // Preact runtime parity for R25 (the preact forms components are mirrored copies of the react ones).
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import { MultiSelectPropsSchema } from "../../../../../components/forms/MultiSelect.schema";
 import {
   getGroupClasses,

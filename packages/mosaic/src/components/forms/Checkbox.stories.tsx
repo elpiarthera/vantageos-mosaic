@@ -1,6 +1,6 @@
 // Storybook documentation for Checkbox
 import type { Meta, StoryObj } from "@storybook/react";
-import { z } from "zod";
+import * as z from "zod";
 import { Checkbox } from "../../runtimes/react/components/forms/Checkbox.js";
 import { FormProvider } from "../../runtimes/react/components/forms/FormProvider.js";
 import { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";

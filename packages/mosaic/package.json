@@ -171,12 +171,12 @@
     "postpublish": "git checkout HEAD -- package.json && echo '[postpublish] reverted package.json — workspace:* refs restored for monorepo dev'"
   },
   "peerDependencies": {
-    "@hookform/resolvers": "^3.10.0",
+    "@hookform/resolvers": "^5.1.0",
     "@mcp-ui/client": "7.1.1",
     "preact": "^10.25.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-hook-form": "^7.54.0",
+    "react-hook-form": "^7.55.0",
     "react-i18next": "15.5.2",
     "rxjs": "^7.8.0"
   },
@@ -213,14 +213,14 @@
     "@vantageos/mosaic-tokens": "workspace:*",
     "dompurify": "3.4.17",
     "marked": "15.0.7",
-    "zod": "3.25.28"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.10.1",
     "@babel/parser": "7.29.7",
     "@babel/traverse": "7.29.7",
     "@biomejs/biome": "1.9.4",
-    "@hookform/resolvers": "^3.10.0",
+    "@hookform/resolvers": "^5.1.0",
     "@playwright/test": "1.50.1",
     "@size-limit/preset-small-lib": "11.2.0",
     "@storybook/builder-vite": "8.6.19",
@@ -240,7 +240,7 @@
     "preact": "10.27.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-hook-form": "^7.54.0",
+    "react-hook-form": "^7.55.0",
     "size-limit": "11.2.0",
     "storybook": "8.6.19",
     "tailwindcss": "4.1.8",

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type FieldValues, type UseFormReturn, useForm } from "react-hook-form";
+import { type DefaultValues, type FieldValues, type UseFormReturn, useForm } from "react-hook-form";
 import type { ZodSchema, ZodType } from "zod";
 import { toRhfMode } from "../../../../components/forms/useMosaicForm.logic.js";
 import {
@@ -51,7 +51,7 @@ export function useMosaicForm<TSchema extends ZodType>(
   const form = useForm<TValues>({
     // biome-ignore lint/suspicious/noExplicitAny: zodResolver's generic shape forces a cast at this boundary
     resolver: zodResolver(options.schema as any),
-    defaultValues: options.defaultValues as TValues,
+    defaultValues: options.defaultValues as DefaultValues<TValues>,
     mode: toRhfMode(parsedOptions.mode),
   });
 

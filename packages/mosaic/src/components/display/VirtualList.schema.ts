@@ -1,7 +1,15 @@
 // i18nKeys: VirtualList.empty.message, VirtualList.error.invalidProps
 
 import type { ReactNode } from "react";
-import { z } from "zod";
+import * as z from "zod";
+
+/**
+ * A runtime function value. Zod 4 removed `z.function().args().returns()` as a
+ * parseable props schema, and the old form returned a validating wrapper that no
+ * caller used: this checks "is a function" and passes the same function through.
+ */
+const fn = <F extends (...args: never[]) => unknown>() =>
+  z.custom<F>((v) => typeof v === "function", "Input not instance of Function");
 
 /**
  * VirtualList Zod props schema.
@@ -18,9 +26,9 @@ export const VirtualListPropsSchema = z.object({
   /** Fixed row height in px — mutually exclusive with estimateSize */
   itemHeight: z.number().positive().optional(),
   /** Variable row height estimator — mutually exclusive with itemHeight */
-  estimateSize: z.function().args(z.number()).returns(z.number()).optional(),
+  estimateSize: fn<(index: number) => number>().optional(),
   /** Row renderer — required (runtime function, excluded from strict Zod parse but validated for presence) */
-  renderItem: z.function().args(z.unknown(), z.number()).returns(z.unknown()).optional(),
+  renderItem: fn<(item: unknown, index: number) => unknown>().optional(),
   /** Rows to render outside visible area (default: 5) */
   overscan: z.number().int().min(0).optional(),
   /** CSS class applied to the scroll container */
@@ -28,7 +36,7 @@ export const VirtualListPropsSchema = z.object({
   /** Locale for built-in empty state + error messages */
   locale: z.enum(["en", "fr"]).optional(),
   /** a11y: when provided, rows become keyboard-activable (role=button + tabIndex=0 + Enter/Space) */
-  onRowClick: z.function().args(z.unknown(), z.number()).returns(z.void()).optional(),
+  onRowClick: fn<(item: unknown, index: number) => void>().optional(),
 });
 
 export type VirtualListPropsSchemaInput = z.input<typeof VirtualListPropsSchema>;

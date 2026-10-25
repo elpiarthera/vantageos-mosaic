@@ -1,6 +1,6 @@
 // Storybook documentation for RadioGroup
 import type { Meta, StoryObj } from "@storybook/react";
-import { z } from "zod";
+import * as z from "zod";
 import { FormProvider } from "../../runtimes/react/components/forms/FormProvider.js";
 import { RadioGroup } from "../../runtimes/react/components/forms/RadioGroup.js";
 import { useMosaicForm } from "../../runtimes/react/components/forms/useMosaicForm.js";

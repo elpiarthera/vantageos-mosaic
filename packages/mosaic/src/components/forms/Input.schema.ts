@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 /**
  * Input primitive props — bound to the surrounding `FormProvider` by `name`.

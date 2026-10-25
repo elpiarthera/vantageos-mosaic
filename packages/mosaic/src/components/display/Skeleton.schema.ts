@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // i18nKeys: Skeleton.error.invalidProps
 

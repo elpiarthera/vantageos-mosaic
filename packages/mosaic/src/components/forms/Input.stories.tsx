@@ -1,6 +1,6 @@
 // Storybook documentation for Input (forms category, T11)
 import type { Meta, StoryObj } from "@storybook/react";
-import { z } from "zod";
+import * as z from "zod";
 import { FormProvider } from "../../runtimes/react/components/forms/FormProvider.js";
 import { Input } from "../../runtimes/react/components/forms/Input.js";
 import { useMosaicForm } from "../../runtimes/react/components/forms/useMosaicForm.js";

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
 import { MultiSelect } from "../../../runtimes/react/components/forms/MultiSelect";
 import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";

@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
 import { UseMosaicFormOptionsSchema, validateOptions } from "../useMosaicForm.schema";
 

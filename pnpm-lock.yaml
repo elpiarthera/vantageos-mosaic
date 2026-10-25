@@ -29,6 +29,8 @@ overrides:
   preact: ^10.27.3
   source-map-js: ^1.2.2
   tar: ^7.5.21
+  uuid@<9: ^11.1.1
+  '@mcp-ui/client>zod': ^4.6.7
   vitest: ^3.2.6
 
 importers:
@@ -58,7 +60,7 @@ importers:
         version: 7.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@mcp-ui/server':
         specifier: 6.1.0
-        version: 6.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@3.25.28)
+        version: 6.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@4.6.7)
       '@tanstack/react-virtual':
         specifier: 3.13.6
         version: 3.13.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -78,8 +80,8 @@ importers:
         specifier: ^7.8.0
         version: 7.8.2
       zod:
-        specifier: 3.25.28
-        version: 3.25.28
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@axe-core/playwright':
         specifier: 4.10.1
@@ -94,8 +96,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@hookform/resolvers':
-        specifier: ^3.10.0
-        version: 3.10.0(react-hook-form@7.78.0(react@19.1.0))
+        specifier: ^5.1.0
+        version: 5.9.2(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(joi@17.13.7)(react-hook-form@7.78.0(react@19.1.0))(zod@4.6.7)
       '@playwright/test':
         specifier: 1.50.1
         version: 1.50.1
@@ -154,7 +156,7 @@ importers:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
       react-hook-form:
-        specifier: ^7.54.0
+        specifier: ^7.55.0
         version: 7.78.0(react@19.1.0)
       size-limit:
         specifier: 11.2.0
@@ -681,10 +683,83 @@ packages:
     peerDependencies:
       hono: ^4.12.25
 
-  '@hookform/resolvers@3.10.0':
-    resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
+  '@hookform/resolvers@5.9.2':
+    resolution: {integrity: sha512-RtjTnZqsC38s4NKp2XO3fD8IA5uyN4tB7McQ5C6uiMPcV+WWO8F+wVa3e+BXUpH2ScgxghAlwFRMVqjT9WChAQ==}
     peerDependencies:
-      react-hook-form: ^7.0.0
+      '@sinclair/typebox': '>=0.25.24'
+      '@standard-schema/spec': ^1.0.0
+      '@typeschema/main': '>=0.13.7'
+      '@vinejs/vine': ^2.0.0 || ^3.0.0 || ^4.0.0
+      ajv: ^8.12.0
+      ajv-errors: ^3.0.0
+      ajv-formats: ^2.1.1
+      arktype: ^2.0.0
+      ata-validator: ^1.23.0
+      class-transformer: '>=0.4.0'
+      class-validator: '>=0.12.0'
+      computed-types: ^1.0.0
+      effect: ^3.10.3
+      fluentvalidation-ts: ^3.0.0
+      fp-ts: ^2.7.0
+      io-ts: ^2.0.0
+      joi: 17.13.7
+      nope-validator: '>=0.12.0'
+      react-hook-form: ^7.55.0
+      superstruct: '>=0.12.0'
+      typanion: ^3.3.2
+      valibot: '>=0.31.0 || ^1.0.0-beta.4 || ^1.0.0-rc'
+      vest: '>=6.0.0'
+      yup: ^1.0.0
+      zod: ^3.25.0 || ^4.0.0
+    peerDependenciesMeta:
+      '@sinclair/typebox':
+        optional: true
+      '@standard-schema/spec':
+        optional: true
+      '@typeschema/main':
+        optional: true
+      '@vinejs/vine':
+        optional: true
+      ajv:
+        optional: true
+      ajv-errors:
+        optional: true
+      ajv-formats:
+        optional: true
+      arktype:
+        optional: true
+      ata-validator:
+        optional: true
+      class-transformer:
+        optional: true
+      class-validator:
+        optional: true
+      computed-types:
+        optional: true
+      effect:
+        optional: true
+      fluentvalidation-ts:
+        optional: true
+      fp-ts:
+        optional: true
+      io-ts:
+        optional: true
+      joi:
+        optional: true
+      nope-validator:
+        optional: true
+      superstruct:
+        optional: true
+      typanion:
+        optional: true
+      valibot:
+        optional: true
+      vest:
+        optional: true
+      yup:
+        optional: true
+      zod:
+        optional: true
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1109,6 +1184,9 @@ packages:
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
+
+  '@standard-schema/utils@0.3.0':
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
   '@storybook/builder-vite@8.6.19':
     resolution: {integrity: sha512-fI89jIGcnNBNbwT4mqcE/jupMgfd1vTZxBrgxfC5F+wEecCJcRU2W1M3r8gS9//8VKW9fqQEJVrKDy6CyLWRVA==}
@@ -3818,9 +3896,8 @@ packages:
   util@0.12.5:
     resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
 
-  uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+  uuid@11.1.1:
+    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
   v8-to-istanbul@9.3.0:
@@ -4067,8 +4144,8 @@ packages:
     peerDependencies:
       zod: ^3.25.28 || ^4
 
-  zod@3.25.28:
-    resolution: {integrity: sha512-/nt/67WYKnr5by3YS7LroZJbtcCBurDKKPBPWWzaxvVCGuG/NOsiKkrjoOhI8mJ+SQUXEbUzeB3S+6XDUEEj7Q==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
 snapshots:
 
@@ -4436,9 +4513,16 @@ snapshots:
     dependencies:
       hono: 4.13.13
 
-  '@hookform/resolvers@3.10.0(react-hook-form@7.78.0(react@19.1.0))':
+  '@hookform/resolvers@5.9.2(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(joi@17.13.7)(react-hook-form@7.78.0(react@19.1.0))(zod@4.6.7)':
     dependencies:
+      '@standard-schema/utils': 0.3.0
       react-hook-form: 7.78.0(react@19.1.0)
+    optionalDependencies:
+      '@sinclair/typebox': 0.34.49
+      '@standard-schema/spec': 1.1.0
+      ajv: 8.20.0
+      joi: 17.13.7
+      zod: 4.6.7
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -4680,19 +4764,19 @@ snapshots:
 
   '@mcp-ui/client@7.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@modelcontextprotocol/ext-apps': 1.7.3(@modelcontextprotocol/sdk@1.32.0(zod@3.25.28))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@3.25.28)
-      '@modelcontextprotocol/sdk': 1.32.0(zod@3.25.28)
+      '@modelcontextprotocol/ext-apps': 1.7.3(@modelcontextprotocol/sdk@1.32.0(zod@4.6.7))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@4.6.7)
+      '@modelcontextprotocol/sdk': 1.32.0(zod@4.6.7)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
-      zod: 3.25.28
+      zod: 4.6.7
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - supports-color
 
-  '@mcp-ui/server@6.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@3.25.28)':
+  '@mcp-ui/server@6.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@4.6.7)':
     dependencies:
-      '@modelcontextprotocol/ext-apps': 0.3.1(@modelcontextprotocol/sdk@1.32.0(zod@3.25.28))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@3.25.28)
-      '@modelcontextprotocol/sdk': 1.32.0(zod@3.25.28)
+      '@modelcontextprotocol/ext-apps': 0.3.1(@modelcontextprotocol/sdk@1.32.0(zod@4.6.7))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@4.6.7)
+      '@modelcontextprotocol/sdk': 1.32.0(zod@4.6.7)
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - react
@@ -4700,10 +4784,10 @@ snapshots:
       - supports-color
       - zod
 
-  '@modelcontextprotocol/ext-apps@0.3.1(@modelcontextprotocol/sdk@1.32.0(zod@3.25.28))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@3.25.28)':
+  '@modelcontextprotocol/ext-apps@0.3.1(@modelcontextprotocol/sdk@1.32.0(zod@4.6.7))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@4.6.7)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.32.0(zod@3.25.28)
-      zod: 3.25.28
+      '@modelcontextprotocol/sdk': 1.32.0(zod@4.6.7)
+      zod: 4.6.7
     optionalDependencies:
       '@oven/bun-darwin-aarch64': 1.3.14
       '@oven/bun-darwin-x64': 1.3.14
@@ -4725,16 +4809,16 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@modelcontextprotocol/ext-apps@1.7.3(@modelcontextprotocol/sdk@1.32.0(zod@3.25.28))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@3.25.28)':
+  '@modelcontextprotocol/ext-apps@1.7.3(@modelcontextprotocol/sdk@1.32.0(zod@4.6.7))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@4.6.7)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.32.0(zod@3.25.28)
+      '@modelcontextprotocol/sdk': 1.32.0(zod@4.6.7)
       '@standard-schema/spec': 1.1.0
-      zod: 3.25.28
+      zod: 4.6.7
     optionalDependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@modelcontextprotocol/sdk@1.32.0(zod@3.25.28)':
+  '@modelcontextprotocol/sdk@1.32.0(zod@4.6.7)':
     dependencies:
       '@hono/node-server': 1.19.14(hono@4.13.13)
       ajv: 8.20.0
@@ -4751,8 +4835,8 @@ snapshots:
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 3.25.28
-      zod-to-json-schema: 3.25.2(zod@3.25.28)
+      zod: 4.6.7
+      zod-to-json-schema: 3.25.2(zod@4.6.7)
     transitivePeerDependencies:
       - supports-color
 
@@ -4916,6 +5000,8 @@ snapshots:
       size-limit: 11.2.0
 
   '@standard-schema/spec@1.1.0': {}
+
+  '@standard-schema/utils@0.3.0': {}
 
   '@storybook/builder-vite@8.6.19(storybook@8.6.19)(vite@6.4.4(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.30.1)(yaml@2.9.1))':
     dependencies:
@@ -6421,7 +6507,7 @@ snapshots:
       istanbul-lib-coverage: 3.2.2
       p-map: 3.0.0
       rimraf: 3.0.2
-      uuid: 8.3.2
+      uuid: 11.1.1
 
   istanbul-lib-report@3.0.1:
     dependencies:
@@ -6587,7 +6673,7 @@ snapshots:
     dependencies:
       mkdirp: 1.0.4
       strip-ansi: 6.0.1
-      uuid: 8.3.2
+      uuid: 11.1.1
       xml: 1.0.1
 
   jest-leak-detector@29.7.0:
@@ -6631,7 +6717,7 @@ snapshots:
       nyc: 15.1.0
       playwright-core: 1.60.0
       rimraf: 3.0.2
-      uuid: 8.3.2
+      uuid: 11.1.1
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -7855,7 +7941,7 @@ snapshots:
       is-typed-array: 1.1.15
       which-typed-array: 1.1.21
 
-  uuid@8.3.2: {}
+  uuid@11.1.1: {}
 
   v8-to-istanbul@9.3.0:
     dependencies:
@@ -8109,8 +8195,8 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.25.2(zod@3.25.28):
+  zod-to-json-schema@3.25.2(zod@4.6.7):
     dependencies:
-      zod: 3.25.28
+      zod: 4.6.7
 
-  zod@3.25.28: {}
+  zod@4.6.7: {}

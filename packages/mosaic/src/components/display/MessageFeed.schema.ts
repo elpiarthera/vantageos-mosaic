@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // i18nKeys: MessageFeed.title, MessageFeed.unread, MessageFeed.attachment, MessageFeed.showing, MessageFeed.empty.message, MessageFeed.loading, MessageFeed.error.invalidProps
 

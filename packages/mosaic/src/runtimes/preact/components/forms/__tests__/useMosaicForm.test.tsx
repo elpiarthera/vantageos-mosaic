@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import { useMosaicForm } from "../useMosaicForm";
 
 // Preact runtime modules ship the same JSX as React (aliased to preact/compat

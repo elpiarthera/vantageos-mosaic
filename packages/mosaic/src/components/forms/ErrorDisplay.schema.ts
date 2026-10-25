@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 /**
  * ErrorDisplay accepts an RHF-shaped field error plus an optional consumer

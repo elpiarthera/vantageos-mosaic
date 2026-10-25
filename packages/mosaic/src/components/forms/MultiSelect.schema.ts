@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 /**
  * MultiSelect props — multi-value dropdown with removable chip rendering for

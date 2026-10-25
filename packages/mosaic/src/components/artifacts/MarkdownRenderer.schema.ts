@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export const MarkdownRendererPropsSchema = z.object({
   content: z.string(),

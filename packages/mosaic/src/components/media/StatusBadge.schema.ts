@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export const StatusBadgePropsSchema = z.object({
   status: z.string(),

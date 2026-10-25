@@ -1,7 +1,7 @@
 // Storybook documentation for useMosaicForm
 import type { Meta, StoryObj } from "@storybook/react";
 import { useEffect } from "react";
-import { z } from "zod";
+import * as z from "zod";
 import { useMosaicForm } from "../../runtimes/react/components/forms/useMosaicForm.js";
 
 const meta: Meta = {

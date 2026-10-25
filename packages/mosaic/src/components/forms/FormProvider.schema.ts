@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 /**
  * FormProvider props that need runtime validation are minimal — the `form`

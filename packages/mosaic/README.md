@@ -74,8 +74,10 @@ export function MyComponent({ progress, label }: { progress: number; label: stri
 ### Install peers
 
 ```sh
-npm install react-hook-form@^7.54.0 @hookform/resolvers@^3.10.0
+npm install react-hook-form@^7.55.0 @hookform/resolvers@^5.1.0
 ```
+
+`@hookform/resolvers` 5.1 or later is required because mosaic schemas are Zod 4 schemas (resolvers 3.x only understands Zod 3). In your own code, prefer `import * as z from "zod"` over `import { z } from "zod"`: with Zod 4 the named `z` export keeps the whole library in a browser bundle (about 92 kB gzipped against about 27 kB for the namespace import, measured with esbuild).
 
 Both peers are declared optional in `peerDependenciesMeta` — only install them if you use the forms surface.
 
