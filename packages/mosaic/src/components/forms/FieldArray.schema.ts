@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 /**
  * FieldArray props — `name` selects the array path on the form values.

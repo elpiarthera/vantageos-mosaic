@@ -1,6 +1,6 @@
 // Storybook documentation for FieldArray (DYNAMIQUE form primitive)
 import type { Meta, StoryObj } from "@storybook/react";
-import { z } from "zod";
+import * as z from "zod";
 import { FieldArray } from "../../runtimes/react/components/forms/FieldArray.js";
 import { FormField } from "../../runtimes/react/components/forms/FormField.js";
 import { FormProvider } from "../../runtimes/react/components/forms/FormProvider.js";

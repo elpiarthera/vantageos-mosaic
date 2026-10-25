@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // i18nKeys: PipelineBoard.title, PipelineBoard.deals.one, PipelineBoard.deals.many, PipelineBoard.total, PipelineBoard.stage.empty, PipelineBoard.filter.label, PipelineBoard.summary.open, PipelineBoard.more, PipelineBoard.empty.message, PipelineBoard.loading, PipelineBoard.error.invalidProps, PipelineBoard.col.stage, PipelineBoard.col.deals
 

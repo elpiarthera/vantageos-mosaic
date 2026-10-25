@@ -1,6 +1,6 @@
 import { render, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import {
   FormProvider,
   useMosaicFormContext,

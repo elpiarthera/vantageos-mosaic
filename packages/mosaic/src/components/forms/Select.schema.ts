@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // i18nKeys: Select.placeholder, Select.search.placeholder, Select.empty
 

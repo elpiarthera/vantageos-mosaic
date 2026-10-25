@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // i18nKeys: BalanceCard.title, BalanceCard.network, BalanceCard.testnet, BalanceCard.address, BalanceCard.contract, BalanceCard.value, BalanceCard.copy, BalanceCard.copied, BalanceCard.empty.message, BalanceCard.loading, BalanceCard.error.invalidProps
 

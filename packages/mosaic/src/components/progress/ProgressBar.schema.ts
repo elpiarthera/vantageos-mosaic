@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export const ProgressBarPropsSchema = z.object({
   value: z.number().min(0).max(100),

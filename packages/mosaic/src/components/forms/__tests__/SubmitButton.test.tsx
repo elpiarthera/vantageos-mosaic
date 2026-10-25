@@ -1,9 +1,12 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
 import { SubmitButton } from "../../../runtimes/react/components/forms/SubmitButton";
-import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
+import {
+  type UseMosaicFormReturn,
+  useMosaicForm,
+} from "../../../runtimes/react/components/forms/useMosaicForm";
 import { computeSubmitButtonState } from "../SubmitButton.logic";
 import { SubmitButtonPropsSchema } from "../SubmitButton.schema";
 
@@ -61,7 +64,7 @@ function Harness({
   formRef,
 }: {
   onSubmit?: (data: { email: string }) => void;
-  formRef?: { current: ReturnType<typeof useMosaicForm> | null };
+  formRef?: { current: UseMosaicFormReturn<{ email: string }> | null };
 }) {
   const schema = z.object({ email: z.string().email() });
   const form = useMosaicForm({
@@ -103,7 +106,7 @@ describe("SubmitButton component", () => {
 
   it("submits form when clicked with valid data", async () => {
     const spy = vi.fn();
-    const formRef = { current: null as ReturnType<typeof useMosaicForm> | null };
+    const formRef = { current: null as UseMosaicFormReturn<{ email: string }> | null };
     render(<Harness onSubmit={spy} formRef={formRef} />);
     // RHF computes isValid lazily; trigger() forces a validation pass so the
     // button becomes enabled before we click it.

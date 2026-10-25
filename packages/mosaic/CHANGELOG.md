@@ -9,6 +9,14 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+- **BREAKING (security) — `zod` 3.25.28 -> 4.6.7** (GHSA-mrhx-c7xc-m3w5, fixed from 4.6.6). Publish as **0.6.0** (0.x minor = breaking). Consumers that inherit mosaic's `zod` (for example `vantage-crm-extension`) leave the vulnerable 3.25.28 on the next bump.
+  - Peer `@hookform/resolvers` `^3.10.0` -> `^5.1.0` (resolvers 3.x cannot read Zod 4 schemas) and peer `react-hook-form` `^7.54.0` -> `^7.55.0` (the minimum resolvers 5 declares). Both stay optional.
+  - Exported schemas are Zod 4 schemas. `VirtualListPropsSchema`: `estimateSize`, `renderItem` and `onRowClick` are now "is a function" checks that pass the same function through (Zod 4 removed `z.function().args().returns()` as a props schema; the old form returned a validating wrapper that mosaic never used). `ZodError` messages are Zod 4 wording (for example `Too small: expected string to have >=1 characters`).
+  - Internals: `z.record(v)` -> `z.record(z.string(), v)`; `required_error` -> `error`; every `import { z } from "zod"` -> `import * as z from "zod"`, because the named `z` export is not tree-shaken by esbuild (forms entry 99.7 kB gzipped against 34.2 kB, measured by `size-limit`).
+  - Measured bundle cost of the migration (`size-limit`, with all dependencies): `dist/index.js` 149.3 kB -> 162 kB (limit 250), `dist/react/forms.js` and `dist/preact/forms.js` 21.2 kB -> 34.2 kB (limit 50).
+- Development-only: pnpm overrides `uuid@<9` -> `^11.1.1` (GHSA-w5hq-g745-h8pq, reached through `nyc`, `jest-junit` and the Storybook test-runner only) and `@mcp-ui/client>zod` -> `^4.6.7` (`@mcp-ui/client` 7.1.1 declares `zod ^3.23.8`; mosaic never imports it, it is only an auto-installed optional peer). Overrides are workspace-local and do not ship in the package.
+
 ---
 
 ## [0.5.0] — 2026-10-11 — MCP App kit for ChatGPT and Claude (D0)

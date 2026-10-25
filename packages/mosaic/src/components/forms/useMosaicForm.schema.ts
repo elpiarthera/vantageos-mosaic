@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 /**
  * Validation timing modes. Mosaic default is "onBlur" — Chi co-validated decision

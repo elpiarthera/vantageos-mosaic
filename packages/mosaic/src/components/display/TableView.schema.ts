@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Observable } from "rxjs";
-import { z } from "zod";
+import * as z from "zod";
 import type { SelectionMode, SortState } from "./TableView.logic";
 
 // i18nKeys: TableView.aria.table, TableView.pagination.next, TableView.pagination.prev, TableView.empty.message, TableView.error.invalidProps, TableView.sort.by, TableView.select.row, TableView.select.all, TableView.loading
@@ -50,7 +50,7 @@ export const TableViewPropsSchema = z.object({
    * Serialisable rows, for views built through `createMosaicResource` (the React props carry
    * `rows` separately).
    */
-  rows: z.array(z.record(z.unknown())).default([]),
+  rows: z.array(z.record(z.string(), z.unknown())).default([]),
   virtualizeThreshold: z.number().int().positive().default(100),
   ariaLabel: z.string().min(1),
   locale: z.enum(["en", "fr"]).default("en"),

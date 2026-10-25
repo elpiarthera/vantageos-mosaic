@@ -1,6 +1,6 @@
 // Storybook documentation for Select
 import type { Meta, StoryObj } from "@storybook/react";
-import { z } from "zod";
+import * as z from "zod";
 import { FormProvider } from "../../runtimes/react/components/forms/FormProvider.js";
 import { Select } from "../../runtimes/react/components/forms/Select.js";
 import { SubmitButton } from "../../runtimes/react/components/forms/SubmitButton.js";
@@ -49,9 +49,7 @@ const COUNTRY_OPTIONS_WITH_DISABLED: SelectOption[] = [
 ];
 
 const schema = z.object({
-  country: z
-    .string({ required_error: "Please select a country / Veuillez sélectionner un pays" })
-    .min(1),
+  country: z.string({ error: "Please select a country / Veuillez sélectionner un pays" }).min(1),
 });
 
 function Demo({

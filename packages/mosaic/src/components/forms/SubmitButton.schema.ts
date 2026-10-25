@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 export const SubmitButtonPropsSchema = z.object({
   label: z.string().min(1).default("Submit"),

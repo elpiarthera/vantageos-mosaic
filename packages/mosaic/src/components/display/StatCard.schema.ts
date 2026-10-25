@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // i18nKeys: StatCard.title, StatCard.trend.up, StatCard.trend.down, StatCard.trend.flat, StatCard.empty.message, StatCard.loading, StatCard.error.invalidProps
 

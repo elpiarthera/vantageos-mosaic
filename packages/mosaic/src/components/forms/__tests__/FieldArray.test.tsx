@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useRef } from "react";
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import { FieldArray, useFieldArray } from "../../../runtimes/react/components/forms/FieldArray";
 import { FormField } from "../../../runtimes/react/components/forms/FormField";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";

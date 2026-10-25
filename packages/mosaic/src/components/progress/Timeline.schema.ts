@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // i18nKeys: Timeline.title, Timeline.status.done, Timeline.status.current, Timeline.status.pending, Timeline.status.blocked, Timeline.completed, Timeline.more, Timeline.empty.message, Timeline.loading, Timeline.error.invalidProps
 

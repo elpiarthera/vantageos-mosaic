@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type ZodTypeAny, z } from "zod";
+import * as z from "zod";
 import {
   MOSAIC_NEVER_SERIALISE,
   MOSAIC_SUPPORTED_COMPONENTS,
@@ -141,16 +141,18 @@ describe("TableView sensitive columns", () => {
 
 // Census: the sensitive-name domain is DERIVED from the schemas, not recalled.
 const SENSITIVE = /secret|token|password|apiKey|key|credential|private/i;
-function fieldNames(schema: ZodTypeAny, path: string, out: string[]): void {
+// Zod 4 classic types return `$ZodType` core types from `.element`, `.unwrap()` and `.def`; the
+// concrete classes are narrowed by the `instanceof` chain, so the recursion re-types them.
+function fieldNames(schema: z.ZodType, path: string, out: string[]): void {
   if (schema instanceof z.ZodObject) {
-    for (const [k, v] of Object.entries(schema.shape as Record<string, ZodTypeAny>)) {
+    for (const [k, v] of Object.entries(schema.shape as Record<string, z.ZodType>)) {
       out.push(`${path}.${k}`);
       fieldNames(v, `${path}.${k}`, out);
     }
-  } else if (schema instanceof z.ZodArray) fieldNames(schema.element, path, out);
+  } else if (schema instanceof z.ZodArray) fieldNames(schema.element as z.ZodType, path, out);
   else if (schema instanceof z.ZodOptional || schema instanceof z.ZodNullable)
-    fieldNames(schema.unwrap(), path, out);
-  else if (schema instanceof z.ZodDefault) fieldNames(schema._def.innerType, path, out);
+    fieldNames(schema.unwrap() as z.ZodType, path, out);
+  else if (schema instanceof z.ZodDefault) fieldNames(schema.def.innerType as z.ZodType, path, out);
 }
 const VERDICTS: Record<string, string> = {
   "TokenDisplayOnceModal.token":
@@ -165,7 +167,7 @@ const VERDICTS: Record<string, string> = {
 
 describe("sensitive-field census over every supported schema", () => {
   it("every field whose name matches the sensitive pattern has a recorded verdict", () => {
-    const schemas: Record<string, ZodTypeAny> = {};
+    const schemas: Record<string, z.ZodType> = {};
     // the schema registry is private; derive it from a parse-able round trip via each view's file
     for (const name of MOSAIC_SUPPORTED_COMPONENTS)
       schemas[name] = SCHEMAS[name as SupportedComponent];
@@ -193,7 +195,7 @@ import { ConfirmDialogPropsSchema } from "../components/input/ConfirmDialog.sche
 import { StatusBadgePropsSchema } from "../components/media/StatusBadge.schema";
 import { ProgressBarPropsSchema } from "../components/progress/ProgressBar.schema";
 import { TimelinePropsSchema } from "../components/progress/Timeline.schema";
-const SCHEMAS: Record<SupportedComponent, ZodTypeAny> = {
+const SCHEMAS: Record<SupportedComponent, z.ZodType> = {
   ProgressBar: ProgressBarPropsSchema,
   ConfirmDialog: ConfirmDialogPropsSchema,
   TableView: TableViewPropsSchema,

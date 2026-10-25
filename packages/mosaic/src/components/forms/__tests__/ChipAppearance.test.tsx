@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
 import { MultiSelect } from "../../../runtimes/react/components/forms/MultiSelect";
 import { RadioGroup } from "../../../runtimes/react/components/forms/RadioGroup";
