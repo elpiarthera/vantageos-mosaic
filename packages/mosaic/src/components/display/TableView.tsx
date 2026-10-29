@@ -552,7 +552,6 @@ function VirtualTable<TRow extends AnyRow>(props: TableContentProps<TRow>) {
 
   const rowVirtualizer = useVirtualizer({
     count: items.length,
-    /* v8 ignore next 1 */
     getScrollElement: () => scrollRef.current,
     estimateSize: useCallback(() => 40, []),
     overscan: OVERSCAN,

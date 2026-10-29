@@ -92,7 +92,6 @@ function VirtualListInner<T>({
 
   const rowVirtualizer = useVirtualizer({
     count: items.length,
-    /* v8 ignore next 1 */
     getScrollElement: () => scrollRef.current,
     estimateSize: resolvedEstimateSize,
     overscan,
@@ -110,7 +109,7 @@ function VirtualListInner<T>({
     >
       <div style={{ height: `${totalSize}px`, position: "relative" }}>
         {virtualItems.map((virtualRow) => {
-          /* v8 ignore next */
+          // The virtualizer counts items.length rows, so every index it yields is in range.
           const item = items[virtualRow.index] as T;
           const index = virtualRow.index;
 

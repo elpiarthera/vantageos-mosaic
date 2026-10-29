@@ -19,9 +19,9 @@ function ConfirmDialogInner({
   const messageId = useId();
 
   useEffect(() => {
-    const dialog = dialogRef.current;
-    /* v8 ignore next 2 */
-    if (!dialog) return;
+    // The <dialog> renders unconditionally and React attaches refs during commit,
+    // before passive effects run: the ref is never null here.
+    const dialog = dialogRef.current as HTMLDialogElement;
     dialog.showModal();
     return () => {
       if (dialog.open) dialog.close();
