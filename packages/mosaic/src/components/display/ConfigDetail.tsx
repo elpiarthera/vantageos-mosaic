@@ -31,7 +31,7 @@ export interface ConfigDetailProps {
 /**
  * ConfigDetail — a detail view described by data: sections of labelled, formatted fields and
  * nested tables, actions calling other tools. `dataPath` may hold one record (rendered) or several
- * (a chooser first). Invalid config or mismatching payload: a visible refusal.
+ * (a chooser first); `"$"` reads the whole payload the same way. Invalid config or mismatching payload: a visible refusal.
  */
 export function ConfigDetail(props: ConfigDetailProps) {
   const locale: MosaicLocale = resolveConfigLocale(props.locale);
