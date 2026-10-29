@@ -592,13 +592,10 @@ function VirtualTable<TRow extends AnyRow>(props: TableContentProps<TRow>) {
             display: "block",
           }}
         >
-          {virtualItems
-            .map((virtualRow) => ({
-              virtualRow,
-              // The virtualizer counts items.length rows, so every index it yields is in range.
-              item: items[virtualRow.index] as Item<TRow>,
-            }))
-            .map(({ virtualRow, item }) => (
+          {virtualItems.map((virtualRow) => {
+            // The virtualizer counts items.length rows, so every index it yields is in range.
+            const item = items[virtualRow.index] as Item<TRow>;
+            return (
               <tr
                 key={item.key || `vrow-${virtualRow.index}`}
                 aria-rowindex={virtualRow.index + 2}
@@ -629,7 +626,8 @@ function VirtualTable<TRow extends AnyRow>(props: TableContentProps<TRow>) {
                   </td>
                 ))}
               </tr>
-            ))}
+            );
+          })}
         </tbody>
       </table>
     </div>
