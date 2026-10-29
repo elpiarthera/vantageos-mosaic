@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import React from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { TableView } from "./TableView";
-import { tableViewToMarkdown } from "./TableView.markdown";
+import { MARKDOWN_MAX_ROWS, tableViewToMarkdown } from "./TableView.markdown";
 import { ColumnDefSchema, TableViewPropsSchema } from "./TableView.schema";
 
 afterEach(cleanup);
@@ -212,5 +212,29 @@ describe("tableViewToMarkdown with path + format", () => {
     );
     expect(md).toMatch(/1\s234,50|1\s200,50/);
     expect(md).toContain("| a |");
+  });
+});
+
+describe("tableViewToMarkdown — row cap and empty table", () => {
+  it("caps the table at MARKDOWN_MAX_ROWS and names how many rows were left out", () => {
+    const many = Array.from({ length: MARKDOWN_MAX_ROWS + 3 }, (_, i) => ({ ref: `r${i}` }));
+    const md = tableViewToMarkdown({
+      ariaLabel: "t",
+      columns: [{ key: "ref", header: "Ref" }],
+      rows: many,
+    });
+    expect(md).toContain("| r49 |");
+    expect(md).not.toContain("| r50 |");
+    expect(md).toContain("3 more rows");
+  });
+
+  it("states that there is no data when the table has no rows", () => {
+    const md = tableViewToMarkdown({
+      ariaLabel: "t",
+      columns: [{ key: "ref", header: "Ref" }],
+      rows: [],
+    });
+    expect(md).toContain("No data to display");
+    expect(md).not.toContain("more rows");
   });
 });

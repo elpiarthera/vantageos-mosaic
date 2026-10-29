@@ -491,3 +491,19 @@ describe("Select (React runtime)", () => {
     });
   });
 });
+
+describe("Select.logic — empty and all-disabled option lists", () => {
+  const allDisabled = [
+    { value: "a", label: "A", disabled: true },
+    { value: "b", label: "B", disabled: true },
+  ];
+
+  it("findNextEnabledIndex returns -1 for an empty list and when every option is disabled", () => {
+    expect(findNextEnabledIndex([], 0, 1)).toBe(-1);
+    expect(findNextEnabledIndex(allDisabled, 0, 1)).toBe(-1);
+  });
+
+  it("findLastEnabledIndex returns -1 when every option is disabled", () => {
+    expect(findLastEnabledIndex(allDisabled)).toBe(-1);
+  });
+});

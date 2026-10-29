@@ -149,6 +149,14 @@ describe("DetailView schema + markdown twin", () => {
     expect(md).toContain("\\[x\\]");
   });
 
+  it("headings an untitled record with the library title, then its sections", () => {
+    const md = detailViewToMarkdown({
+      sections: [{ id: "a", title: "A", fields: [{ label: "L", value: "v" }] }],
+    });
+    expect(md.startsWith("# Detail\n")).toBe(true);
+    expect(md).toContain("## A");
+  });
+
   it("states emptiness for {} and localises (FR)", () => {
     expect(detailViewToMarkdown({}, "fr")).toContain("Aucun détail à afficher");
   });

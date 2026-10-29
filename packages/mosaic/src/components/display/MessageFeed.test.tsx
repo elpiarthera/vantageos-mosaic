@@ -3,7 +3,7 @@ import React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MessageFeed } from "./MessageFeed";
 import { messageFeedToMarkdown } from "./MessageFeed.markdown";
-import { MessageFeedPropsSchema } from "./MessageFeed.schema";
+import { MessageFeedPropsSchema, validateMessageFeedProps } from "./MessageFeed.schema";
 
 vi.mock("@tanstack/react-virtual", () => ({
   useVirtualizer: (opts: { count: number; estimateSize: (i: number) => number }) => ({
@@ -180,5 +180,41 @@ describe("MessageFeed schema + A-1 markdown", () => {
     expect(md).toContain("Showing the latest 1 of 3");
     expect(messageFeedToMarkdown({ messages }, "fr")).toContain("# Messages");
     expect(messageFeedToMarkdown({}, "fr")).toContain("Aucun message");
+  });
+});
+
+describe("MessageFeed — unlabelled and unsafe attachments", () => {
+  const bare = [
+    {
+      id: "a1",
+      sender: "pi",
+      content: "See file",
+      timestamp: "2026-10-10T08:00:00Z",
+      attachmentUrl: "https://example.com/f.pdf",
+    },
+  ];
+
+  it("names an unlabelled attachment with the default label (view)", () => {
+    render(<MessageFeed messages={bare} />);
+    expect(screen.queryAllByRole("link", { name: "Attachment" })).toHaveLength(1);
+  });
+
+  it("markdown: an unlabelled safe attachment gets the default label and a link", () => {
+    const md = messageFeedToMarkdown({ messages: bare });
+    expect(md).toContain("[Attachment](https://example.com/f.pdf)");
+  });
+
+  it("markdown: an unsafe attachment URL stays as its label, never a link", () => {
+    const md = messageFeedToMarkdown({
+      messages: [{ ...bare[0], attachmentUrl: "javascript:alert(1)", attachmentLabel: "Evil" }],
+    });
+    expect(md).toContain(" Evil");
+    expect(md).not.toContain("](");
+    expect(md).not.toContain("javascript");
+  });
+
+  it("validateMessageFeedProps applies the defaults and throws on a bad message", () => {
+    expect(validateMessageFeedProps({}).messages).toEqual([]);
+    expect(() => validateMessageFeedProps({ messages: [{ id: "" }] })).toThrow();
   });
 });

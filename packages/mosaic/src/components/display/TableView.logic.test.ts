@@ -115,3 +115,33 @@ describe("TableView.logic: sort cycle and selection", () => {
     expect([...toggleAll(new Set(["a", "b", "c"]), ["a", "b", "c"])]).toEqual([]);
   });
 });
+
+describe("TableView.logic: unparseable, mixed-sign, NaN and all-missing inputs", () => {
+  it("compares an unparseable decimal string as equal (no guess)", () => {
+    expect(compareDecimalStrings("abc", "1")).toBe(0);
+    expect(compareDecimalStrings("1", "1e3")).toBe(0);
+  });
+
+  it("orders a positive amount after a negative one", () => {
+    expect(compareDecimalStrings("1", "-1")).toBe(1);
+    expect(compareDecimalStrings("-1", "1")).toBe(-1);
+  });
+
+  it("number columns: equal values compare 0, greater compares 1, NaN falls back to text", () => {
+    expect(compareCells(3, "3", "number", "en")).toBe(0);
+    expect(compareCells(4, 3, "number", "en")).toBe(1);
+    expect(compareCells("apple", "b", "number", "en")).toBeLessThan(0);
+    expect(compareCells("b", "apple", "number", "en")).toBeGreaterThan(0);
+  });
+
+  it("keeps the original order among several missing values", () => {
+    const rows = [
+      { id: "a", v: null },
+      { id: "b", v: "x" },
+      { id: "c", v: "" },
+      { id: "d", v: undefined },
+    ];
+    const ids = sortItems(rows, (r) => r.v, "text", "asc", "en").map((r) => r.id);
+    expect(ids).toEqual(["b", "a", "c", "d"]);
+  });
+});

@@ -447,8 +447,10 @@ function SelectCell<TRow extends AnyRow>({
   locale: MosaicLocale;
   padding: string | undefined;
 }) {
-  const first = columns[0];
-  const label = `${t("TableView.select.row", locale)}: ${first ? cellText(item.row as AnyRow, first) : item.key}`;
+  // validate() rejects an empty column list (TableViewPropsSchema: columns.min(1)) before any
+  // row renders, so the first column always exists here.
+  const first = columns[0] as CoreProps<TRow>["columns"][number];
+  const label = `${t("TableView.select.row", locale)}: ${cellText(item.row as AnyRow, first)}`;
   return (
     <td
       style={{ padding, width: 32 }}
@@ -591,10 +593,13 @@ function VirtualTable<TRow extends AnyRow>(props: TableContentProps<TRow>) {
             display: "block",
           }}
         >
-          {virtualItems.map((virtualRow) => {
-            /* v8 ignore next */
-            const item = items[virtualRow.index] ?? { row: {} as Partial<TRow>, key: "" };
-            return (
+          {virtualItems
+            .map((virtualRow) => ({
+              virtualRow,
+              // The virtualizer counts items.length rows, so every index it yields is in range.
+              item: items[virtualRow.index] as Item<TRow>,
+            }))
+            .map(({ virtualRow, item }) => (
               <tr
                 key={item.key || `vrow-${virtualRow.index}`}
                 aria-rowindex={virtualRow.index + 2}
@@ -625,8 +630,7 @@ function VirtualTable<TRow extends AnyRow>(props: TableContentProps<TRow>) {
                   </td>
                 ))}
               </tr>
-            );
-          })}
+            ))}
         </tbody>
       </table>
     </div>

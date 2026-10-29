@@ -24,7 +24,8 @@ const DECIMAL = /^(-)?(\d+)(?:\.(\d+))?$/;
 function parseDecimal(s: string): { neg: boolean; int: string; frac: string } | undefined {
   const m = DECIMAL.exec(s.trim());
   if (!m) return undefined;
-  const int = (m[2] ?? "0").replace(/^0+(?=\d)/, "");
+  // (\d+) is a mandatory group: a match always carries the integer digits.
+  const int = (m[2] as string).replace(/^0+(?=\d)/, "");
   const frac = (m[3] ?? "").replace(/0+$/, "");
   const zero = int === "0" && frac === "";
   return { neg: m[1] === "-" && !zero, int, frac };

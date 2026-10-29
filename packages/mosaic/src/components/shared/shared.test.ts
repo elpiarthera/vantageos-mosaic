@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { formatTimestamp } from "./datetime";
 import { formatDecimalString, sumDecimalStrings, truncateAddress } from "./decimal";
 import { mdEscape, mdHeading, mdTable } from "./markdown";
 
@@ -50,5 +51,28 @@ describe("shared markdown helpers", () => {
   it("renders headings by level", () => {
     expect(mdHeading("Title")).toBe("# Title");
     expect(mdHeading("Sub", 2)).toBe("## Sub");
+  });
+});
+
+describe("shared helpers — fallback paths", () => {
+  it("formatDecimalString returns the raw string when Intl rejects the currency code", () => {
+    // "EURO" is not an ISO 4217 code: Intl.NumberFormat throws RangeError, the value stays visible.
+    expect(formatDecimalString("12.5", "en", "EURO")).toBe("12.5");
+  });
+
+  it("formatTimestamp returns the ISO string when Intl rejects the time zone", () => {
+    expect(formatTimestamp("2026-10-10T12:00:00Z", "en", "Not/AZone")).toBe("2026-10-10T12:00:00Z");
+  });
+
+  it("formatTimestamp returns an unparseable timestamp unchanged", () => {
+    expect(formatTimestamp("yesterday", "en")).toBe("yesterday");
+  });
+
+  it("mdEscape drops C0 controls and DEL but keeps tabs", () => {
+    expect(mdEscape("a\u0001b\u007fc\td")).toBe("abc\td");
+  });
+
+  it("mdEscape keeps a single trailing space for trailing line breaks", () => {
+    expect(mdEscape("end\n\n")).toBe("end ");
   });
 });

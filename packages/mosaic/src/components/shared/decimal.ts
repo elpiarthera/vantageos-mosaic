@@ -14,7 +14,8 @@ export function sumDecimalStrings(values: readonly string[]): string | undefined
     if (!m) return undefined;
     const frac = m[3] ?? "";
     scale = Math.max(scale, frac.length);
-    parsed.push({ neg: m[1] === "-", int: m[2] ?? "0", frac });
+    // (\d+) is a mandatory group: a match always carries the integer digits.
+    parsed.push({ neg: m[1] === "-", int: m[2] as string, frac });
   }
   let total = 0n;
   for (const p of parsed) {

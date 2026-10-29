@@ -305,3 +305,18 @@ describe("VirtualList — overscan prop", () => {
     expect(screen.getByTestId("item-1")).toBeDefined();
   });
 });
+
+describe("VirtualList — localised error and default row height", () => {
+  it("renders the FR error fallback for invalid props when locale=fr", () => {
+    // @ts-expect-error intentionally invalid
+    render(<VirtualList itemHeight={40} renderItem={renderItem} locale="fr" />);
+    expect(screen.getByRole("alert").textContent).toBe("VirtualList : propriétés invalides");
+  });
+
+  it("sizes rows with the default height when neither itemHeight nor estimateSize is given", () => {
+    render(<VirtualList items={makeItems(2)} renderItem={renderItem} />);
+    const inner = document.querySelector("[data-virtual]")?.firstElementChild as HTMLElement;
+    // 2 rows x DEFAULT_ITEM_HEIGHT (40px), through the mocked virtualizer's getTotalSize
+    expect(inner.style.height).toBe("80px");
+  });
+});
