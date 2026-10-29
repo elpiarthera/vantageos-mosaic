@@ -6,24 +6,34 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { VirtualList } from "../VirtualList";
 import { VirtualListPropsSchema, validateVirtualListProps } from "../VirtualList.schema";
 
+// The options the component last handed to useVirtualizer, so a test can call the
+// callbacks the real virtualizer would call (getScrollElement).
+const virtualizer = vi.hoisted(() => ({
+  lastOpts: undefined as undefined | { getScrollElement: () => Element | null },
+}));
+
 // Mock @tanstack/react-virtual so VirtualList renders rows in jsdom (no real scroll dims)
 vi.mock("@tanstack/react-virtual", () => ({
   useVirtualizer: (opts: {
     count: number;
     estimateSize: (index: number) => number;
     overscan?: number;
-  }) => ({
-    getVirtualItems: () =>
-      Array.from({ length: opts.count }, (_, i) => ({
-        index: i,
-        start: i * opts.estimateSize(i),
-        size: opts.estimateSize(i),
-        end: (i + 1) * opts.estimateSize(i),
-        lane: 0,
-        key: i,
-      })),
-    getTotalSize: () => opts.count * opts.estimateSize(0),
-  }),
+    getScrollElement: () => Element | null;
+  }) => {
+    virtualizer.lastOpts = opts;
+    return {
+      getVirtualItems: () =>
+        Array.from({ length: opts.count }, (_, i) => ({
+          index: i,
+          start: i * opts.estimateSize(i),
+          size: opts.estimateSize(i),
+          end: (i + 1) * opts.estimateSize(i),
+          lane: 0,
+          key: i,
+        })),
+      getTotalSize: () => opts.count * opts.estimateSize(0),
+    };
+  },
 }));
 
 afterEach(() => {
@@ -170,6 +180,15 @@ describe("VirtualList — render edge cases", () => {
     expect(container.querySelector('[data-virtual="true"]')).not.toBeNull();
     expect(screen.getByTestId("item-1")).toBeDefined();
     expect(screen.getByTestId("item-50")).toBeDefined();
+  });
+
+  it("hands the virtualizer its own scroll container as the scroll element", () => {
+    const { container } = render(
+      <VirtualList items={makeItems(3)} itemHeight={40} renderItem={renderItem} />,
+    );
+    const scrollContainer = container.querySelector('[data-virtual="true"]');
+    expect(scrollContainer).not.toBeNull();
+    expect(virtualizer.lastOpts?.getScrollElement()).toBe(scrollContainer);
   });
 
   it("applies custom className to scroll container", () => {

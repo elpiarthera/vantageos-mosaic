@@ -6,20 +6,33 @@ import { StreamingTableView, TableView } from "./TableView";
 import type { StreamingTableViewProps, TableViewProps } from "./TableView.schema";
 import corpus from "./eval-corpus.json";
 
+// The options the component last handed to useVirtualizer, so a test can call the
+// callbacks the real virtualizer would call (getScrollElement).
+const virtualizer = vi.hoisted(() => ({
+  lastOpts: undefined as undefined | { getScrollElement: () => Element | null },
+}));
+
 // Mock @tanstack/react-virtual so VirtualTable renders rows in jsdom (no real scroll dims)
 vi.mock("@tanstack/react-virtual", () => ({
-  useVirtualizer: (opts: { count: number; estimateSize: () => number }) => ({
-    getVirtualItems: () =>
-      Array.from({ length: opts.count }, (_, i) => ({
-        index: i,
-        start: i * opts.estimateSize(),
-        size: opts.estimateSize(),
-        end: (i + 1) * opts.estimateSize(),
-        lane: 0,
-        key: i,
-      })),
-    getTotalSize: () => opts.count * opts.estimateSize(),
-  }),
+  useVirtualizer: (opts: {
+    count: number;
+    estimateSize: () => number;
+    getScrollElement: () => Element | null;
+  }) => {
+    virtualizer.lastOpts = opts;
+    return {
+      getVirtualItems: () =>
+        Array.from({ length: opts.count }, (_, i) => ({
+          index: i,
+          start: i * opts.estimateSize(),
+          size: opts.estimateSize(),
+          end: (i + 1) * opts.estimateSize(),
+          lane: 0,
+          key: i,
+        })),
+      getTotalSize: () => opts.count * opts.estimateSize(),
+    };
+  },
 }));
 
 afterEach(() => {
@@ -142,6 +155,22 @@ describe("TableView — virtualization threshold (static)", () => {
     const table = screen.getByRole("table");
     const wrapper = table.closest("[data-virtual='true']");
     expect(wrapper).not.toBeNull();
+  });
+
+  it("hands the virtualizer its own scroll container as the scroll element", () => {
+    render(
+      <TableView
+        columns={defaultColumns}
+        rows={makeRows(100)}
+        ariaLabel="Virtual table"
+        virtualizeThreshold={50}
+        locale="en"
+      />,
+    );
+
+    const wrapper = screen.getByRole("table").closest("[data-virtual='true']");
+    expect(wrapper).not.toBeNull();
+    expect(virtualizer.lastOpts?.getScrollElement()).toBe(wrapper);
   });
 
   it("does NOT use virtual container when rows.length <= virtualizeThreshold", () => {
