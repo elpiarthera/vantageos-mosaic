@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ProgressBar } from "./ProgressBar";
+import { progressBarToMarkdown } from "./ProgressBar.markdown";
 import { ProgressBarPropsSchema, validateProps } from "./ProgressBar.schema";
 import corpus from "./eval-corpus.json";
 
@@ -197,4 +198,13 @@ describe("ProgressBar eval-corpus", () => {
       }
     });
   }
+});
+
+describe("progressBarToMarkdown", () => {
+  it("states the percentage, and names a non-default colour variant in words", () => {
+    expect(progressBarToMarkdown({ value: 40, label: "Budget" })).toContain("- Budget: 40%\n");
+    expect(progressBarToMarkdown({ value: 95, label: "Budget", colorVariant: "danger" })).toContain(
+      "- Budget: 95% (danger)",
+    );
+  });
 });

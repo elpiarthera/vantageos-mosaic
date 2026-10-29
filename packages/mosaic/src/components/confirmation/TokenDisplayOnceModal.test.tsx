@@ -216,3 +216,62 @@ describe("TokenDisplayOnceModal behaviour", () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 });
+
+describe("TokenDisplayOnceModal metadata list", () => {
+  const props = {
+    token: "tok_demo_xxx_safe_dummy",
+    title: "Your API Token",
+    warningMessage: "Shown once.",
+    copyLabel: "Copy token",
+    closeLabel: "Close",
+    locale: "en" as const,
+  };
+
+  it("lists scope, expiry and fingerprint when given", () => {
+    render(
+      <TokenDisplayOnceModal
+        {...props}
+        scope="read:tasks"
+        expiresAt="2026-12-31"
+        fingerprint="ab:cd:ef"
+        onClose={vi.fn()}
+      />,
+    );
+    expect(screen.queryAllByText("read:tasks")).toHaveLength(1);
+    expect(screen.queryAllByText("2026-12-31")).toHaveLength(1);
+    expect(screen.queryAllByText("ab:cd:ef")).toHaveLength(1);
+  });
+
+  it("lists only the metadata that is present", () => {
+    render(<TokenDisplayOnceModal {...props} expiresAt="2026-12-31" onClose={vi.fn()} />);
+    expect(screen.queryAllByText("2026-12-31")).toHaveLength(1);
+    expect(screen.queryAllByText(/^Scope/)).toHaveLength(0);
+    expect(screen.queryAllByText(/^Fingerprint/)).toHaveLength(0);
+  });
+
+  it("renders no metadata list when none is given", () => {
+    const { container } = render(<TokenDisplayOnceModal {...props} onClose={vi.fn()} />);
+    expect(container.ownerDocument.querySelector("dl")).toBeNull();
+  });
+});
+
+describe("TokenDisplayOnceModal metadata list — no expiry", () => {
+  it("lists scope and fingerprint without an expiry row", () => {
+    render(
+      <TokenDisplayOnceModal
+        token="tok_demo_xxx_safe_dummy"
+        title="Your API Token"
+        warningMessage="Shown once."
+        copyLabel="Copy token"
+        closeLabel="Close"
+        locale="en"
+        scope="read:tasks"
+        fingerprint="ab:cd:ef"
+        onClose={vi.fn()}
+      />,
+    );
+    expect(screen.queryAllByText("read:tasks")).toHaveLength(1);
+    expect(screen.queryAllByText("ab:cd:ef")).toHaveLength(1);
+    expect(screen.queryAllByText(/^Expires/)).toHaveLength(0);
+  });
+});

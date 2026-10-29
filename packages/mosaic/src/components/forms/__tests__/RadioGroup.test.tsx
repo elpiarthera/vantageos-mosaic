@@ -12,6 +12,7 @@ import {
   getGroupLabelId,
   getNavKeys,
   getOptionLabelId,
+  getRadioControlClasses,
   getRovingTabIndex,
   isActivationKey,
 } from "../RadioGroup.logic";
@@ -490,5 +491,17 @@ describe("RadioGroup component", () => {
       // After selecting Red, no validation error
       expect(screen.queryByRole("alert")).toBeNull();
     });
+  });
+});
+
+describe("RadioGroup.logic — control classes and empty lists", () => {
+  it("getRadioControlClasses distinguishes disabled, selected and idle controls", () => {
+    expect(getRadioControlClasses(true, true)).toContain("bg-slate-100");
+    expect(getRadioControlClasses(true, false)).toContain("border-blue-600");
+    expect(getRadioControlClasses(false, false)).toContain("hover:border-slate-600");
+  });
+
+  it("findNextEnabledIndex keeps the current index on an empty option list", () => {
+    expect(findNextEnabledIndex([], 3, 1)).toBe(3);
   });
 });

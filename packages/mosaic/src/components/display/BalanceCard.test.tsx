@@ -3,7 +3,7 @@ import React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BalanceCard } from "./BalanceCard";
 import { balanceCardToMarkdown } from "./BalanceCard.markdown";
-import { BalanceCardPropsSchema } from "./BalanceCard.schema";
+import { BalanceCardPropsSchema, validateBalanceCardProps } from "./BalanceCard.schema";
 
 afterEach(cleanup);
 
@@ -96,5 +96,43 @@ describe("BalanceCard schema + A-1 markdown", () => {
   it("is localised in FR and meaningful when empty", () => {
     expect(balanceCardToMarkdown(base, "fr")).toContain("Solde");
     expect(balanceCardToMarkdown({}, "en")).toContain("No balance to display");
+  });
+});
+
+describe("BalanceCard — clipboard denial, bare markdown, validator", () => {
+  it("keeps the address selectable and claims no copy when the host denies clipboard-write", async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error("denied"));
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+    try {
+      render(
+        <BalanceCard
+          token="FUSE"
+          balance="1"
+          address="0x1234567890abcdef1234567890abcdef12345678"
+        />,
+      );
+      const copy = screen.getAllByRole("button")[0] as HTMLElement;
+      await act(async () => {
+        fireEvent.click(copy);
+      });
+      expect(writeText).toHaveBeenCalledTimes(1);
+      expect(screen.queryAllByText(/copied/i)).toHaveLength(0);
+    } finally {
+      Reflect.deleteProperty(navigator, "clipboard");
+    }
+  });
+
+  it("states token: balance without a parenthesis when there is no network and no testnet", () => {
+    const md = balanceCardToMarkdown({ token: "FUSE", balance: "1" });
+    expect(md).toContain("- FUSE: 1\n");
+    expect(md).not.toContain("(");
+  });
+
+  it("validateBalanceCardProps applies the defaults and throws on a bad shape", () => {
+    expect(validateBalanceCardProps({}).testnet).toBe(false);
+    expect(() => validateBalanceCardProps({ testnet: "yes" })).toThrow();
   });
 });

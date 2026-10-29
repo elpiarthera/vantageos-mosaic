@@ -302,3 +302,117 @@ describe("TableView extension: layout (R01 / R10)", () => {
     expect(busy).not.toBeNull();
   });
 });
+
+describe("TableView extension: controlled state and edge cells", () => {
+  it("renders an empty numeric cell for a missing amount", () => {
+    render(
+      <TableView
+        columns={[
+          { key: "name", header: "Name" },
+          { key: "amount", header: "Amount", type: "amount" },
+        ]}
+        rows={[{ id: 1, name: "NoAmount" }]}
+        ariaLabel="t"
+      />,
+    );
+    const cells = within(screen.getAllByRole("row")[1] as HTMLElement).getAllByRole("cell");
+    expect(cells[1]?.textContent).toBe("");
+  });
+
+  it("sort={null} is a controlled unsorted table: a click reports asc but keeps the order", () => {
+    const onSortChange = vi.fn();
+    render(
+      <TableView
+        columns={columns}
+        rows={rows}
+        ariaLabel="t"
+        sort={null}
+        onSortChange={onSortChange}
+      />,
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: /sort by name/i })[0] as HTMLElement);
+    expect(onSortChange).toHaveBeenCalledWith({ key: "name", direction: "asc" });
+    expect(bodyNames()).toEqual(["Charlie", "alpha", "Bravo"]);
+  });
+
+  it("selectedKeys is controlled: a click reports the change but the checked state follows the prop", () => {
+    const onSelectionChange = vi.fn();
+    render(
+      <TableView
+        columns={columns}
+        rows={rows}
+        ariaLabel="t"
+        selectionMode="multiple"
+        selectedKeys={["2"]}
+        onSelectionChange={onSelectionChange}
+      />,
+    );
+    const alpha = screen.getByRole("checkbox", { name: /select row: alpha/i }) as HTMLInputElement;
+    const bravo = screen.getByRole("checkbox", { name: /select row: bravo/i }) as HTMLInputElement;
+    expect(alpha.checked).toBe(true);
+    fireEvent.click(bravo);
+    const [, keys] = onSelectionChange.mock.calls.at(-1) as [Row[], string[]];
+    expect(keys.sort()).toEqual(["2", "3"]);
+    expect(bravo.checked).toBe(false);
+  });
+
+  it("sticky header without maxHeight uses the 400px default", () => {
+    render(<TableView columns={columns} rows={rows} ariaLabel="t" stickyHeader />);
+    expect(screen.getByRole("region", { name: "t" }).style.maxHeight).toBe("400px");
+  });
+
+  it("Enter on a selection checkbox toggles nothing on the row: onRowClick is not called", () => {
+    const onRowClick = vi.fn();
+    render(
+      <TableView
+        columns={columns}
+        rows={rows}
+        ariaLabel="t"
+        selectionMode="single"
+        onRowClick={onRowClick}
+      />,
+    );
+    const radio = screen.getByRole("radio", { name: /select row: alpha/i });
+    fireEvent.keyDown(radio, { key: "Enter" });
+    fireEvent.keyDown(radio.closest("td") as HTMLElement, { key: "Enter" });
+    expect(onRowClick).not.toHaveBeenCalled();
+    fireEvent.keyDown(radio.closest("tr") as HTMLElement, { key: "Enter" });
+    expect(onRowClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("virtual mode marks selected rows and activates rows by click", () => {
+    const many = Array.from({ length: 12 }, (_, i) => ({ id: i + 1, name: `R${i + 1}` }));
+    const onRowClick = vi.fn();
+    render(
+      <TableView
+        columns={[{ key: "name", header: "Name" }]}
+        rows={many}
+        virtualizeThreshold={10}
+        ariaLabel="t"
+        selectionMode="multiple"
+        defaultSelectedKeys={["3"]}
+        onRowClick={onRowClick}
+      />,
+    );
+    expect(document.querySelectorAll('tr[data-selected="true"]')).toHaveLength(1);
+    const row = screen.getAllByRole("button").find((el) => el.textContent?.includes("R5"));
+    fireEvent.click(row as HTMLElement);
+    expect(onRowClick).toHaveBeenCalledWith(expect.objectContaining({ name: "R5" }), 4);
+  });
+});
+
+describe("TableView extension: virtual row keys", () => {
+  it("renders a row whose id is the empty string (keyed by its virtual index)", () => {
+    const many = Array.from({ length: 12 }, (_, i) => ({ id: i === 0 ? "" : i, name: `K${i}` }));
+    render(
+      <TableView
+        columns={[{ key: "name", header: "Name" }]}
+        rows={many}
+        virtualizeThreshold={10}
+        ariaLabel="t"
+      />,
+    );
+    expect(screen.getAllByRole("row")[1]?.textContent).toBe("K0");
+    expect(screen.getAllByRole("row")).toHaveLength(13);
+  });
+});

@@ -3,7 +3,7 @@ import React from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { StatCard } from "./StatCard";
 import { statCardToMarkdown } from "./StatCard.markdown";
-import { StatCardPropsSchema } from "./StatCard.schema";
+import { StatCardPropsSchema, validateStatCardProps } from "./StatCard.schema";
 
 afterEach(cleanup);
 
@@ -79,5 +79,19 @@ describe("StatCard schema + A-1 markdown", () => {
       "En baisse",
     );
     expect(statCardToMarkdown({}, "en")).toContain("No statistic to display");
+  });
+});
+
+describe("StatCard — optional parts", () => {
+  it("shows a change without a trend word, and the description", () => {
+    render(<StatCard label="Churn" value="3" change="-0.4%" description="Last 30 days" />);
+    expect(screen.queryAllByText("-0.4%")).toHaveLength(1);
+    expect(screen.queryAllByText(/^(Up|Down|Flat)$/)).toHaveLength(0);
+    expect(screen.queryAllByText("Last 30 days")).toHaveLength(1);
+  });
+
+  it("validateStatCardProps applies the defaults and throws on a bad tone", () => {
+    expect(validateStatCardProps({}).tone).toBe("neutral");
+    expect(() => validateStatCardProps({ tone: "purple" })).toThrow();
   });
 });

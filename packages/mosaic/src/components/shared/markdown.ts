@@ -18,7 +18,8 @@ function flatten(text: string): string {
   let out = "";
   let gap = false;
   for (const c of text) {
-    const n = c.codePointAt(0) ?? 0;
+    // for...of yields whole code points, never an empty string.
+    const n = c.codePointAt(0) as number;
     if (BREAKS.has(n)) {
       gap = true;
       continue;

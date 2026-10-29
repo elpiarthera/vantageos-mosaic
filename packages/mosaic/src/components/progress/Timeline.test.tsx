@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { Timeline } from "./Timeline";
 import { visibleSteps } from "./Timeline.logic";
 import { timelineToMarkdown } from "./Timeline.markdown";
-import { TimelinePropsSchema } from "./Timeline.schema";
+import { TimelinePropsSchema, validateTimelineProps } from "./Timeline.schema";
 
 afterEach(cleanup);
 
@@ -142,5 +142,12 @@ describe("Timeline schema + A-1 markdown", () => {
   it("is localised in FR and meaningful when empty", () => {
     expect(timelineToMarkdown({ steps }, "fr")).toContain("[Terminé] Brief");
     expect(timelineToMarkdown({}, "en")).toContain("No steps to display");
+  });
+});
+
+describe("validateTimelineProps", () => {
+  it("parses {} and throws on a bad shape", () => {
+    expect(validateTimelineProps({}).locale).toBe("en");
+    expect(() => validateTimelineProps({ steps: "nope" })).toThrow();
   });
 });

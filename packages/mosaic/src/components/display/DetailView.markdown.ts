@@ -20,13 +20,14 @@ export function detailViewToMarkdown(props: unknown, locale: "en" | "fr" = "en")
     for (const f of s.fields) {
       out.push(`- **${mdEscape(f.label)}**: ${mdEscape(formatValue(f.value, f.format, locale))}`);
     }
-    if (s.table) {
-      const rows = s.table.rows.map((r) =>
-        s.table ? s.table.columns.map((c) => mdEscape(columnText(r, c, locale))) : [],
+    const table = s.table;
+    if (table) {
+      const rows = table.rows.map((r) =>
+        table.columns.map((c) => mdEscape(columnText(r, c, locale))),
       );
       out.push(
         `\n${mdTable(
-          s.table.columns.map((c) => mdEscape(c.header)),
+          table.columns.map((c) => mdEscape(c.header)),
           rows,
         )}`,
       );

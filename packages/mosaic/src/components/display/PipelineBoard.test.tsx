@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { PipelineBoard } from "./PipelineBoard";
 import { SUMMARY_STAGE_LIMIT, layoutForDisplayMode, stageSummary } from "./PipelineBoard.logic";
 import { pipelineBoardToMarkdown } from "./PipelineBoard.markdown";
-import { PipelineBoardPropsSchema } from "./PipelineBoard.schema";
+import { PipelineBoardPropsSchema, validatePipelineBoardProps } from "./PipelineBoard.schema";
 
 afterEach(cleanup);
 
@@ -181,5 +181,47 @@ describe("PipelineBoard schema + A-1 markdown", () => {
   it("is localised in FR and meaningful when empty", () => {
     expect(pipelineBoardToMarkdown({ stages }, "fr")).toContain("| Lead | 2 |");
     expect(pipelineBoardToMarkdown({}, "en")).toContain("No pipeline to display");
+  });
+});
+
+describe("PipelineBoard — untotalable stages, unhide, bare markdown", () => {
+  const odd = [
+    { id: "s1", name: "Odd", deals: [{ id: "x", title: "Weird", amount: "n/a" }] },
+    { id: "s2", name: "Bare", deals: [{ id: "y", title: "NoAmount" }] },
+  ];
+
+  it("shows a dash instead of a total when a stage amount is not a decimal", () => {
+    render(<PipelineBoard stages={odd} />);
+    const region = screen.getAllByRole("region", { name: "Odd" })[0] as HTMLElement;
+    expect(within(region).queryAllByText("—")).toHaveLength(1);
+  });
+
+  it("a hidden stage comes back when its chip is pressed again", () => {
+    render(<PipelineBoard stages={stages} />);
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Lead", pressed: true })[0] as HTMLElement,
+    );
+    expect(screen.queryAllByRole("region", { name: "Lead" })).toHaveLength(0);
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Lead", pressed: false })[0] as HTMLElement,
+    );
+    expect(screen.queryAllByRole("region", { name: "Lead" })).toHaveLength(1);
+  });
+
+  it("markdown: '-' for an untotalable stage, no amount suffix for a deal without amount", () => {
+    const md = pipelineBoardToMarkdown({ stages: odd });
+    expect(md).toContain("| Odd | 1 | - |");
+    expect(md).toContain("- NoAmount\n");
+  });
+
+  it("markdown: only the stage table when every stage is empty", () => {
+    const md = pipelineBoardToMarkdown({ stages: [{ id: "e", name: "Empty", deals: [] }] });
+    expect(md).not.toContain("## ");
+    expect(md.endsWith("|\n")).toBe(true);
+  });
+
+  it("validatePipelineBoardProps applies the defaults and throws on a bad layout", () => {
+    expect(validatePipelineBoardProps({}).layout).toBe("board");
+    expect(() => validatePipelineBoardProps({ layout: "kanban" })).toThrow();
   });
 });

@@ -5,7 +5,10 @@ import React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TransactionPreview } from "./TransactionPreview";
 import { transactionPreviewToMarkdown } from "./TransactionPreview.markdown";
-import { TransactionPreviewPropsSchema } from "./TransactionPreview.schema";
+import {
+  TransactionPreviewPropsSchema,
+  validateTransactionPreviewProps,
+} from "./TransactionPreview.schema";
 
 afterEach(cleanup);
 
@@ -204,5 +207,29 @@ describe("TransactionPreview schema", () => {
       loading: false,
       locale: "en",
     });
+  });
+});
+
+describe("TransactionPreview — sparse previews", () => {
+  it("a bare swap quote shows sell and buy only (no minimum, route or price impact rows)", () => {
+    render(
+      <TransactionPreview
+        kind="swap"
+        to="0x2222222222222222222222222222222222222222"
+        quote={{ sell: { value: "1", symbol: "USDC" }, buy: { value: "2", symbol: "FUSE" } }}
+      />,
+    );
+    expect(screen.queryAllByText("1 USDC")).toHaveLength(1);
+    expect(screen.queryAllByText("2 FUSE")).toHaveLength(1);
+    expect(screen.queryAllByText("Minimum received")).toHaveLength(0);
+    expect(screen.queryAllByText("Route")).toHaveLength(0);
+    expect(screen.queryAllByText("Price impact")).toHaveLength(0);
+    expect(screen.queryAllByText("From")).toHaveLength(0);
+    expect(screen.queryAllByText("To")).toHaveLength(1);
+  });
+
+  it("validateTransactionPreviewProps applies the defaults and throws on a bad kind", () => {
+    expect(validateTransactionPreviewProps({}).kind).toBe("transfer");
+    expect(() => validateTransactionPreviewProps({ kind: "sign" })).toThrow();
   });
 });
