@@ -390,5 +390,60 @@
     "error": {
       "invalidProps": "TransactionPreview : propriétés invalides"
     }
+  },
+  "ConfigView": {
+    "title": "Vue",
+    "error": {
+      "invalidConfig": "La configuration de la vue est invalide",
+      "invalidData": "Les données ne correspondent pas à la configuration de la vue",
+      "toolFailed": "L'appel de l'outil a échoué",
+      "actionArgs": "Action non envoyée, une valeur est absente"
+    },
+    "boolean": {
+      "true": "Oui",
+      "false": "Non"
+    },
+    "back": "Retour",
+    "waiting": "En attente des données",
+    "loading": "Chargement"
+  },
+  "ConfigList": {
+    "paging": {
+      "more": "Voir la suite",
+      "loading": "Chargement des lignes suivantes"
+    },
+    "truncated": "Les résultats sont tronqués",
+    "actions": {
+      "header": "Actions"
+    },
+    "empty": {
+      "message": "Aucune donnée à afficher"
+    },
+    "totals": {
+      "incomplete": "Les totaux sont incomplets",
+      "scope": "Périmètre"
+    },
+    "markdown": {
+      "more": "{n} lignes de plus",
+      "cursor": "Résultats suivants : rappeler l'outil avec {arg} = {cursor}"
+    }
+  },
+  "ConfigDetail": {
+    "choose": "Choisir un enregistrement",
+    "record": "Enregistrement {n}",
+    "actions": "Liens associés",
+    "empty": {
+      "message": "Aucun enregistrement à afficher"
+    }
+  },
+  "DetailView": {
+    "title": "Détail",
+    "empty": {
+      "message": "Aucun détail à afficher"
+    },
+    "loading": "Chargement du détail",
+    "error": {
+      "invalidProps": "DetailView : propriétés invalides"
+    }
   }
 }

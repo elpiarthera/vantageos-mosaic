@@ -59,6 +59,11 @@ jobs:
       - name: size-limit
         run: pnpm --filter @vantageos/mosaic run size-limit
 
+      # Step 6b: single-file config view (App standard A-2 / A-5): one file, no network
+      # primitive, gzip under 250,000 bytes (measured on dist/config-view.html).
+      - name: config-view-bundle
+        run: pnpm --filter @vantageos/mosaic run check:config-view
+
       # Step 7: registry drift gate
       - name: registry-drift
         run: node packages/mosaic/scripts/mosaic-registry-drift-check.mjs

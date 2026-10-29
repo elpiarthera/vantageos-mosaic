@@ -148,6 +148,18 @@ describe("ColumnDef path + format (G2)", () => {
     expect(seen[0]).toEqual(["b"]);
   });
 
+  it("the selection label of a row with no value in the first column is still named", () => {
+    render(
+      <TableView
+        ariaLabel="t"
+        rows={[{ id: "r1" }]}
+        selectionMode="multiple"
+        columns={[{ key: "x", header: "X", path: "nope" }]}
+      />,
+    );
+    expect(screen.queryAllByRole("checkbox", { name: "Select row:" })).toHaveLength(1);
+  });
+
   it("the schema keeps path and format, and refuses a bad format", () => {
     const ok = ColumnDefSchema.parse({
       key: "a",
@@ -165,6 +177,11 @@ describe("ColumnDef path + format (G2)", () => {
         ariaLabel: "x",
       }).success,
     ).toBe(false);
+  });
+
+  it("a sensitive column cannot use a path (the secret split reads the flat key)", () => {
+    const r = ColumnDefSchema.safeParse({ key: "a", header: "A", path: "x.y", sensitive: true });
+    expect(r.success).toBe(false);
   });
 
   it("an invalid format renders the invalid-props alert instead of throwing", () => {

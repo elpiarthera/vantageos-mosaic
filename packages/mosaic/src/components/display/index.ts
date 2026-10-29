@@ -67,3 +67,36 @@ export type {
 export { PipelineBoardPropsSchema, validatePipelineBoardProps } from "./PipelineBoard.schema.js";
 export { pipelineBoardToMarkdown } from "./PipelineBoard.markdown.js";
 export type { PipelineBoardViewProps } from "./PipelineBoard.js";
+
+// DetailView (G1) — description list with sections, labelled fields and nested tables
+export { DetailView } from "./DetailView.js";
+export type {
+  DetailViewProps,
+  DetailViewPropsOutput,
+} from "./DetailView.schema.js";
+export { DetailViewPropsSchema, validateDetailViewProps } from "./DetailView.schema.js";
+export { detailViewToMarkdown } from "./DetailView.markdown.js";
+
+// ConfigList / ConfigDetail — config-driven views (view-config/1) + the A-1 fallback
+export { ConfigList } from "./ConfigList.js";
+export type { ConfigListProps } from "./ConfigList.js";
+export { ConfigListPropsSchema } from "./ConfigList.schema.js";
+export { ConfigDetail } from "./ConfigDetail.js";
+export type { ConfigDetailProps } from "./ConfigDetail.js";
+export { ConfigDetailPropsSchema } from "./ConfigDetail.schema.js";
+export { configToMarkdown } from "./ConfigView.markdown.js";
+export {
+  ViewConfigError,
+  ViewConfigSchema,
+  assertViewConfig,
+  parseViewConfig,
+} from "../../view-config/view-config.js";
+export type {
+  ConfigToolResult,
+  ConfigViewBridge,
+  DetailViewConfig,
+  ListViewConfig,
+  ViewConfig,
+} from "../../view-config/view-config.js";
+export { COLUMN_FORMAT_TYPES, ColumnFormatSchema, formatValue } from "../shared/format.js";
+export type { ColumnFormat } from "../shared/format.js";

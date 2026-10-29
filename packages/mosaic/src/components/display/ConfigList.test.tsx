@@ -3,7 +3,7 @@ import React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { wcagViolations } from "../../__tests__/axe";
 import { REMOVE, mutated } from "../../__tests__/mutate";
-import { LIST_CONFIG, LIST_PAYLOAD } from "../../view-config/fixtures";
+import { DETAIL_CONFIG, LIST_CONFIG, LIST_PAYLOAD } from "../../view-config/fixtures";
 import type { ConfigViewBridge } from "../../view-config/view-config";
 import { ConfigList } from "./ConfigList";
 
@@ -82,7 +82,12 @@ describe("ConfigList refuses visibly, never defaults silently", () => {
     );
   });
 
-  it("a detail config handed to the list is refused", () => {
+  it("a valid detail config handed to the list is refused by kind", () => {
+    render(<ConfigList config={DETAIL_CONFIG} payload={LIST_PAYLOAD} />);
+    expect(screen.getByRole("alert").textContent).toContain('expected "list"');
+  });
+
+  it("a config that only half-converts to a detail is refused by the schema", () => {
     render(<ConfigList config={mutated(LIST_CONFIG, "kind", "detail")} payload={LIST_PAYLOAD} />);
     expect(screen.queryAllByRole("alert")).toHaveLength(1);
   });
@@ -263,6 +268,52 @@ describe("ConfigList paging and row actions use the bridge", () => {
   });
 });
 
+describe("ConfigList with a minimal config", () => {
+  const minimal = {
+    schemaVersion: 1,
+    tool: "t",
+    kind: "list",
+    title: { en: "T", fr: "T" },
+    dataPath: "rows",
+    columns: [{ id: "a", path: "a", label: { en: "A", fr: "A" } }],
+  };
+  it("renders with no rowKey, sort, paging, actions or totals", () => {
+    render(<ConfigList config={minimal} payload={{ rows: [{ a: "x" }] }} />);
+    expect(screen.queryAllByText("x")).toHaveLength(1);
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(screen.queryAllByRole("columnheader")).toHaveLength(1);
+  });
+
+  it("pages with the default cursor argument and no limit when the config names none", async () => {
+    const cfg = { ...minimal, paging: { cursorPath: "next" } };
+    const b = bridge({ structuredContent: { rows: [], next: null } });
+    render(<ConfigList config={cfg} payload={{ rows: [{ a: "x" }], next: "n1" }} bridge={b} />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Load more" }));
+    });
+    expect(b.callServerTool).toHaveBeenCalledWith({ name: "t", arguments: { cursor: "n1" } });
+  });
+
+  it("sends no limit when the config has a limit argument but no page size", async () => {
+    const cfg = { ...minimal, paging: { cursorPath: "next", cursorArg: "c", limitArg: "n" } };
+    const b = bridge({ structuredContent: { rows: [], next: null } });
+    render(<ConfigList config={cfg} payload={{ rows: [{ a: "x" }], next: "n1" }} bridge={b} />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Load more" }));
+    });
+    expect(b.callServerTool).toHaveBeenCalledWith({ name: "t", arguments: { c: "n1" } });
+  });
+
+  it("an action row label falls back to an empty first cell without crashing", () => {
+    const cfg = {
+      ...minimal,
+      rowActions: [{ tool: "d", args: { id: "x" }, label: { en: "Open", fr: "Ouvrir" } }],
+    };
+    render(<ConfigList config={cfg} payload={{ rows: [{}] }} bridge={bridge({})} />);
+    expect(screen.queryAllByRole("button", { name: "Open:" })).toHaveLength(1);
+  });
+});
+
 describe("ConfigList totals", () => {
   const cfg = {
     ...LIST_CONFIG,
@@ -294,6 +345,24 @@ describe("ConfigList totals", () => {
     expect(screen.getByRole("status").textContent).toContain("Totals are incomplete");
     expect(screen.getByRole("status").textContent).toContain("page 1 only");
     expect(screen.getByRole("status").textContent).toContain("visible page");
+  });
+
+  it("incomplete totals with no scope and no note still warn", () => {
+    render(
+      <ConfigList
+        config={cfg}
+        payload={{ ...LIST_PAYLOAD, total_rent: 1, complete: false, note: "" }}
+      />,
+    );
+    expect(screen.getByRole("status").textContent).toBe("Totals are incomplete");
+  });
+
+  it("a scope without an incompleteness flag is shown as plain text", () => {
+    render(
+      <ConfigList config={cfg} payload={{ ...LIST_PAYLOAD, total_rent: 1, scope: "all rows" }} />,
+    );
+    expect(screen.queryAllByRole("status")).toHaveLength(0);
+    expect(screen.queryAllByText("Scope: all rows")).toHaveLength(1);
   });
 
   it("a complete total shows no warning", () => {

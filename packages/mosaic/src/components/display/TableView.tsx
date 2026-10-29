@@ -5,6 +5,8 @@ import type React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type MosaicLocale, t } from "../../i18n/strings.js";
 import { Skeleton } from "../../runtimes/react/components/display/Skeleton.js";
+import { formatValue, isNumericFormat, sortKindOfFormat } from "../shared/format.js";
+import { getPath } from "../shared/path.js";
 import {
   type ColumnKind,
   type SortState,
@@ -38,6 +40,7 @@ type CoreProps<TRow extends AnyRow> = Pick<
   | "maxHeight"
   | "density"
   | "loading"
+  | "rowKey"
 > & {
   rows: Partial<TRow>[];
   virtualizeThreshold: number;
@@ -56,13 +59,15 @@ function validate<TRow extends AnyRow>(
 ): number | undefined {
   try {
     const validated = validateTableViewProps({
-      columns: props.columns.map(({ key, header, type, align, width, sortable }) => ({
+      columns: props.columns.map(({ key, header, type, align, width, sortable, path, format }) => ({
         key,
         header,
         type,
         align,
         width,
         sortable,
+        path,
+        format,
       })),
       virtualizeThreshold: props.virtualizeThreshold,
       ariaLabel: props.ariaLabel,
@@ -149,16 +154,32 @@ function StreamingTableViewInner<TRow extends AnyRow = AnyRow>({
 /** A row with its stable key (id, else ORIGINAL index) so selection survives re-sorting. */
 type Item<TRow extends AnyRow> = { row: Partial<TRow>; key: string };
 
-function kindOf(col: { type?: ColumnKind }): ColumnKind {
-  return col.type ?? "text";
+type CellCol = Pick<CoreProps<AnyRow>["columns"][number], "key" | "path" | "format">;
+
+/** The raw value of a cell: the dotted `path` when the column has one, else the flat `key`. */
+function cellValue(row: AnyRow, col: CellCol): unknown {
+  return col.path ? getPath(row, col.path) : row[col.key];
 }
 
-function alignOf(col: { type?: ColumnKind; align?: "start" | "center" | "end" }) {
-  return col.align ?? (col.type === "amount" || col.type === "number" ? "end" : "start");
+function kindOf(col: { type?: ColumnKind; format?: CellCol["format"] }): ColumnKind {
+  return sortKindOfFormat(col.format) === "number" ? "number" : (col.type ?? "text");
 }
 
-function cellText(row: AnyRow, key: string): string {
-  return String(row[key] ?? "");
+function alignOf(col: {
+  type?: ColumnKind;
+  format?: CellCol["format"];
+  align?: "start" | "center" | "end";
+}) {
+  return (
+    col.align ??
+    (col.type === "amount" || col.type === "number" || isNumericFormat(col.format)
+      ? "end"
+      : "start")
+  );
+}
+
+function cellText(row: AnyRow, col: CellCol): string {
+  return String(cellValue(row, col) ?? "");
 }
 
 /** Only http(s) and data:image sources are rendered as icons. */
@@ -170,11 +191,20 @@ function safeIconSrc(v: unknown): string | undefined {
 function renderCell<TRow extends AnyRow>(
   col: CoreProps<TRow>["columns"][number],
   row: Partial<TRow>,
+  locale: MosaicLocale,
 ): React.ReactNode {
   if (col.render) {
     return col.render(row as TRow);
   }
-  const value = (row as AnyRow)[col.key];
+  const value = cellValue(row as AnyRow, col);
+  if (col.format) {
+    const text = formatValue(value, col.format, locale);
+    return isNumericFormat(col.format) ? (
+      <span style={{ fontVariantNumeric: "tabular-nums" }}>{text}</span>
+    ) : (
+      text
+    );
+  }
   if (col.type === "icon") {
     const src = safeIconSrc(value);
     return src ? (
@@ -210,17 +240,17 @@ function TableCore<TRow extends AnyRow>(props: CoreProps<TRow>) {
   const items = useMemo<Item<TRow>[]>(
     () =>
       rows.map((row, i) => {
-        const id = (row as AnyRow).id;
+        const id = props.rowKey ? getPath(row, props.rowKey) : (row as AnyRow).id;
         return { row, key: id != null ? String(id) : `row-${i}` };
       }),
-    [rows],
+    [rows, props.rowKey],
   );
   const sorted = useMemo(() => {
     const col = sort ? columns.find((c) => c.key === sort.key) : undefined;
     if (!sort || !col) return items;
     return sortItems(
       items,
-      (it) => (it.row as AnyRow)[col.key],
+      (it) => cellValue(it.row as AnyRow, col),
       kindOf(col),
       sort.direction,
       locale,
@@ -418,7 +448,7 @@ function SelectCell<TRow extends AnyRow>({
   padding: string | undefined;
 }) {
   const first = columns[0];
-  const label = `${t("TableView.select.row", locale)}: ${first ? cellText(item.row as AnyRow, first.key) : item.key}`;
+  const label = `${t("TableView.select.row", locale)}: ${first ? cellText(item.row as AnyRow, first) : item.key}`;
   return (
     <td
       style={{ padding, width: 32 }}
@@ -500,7 +530,7 @@ function StaticTable<TRow extends AnyRow>(props: TableContentProps<TRow>) {
               ) : null}
               {columns.map((col) => (
                 <td key={col.key} style={{ padding, textAlign: alignOf(col) }}>
-                  {renderCell(col, item.row)}
+                  {renderCell(col, item.row, locale)}
                 </td>
               ))}
             </tr>
@@ -591,7 +621,7 @@ function VirtualTable<TRow extends AnyRow>(props: TableContentProps<TRow>) {
                 ) : null}
                 {columns.map((col) => (
                   <td key={col.key} style={{ flex: 1, padding, textAlign: alignOf(col) }}>
-                    {renderCell(col, item.row)}
+                    {renderCell(col, item.row, locale)}
                   </td>
                 ))}
               </tr>

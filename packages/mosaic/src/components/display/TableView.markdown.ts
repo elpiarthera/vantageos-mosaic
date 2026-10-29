@@ -1,4 +1,5 @@
 import { t } from "../../i18n/strings.js";
+import { columnText } from "../shared/format.js";
 import { mdEscape, mdHeading, mdTable } from "../shared/markdown.js";
 import { TableViewPropsSchema } from "./TableView.schema.js";
 
@@ -14,7 +15,12 @@ export function tableViewToMarkdown(props: unknown, locale: "en" | "fr" = "en"):
   const shown = p.rows.slice(0, MARKDOWN_MAX_ROWS);
   const table = mdTable(
     p.columns.map((c) => mdEscape(c.header)),
-    shown.map((r) => p.columns.map((c) => (c.sensitive ? MASK : mdEscape(String(r[c.key] ?? ""))))),
+    shown.map((r) =>
+      p.columns.map((c) => {
+        if (c.sensitive) return MASK;
+        return mdEscape(columnText(r, c, locale));
+      }),
+    ),
   );
   const rest = p.rows.length - shown.length;
   const more =

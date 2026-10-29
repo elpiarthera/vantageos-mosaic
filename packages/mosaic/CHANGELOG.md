@@ -11,6 +11,22 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.7.0] — 2026-10-29 — config-driven List and Detail MCP App views
+
+Additive minor. Existing `key` / `type` / `render` behaviour of `TableView` is unchanged when the new fields are absent.
+
+### Added
+- **`ConfigList` and `ConfigDetail`** (display, React + Preact barrels, FR + EN): generic views driven by a view config (`view-config/1`: `kind` `list` | `detail`, labels with `en` + `fr`, `dataPath`, columns / sections, formats, `defaultSort`, `paging` through a cursor, `rowActions`, `totals` + `totalsScope`, `emptyMessage`). The config is validated at runtime (`ViewConfigSchema`, `parseViewConfig`, `assertViewConfig`, `ViewConfigError`); an invalid config or a payload that does not match renders a visible `role="alert"` refusal naming the problem. Paging and row actions call the bridge (`callServerTool`); an action marked `disabled` renders disabled; an action whose argument cannot be resolved is refused, not sent. Beyond the draft schema: optional `rowActions[].disabled`, and unknown keys are refused.
+- **`DetailView`** (G1): description list with sections, labelled fields and a nested `TableView`; `detailViewToMarkdown`; registry entry `a11yLevel: WCAG-AA`.
+- **`TableView` `ColumnDef.path` and `ColumnDef.format`** (G2) plus `rowKey`: nested dotted paths and the formats `text`, `date`, `money`, `percent`, `number`, `boolean`, `enum`, `count`, `join` (`formatValue`, `ColumnFormatSchema`). Sorting reads the raw value (money / number / percent / count sort as numbers). A column cannot be both `sensitive` and carry a `path` (the secret split reads the flat key).
+- **`configToMarkdown(viewConfig, payload, locale)`**: the A-1 fallback for both kinds (loud on an invalid config).
+- **Single-file view** (G3): `dist/config-view.html` (Vite + vite-plugin-singlefile, Preact, ext-apps `App`, `ontoolresult` registered before `connect`, no network, no storage, no `window.parent` in the authored source) and the exports `@vantageos/mosaic/server/config-view.html` and `@vantageos/mosaic/server/config-view` (`buildConfigViewResource` over `buildMcpAppResource` with an empty csp; `createConfigViewToolResult`; `CONFIG_VIEW_URI = "ui://mosaic/config-view"`). Route A for the legacy key (G5): the returned tool meta carries only the nested `_meta.ui.resourceUri`.
+- Scripts: `check:config-view` (`scripts/check-config-view-bundle.mjs`: single file, no network primitive, gzip under 250,000 bytes; run in CI after the build) and `smoke:config-view` (real Chromium + minimal host, not in CI).
+- i18n keys `ConfigView.*`, `ConfigList.*`, `ConfigDetail.*`, `DetailView.*` in `@vantageos/mosaic-i18n` locales and the inlined table (parity tested).
+- Development-only: devDependencies `axe-core` 4.10.3 (jsdom WCAG test) and `@modelcontextprotocol/ext-apps` 2.0.4 (bundled into the single file, not a runtime dependency of the package).
+
+---
+
 ## [0.6.0] — 2026-10-25 — zod 4 migration (security)
 
 ### Changed

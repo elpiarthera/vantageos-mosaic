@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { REMOVE, mutated } from "../__tests__/mutate";
 import { DETAIL_CONFIG, LIST_CONFIG, LIST_PAYLOAD } from "./fixtures";
 import {
+  type ListViewConfig,
   ViewConfigError,
   ViewConfigSchema,
   actionVisible,
@@ -102,28 +103,33 @@ describe("ViewConfigSchema: refuses an invalid config (one case per rule)", () =
   });
 });
 
+function asList(raw: unknown): ListViewConfig {
+  const c = assertViewConfig(raw);
+  if (c.kind !== "list") throw new Error("list expected");
+  return c;
+}
+
 describe("helpers", () => {
   it("pick returns the label of the locale", () => {
     expect(pick({ en: "a", fr: "b" }, "fr")).toBe("b");
     expect(pick({ en: "a", fr: "b" }, "en")).toBe("a");
   });
   it("toColumnDefs maps id/path/label/format/sortable/align", () => {
-    const cfg = assertViewConfig(LIST_CONFIG);
-    if (cfg.kind !== "list") throw new Error("list expected");
+    const cfg = asList(LIST_CONFIG);
     const cols = toColumnDefs(cfg.columns, "fr");
     expect(cols[0]).toMatchObject({ key: "reference", path: "reference", header: "Référence" });
     expect(cols[0]?.sortable).toBe(true);
     expect(cols[6]).toMatchObject({ key: "rent", align: "end", format: { type: "money" } });
   });
   it("listRows reads the rows at dataPath and refuses anything else", () => {
-    const cfg = assertViewConfig(LIST_CONFIG);
+    const cfg = asList(LIST_CONFIG);
     const ok = listRows(cfg, LIST_PAYLOAD);
     expect(ok.ok && ok.rows.length).toBe(2);
     expect(listRows(cfg, {}).ok).toBe(false);
     expect(listRows(cfg, { contracts: "x" }).ok).toBe(false);
   });
   it("pagingState reads cursor, exhausted, truncated", () => {
-    const cfg = assertViewConfig(LIST_CONFIG);
+    const cfg = asList(LIST_CONFIG);
     expect(pagingState(cfg, LIST_PAYLOAD)).toEqual({
       cursor: "cur-2",
       exhausted: false,
@@ -138,7 +144,7 @@ describe("helpers", () => {
   });
   it("pagingState without paging config has no cursor", () => {
     const c = mutated(LIST_CONFIG, "paging", REMOVE);
-    expect(pagingState(assertViewConfig(c), LIST_PAYLOAD)).toEqual({
+    expect(pagingState(asList(c), LIST_PAYLOAD)).toEqual({
       cursor: undefined,
       exhausted: true,
       truncated: false,

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Observable } from "rxjs";
 import * as z from "zod";
+import { type ColumnFormat, ColumnFormatSchema } from "../shared/format";
 import type { SelectionMode, SortState } from "./TableView.logic";
 
 // i18nKeys: TableView.aria.table, TableView.pagination.next, TableView.pagination.prev, TableView.empty.message, TableView.error.invalidProps, TableView.sort.by, TableView.select.row, TableView.select.all, TableView.loading
@@ -8,23 +9,36 @@ import type { SelectionMode, SortState } from "./TableView.logic";
 const ColumnKindSchema = z.enum(["text", "number", "amount", "icon"]);
 const AlignSchema = z.enum(["start", "center", "end"]);
 
-export const ColumnDefSchema = z.object({
-  key: z.string().min(1),
-  header: z.string().min(1),
-  /** Cell kind: drives comparison and rendering. `amount` = decimal STRING, never a float. */
-  type: ColumnKindSchema.default("text"),
-  /** Defaults to `end` for `number` / `amount` columns, `start` otherwise. */
-  align: AlignSchema.optional(),
-  /** CSS width: a number is pixels. */
-  width: z.union([z.string().min(1), z.number().positive()]).optional(),
-  sortable: z.boolean().default(false),
-  /**
-   * Values of this column are masked in the A-1 markdown fallback and kept out of the HTML
-   * props of a tool result (delivered via the result `_meta`), never written to `content[]`.
-   */
-  sensitive: z.boolean().default(false),
-  // render is a runtime function — excluded from Zod, typed separately
-});
+export const ColumnDefSchema = z
+  .object({
+    key: z.string().min(1),
+    header: z.string().min(1),
+    /** Cell kind: drives comparison and rendering. `amount` = decimal STRING, never a float. */
+    type: ColumnKindSchema.default("text"),
+    /** Defaults to `end` for `number` / `amount` columns, `start` otherwise. */
+    align: AlignSchema.optional(),
+    /** CSS width: a number is pixels. */
+    width: z.union([z.string().min(1), z.number().positive()]).optional(),
+    sortable: z.boolean().default(false),
+    /**
+     * Values of this column are masked in the A-1 markdown fallback and kept out of the HTML
+     * props of a tool result (delivered via the result `_meta`), never written to `content[]`.
+     */
+    sensitive: z.boolean().default(false),
+    /**
+     * Dotted path read in the row (`address.city`) instead of the flat `key`. Serialisable: this is
+     * what lets a view be described by data. Absent = the cell reads `row[key]`, as before.
+     */
+    path: z.string().min(1).optional(),
+    /** How the cell value is shown (date, money, percent, enum labels...). Absent = plain text. */
+    format: ColumnFormatSchema.optional(),
+    // render is a runtime function — excluded from Zod, typed separately
+  })
+  .refine((c) => !(c.sensitive && c.path), {
+    // The secret split removes `row[key]`; a nested value at `path` would stay in the embedded props.
+    message: "a sensitive column cannot use a path",
+    path: ["sensitive"],
+  });
 
 export type ColumnDef<TRow extends Record<string, unknown> = Record<string, unknown>> = {
   key: string;
@@ -34,6 +48,10 @@ export type ColumnDef<TRow extends Record<string, unknown> = Record<string, unkn
   width?: string | number;
   sortable?: boolean;
   sensitive?: boolean;
+  /** Dotted path read in the row instead of the flat `key`. */
+  path?: string;
+  /** Serialisable cell format; `render` wins when both are set. */
+  format?: ColumnFormat;
   render?: (row: TRow) => ReactNode;
 };
 
@@ -62,6 +80,8 @@ export const TableViewPropsSchema = z.object({
   maxHeight: z.number().int().positive().default(400),
   density: z.enum(["comfortable", "compact"]).default("comfortable"),
   loading: z.boolean().default(false),
+  /** Path of the row key (default `id`). */
+  rowKey: z.string().min(1).optional(),
 });
 
 export type TableViewPropsSchemaInput = z.input<typeof TableViewPropsSchema>;
@@ -86,6 +106,8 @@ export type TableViewOptions<TRow extends Record<string, unknown>> = {
   density?: "comfortable" | "compact";
   /** Shows a Skeleton table instead of rows. */
   loading?: boolean;
+  /** Dotted path of the stable row key (default `id`, else the row index). */
+  rowKey?: string;
 };
 
 /**

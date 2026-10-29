@@ -3,7 +3,7 @@ import React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { wcagViolations } from "../../__tests__/axe";
 import { REMOVE, mutated } from "../../__tests__/mutate";
-import { DETAIL_CONFIG, DETAIL_PAYLOAD } from "../../view-config/fixtures";
+import { DETAIL_CONFIG, DETAIL_PAYLOAD, LIST_CONFIG } from "../../view-config/fixtures";
 import type { ConfigViewBridge } from "../../view-config/view-config";
 import { ConfigDetail } from "./ConfigDetail";
 
@@ -86,7 +86,11 @@ describe("ConfigDetail refuses visibly", () => {
     render(<ConfigDetail config={c} payload={DETAIL_PAYLOAD} />);
     expect(screen.getByRole("alert").textContent).toContain("View configuration is invalid");
   });
-  it("a list config handed to the detail is refused", () => {
+  it("a valid list config handed to the detail is refused by kind", () => {
+    render(<ConfigDetail config={LIST_CONFIG} payload={DETAIL_PAYLOAD} />);
+    expect(screen.getByRole("alert").textContent).toContain('expected "detail"');
+  });
+  it("a config that only half-converts to a list is refused by the schema", () => {
     render(
       <ConfigDetail config={mutated(DETAIL_CONFIG, "kind", "list")} payload={DETAIL_PAYLOAD} />,
     );
@@ -108,6 +112,21 @@ describe("ConfigDetail refuses visibly", () => {
   it("an absent table path is an empty table, not a refusal", () => {
     render(<ConfigDetail config={DETAIL_CONFIG} payload={{ condominiums: [{ id: "k" }] }} />);
     expect(screen.queryAllByRole("alert")).toHaveLength(0);
+  });
+});
+
+describe("ConfigDetail without actions", () => {
+  it("renders no action group when the config has no rowActions", () => {
+    const cfg = mutated(DETAIL_CONFIG, "rowActions", REMOVE);
+    render(<ConfigDetail config={cfg} payload={DETAIL_PAYLOAD} />);
+    expect(screen.queryAllByRole("group")).toHaveLength(0);
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+  });
+  it("an action whose `when` path is null is not offered", () => {
+    const cfg = mutated(DETAIL_CONFIG, "rowActions.0.when", "mandate.end");
+    render(<ConfigDetail config={cfg} payload={DETAIL_PAYLOAD} bridge={bridge({})} />);
+    expect(screen.queryAllByRole("button", { name: "Co-owners" })).toHaveLength(0);
+    expect(screen.queryAllByRole("button", { name: "Syndic mandates" })).toHaveLength(1);
   });
 });
 
