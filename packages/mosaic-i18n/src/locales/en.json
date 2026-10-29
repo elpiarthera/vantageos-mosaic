@@ -390,5 +390,60 @@
     "error": {
       "invalidProps": "TransactionPreview: invalid props"
     }
+  },
+  "ConfigView": {
+    "title": "View",
+    "error": {
+      "invalidConfig": "View configuration is invalid",
+      "invalidData": "The data does not match the view configuration",
+      "toolFailed": "The tool call failed",
+      "actionArgs": "Action not sent, a value is missing"
+    },
+    "boolean": {
+      "true": "Yes",
+      "false": "No"
+    },
+    "back": "Back",
+    "waiting": "Waiting for data",
+    "loading": "Loading"
+  },
+  "ConfigList": {
+    "paging": {
+      "more": "Load more",
+      "loading": "Loading more rows"
+    },
+    "truncated": "Results are truncated",
+    "actions": {
+      "header": "Actions"
+    },
+    "empty": {
+      "message": "No data to display"
+    },
+    "totals": {
+      "incomplete": "Totals are incomplete",
+      "scope": "Scope"
+    },
+    "markdown": {
+      "more": "{n} more rows",
+      "cursor": "More results: call the tool again with {arg} = {cursor}"
+    }
+  },
+  "ConfigDetail": {
+    "choose": "Choose a record",
+    "record": "Record {n}",
+    "actions": "Related",
+    "empty": {
+      "message": "No record to display"
+    }
+  },
+  "DetailView": {
+    "title": "Detail",
+    "empty": {
+      "message": "No detail to display"
+    },
+    "loading": "Loading detail",
+    "error": {
+      "invalidProps": "DetailView: invalid props"
+    }
   }
 }

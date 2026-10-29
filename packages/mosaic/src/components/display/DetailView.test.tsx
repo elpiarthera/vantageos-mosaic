@@ -4,11 +4,15 @@ import { afterEach, describe, expect, it } from "vitest";
 import { BAD_FRAGMENT, wcagViolations } from "../../__tests__/axe";
 import { DetailView } from "./DetailView";
 import { detailViewToMarkdown } from "./DetailView.markdown";
-import { DetailViewPropsSchema, validateDetailViewProps } from "./DetailView.schema";
+import {
+  type DetailViewProps,
+  DetailViewPropsSchema,
+  validateDetailViewProps,
+} from "./DetailView.schema";
 
 afterEach(cleanup);
 
-const props = {
+const props: DetailViewProps = {
   title: "Condo",
   sections: [
     {
@@ -34,11 +38,11 @@ const props = {
       },
     },
   ],
-} as const;
+};
 
 describe("DetailView (G1)", () => {
   it("renders a labelled article with section headings and a description list", () => {
-    render(<DetailView {...(props as never)} />);
+    render(<DetailView {...props} />);
     expect(screen.getByRole("article", { name: "Condo" })).toBeTruthy();
     expect(screen.getAllByRole("heading").map((h) => h.textContent)).toEqual([
       "Condo",
@@ -57,17 +61,25 @@ describe("DetailView (G1)", () => {
   });
 
   it("renders the nested table with path and format, named after its section", () => {
-    render(<DetailView {...(props as never)} />);
+    render(<DetailView {...props} />);
     const table = screen.getByRole("table", { name: "Lots" });
     expect(within(table).queryAllByText("54.2")).toHaveLength(1);
     expect(within(table).queryAllByText("A1")).toHaveLength(1);
   });
 
   it("localises the chrome and the formats (FR)", () => {
-    render(<DetailView {...(props as never)} locale="fr" />);
+    render(<DetailView {...props} locale="fr" />);
     expect(document.querySelector("article")?.getAttribute("lang")).toBe("fr");
     expect(screen.queryAllByText("Oui")).toHaveLength(1);
     expect(screen.queryAllByText("1 janv. 2023")).toHaveLength(1);
+  });
+
+  it("a record with sections but no title is named by the library title", () => {
+    render(
+      <DetailView sections={[{ id: "a", title: "A", fields: [{ label: "L", value: "v" }] }]} />,
+    );
+    expect(screen.getByRole("article", { name: "Detail" })).toBeTruthy();
+    expect(screen.getAllByRole("heading").map((h) => h.textContent)).toEqual(["A"]);
   });
 
   it("accepts {} and says there is nothing to show", () => {
@@ -76,13 +88,13 @@ describe("DetailView (G1)", () => {
   });
 
   it("shows a Skeleton while loading", () => {
-    render(<DetailView {...(props as never)} loading />);
+    render(<DetailView {...props} loading />);
     expect(document.querySelector('[aria-busy="true"]')).not.toBeNull();
     expect(screen.queryAllByText("Condo")).toHaveLength(0);
   });
 
   it("renders an alert on invalid props rather than throwing", () => {
-    render(<DetailView {...({ sections: "no" } as never)} />);
+    render(<DetailView sections={"no" as unknown as DetailViewProps["sections"]} />);
     expect(screen.queryAllByRole("alert")).toHaveLength(1);
   });
 
@@ -92,7 +104,7 @@ describe("DetailView (G1)", () => {
     document.body.appendChild(bad);
     expect((await wcagViolations(bad)).length).toBeGreaterThan(0);
     bad.remove();
-    const { container } = render(<DetailView {...(props as never)} />);
+    const { container } = render(<DetailView {...props} />);
     expect(await wcagViolations(container)).toEqual([]);
   });
 });

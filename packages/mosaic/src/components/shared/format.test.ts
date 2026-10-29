@@ -74,6 +74,8 @@ describe("formatValue", () => {
   it("number and count", () => {
     expect(formatValue(12345.6, { type: "number" }, "en")).toBe("12,345.6");
     expect(formatValue("x", { type: "number" }, "en")).toBe("x");
+    expect(formatValue("  ", { type: "number" }, "en")).toBe("  ");
+    expect(formatValue(Number.POSITIVE_INFINITY, { type: "number" }, "en")).toBe("Infinity");
     expect(formatValue([1, 2, 3], { type: "count" }, "en")).toBe("3");
     expect(formatValue(7, { type: "count" }, "en")).toBe("7");
     expect(formatValue("x", { type: "count" }, "en")).toBe("x");

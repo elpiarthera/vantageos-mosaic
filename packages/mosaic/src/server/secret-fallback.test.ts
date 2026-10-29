@@ -161,6 +161,7 @@ const VERDICTS: Record<string, string> = {
   "BalanceCard.tokenAddress": "public on-chain contract address",
   "TableView.columns.key": "column property NAME, not a value",
   "TableView.sort.key": "column property NAME, not a value",
+  "TableView.rowKey": "path of the row IDENTIFIER field, not a credential",
   "TableView.rows":
     "row values of columns not flagged sensitive; flagged columns are masked/stripped",
 };

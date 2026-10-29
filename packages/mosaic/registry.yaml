@@ -21,6 +21,27 @@ components:
     i18nKeys: ["TableView.aria.table", "TableView.pagination.next", "TableView.pagination.prev", "TableView.empty.message", "TableView.error.invalidProps", "TableView.sort.by", "TableView.select.row", "TableView.select.all", "TableView.loading"]
     sizeLimit: "80KB"
     a11yLevel: WCAG-AA
+  - name: DetailView
+    category: display
+    schema: src/components/display/DetailView.schema.ts
+    zodExport: DetailViewPropsSchema
+    i18nKeys: ["DetailView.title", "DetailView.empty.message", "DetailView.loading", "DetailView.error.invalidProps", "ConfigView.boolean.true", "ConfigView.boolean.false"]
+    sizeLimit: "20KB"
+    a11yLevel: WCAG-AA
+  - name: ConfigList
+    category: display
+    schema: src/components/display/ConfigList.schema.ts
+    zodExport: ConfigListPropsSchema
+    i18nKeys: ["ConfigList.paging.more", "ConfigList.paging.loading", "ConfigList.truncated", "ConfigList.actions.header", "ConfigList.empty.message", "ConfigList.totals.incomplete", "ConfigList.totals.scope", "ConfigList.markdown.more", "ConfigList.markdown.cursor", "ConfigView.title", "ConfigView.loading", "ConfigView.waiting", "ConfigView.error.invalidConfig", "ConfigView.error.invalidData", "ConfigView.error.toolFailed", "ConfigView.error.actionArgs"]
+    sizeLimit: "60KB"
+    a11yLevel: WCAG-AA
+  - name: ConfigDetail
+    category: display
+    schema: src/components/display/ConfigDetail.schema.ts
+    zodExport: ConfigDetailPropsSchema
+    i18nKeys: ["ConfigDetail.choose", "ConfigDetail.record", "ConfigDetail.actions", "ConfigDetail.empty.message", "ConfigView.back"]
+    sizeLimit: "40KB"
+    a11yLevel: WCAG-AA
   - name: Badge
     category: display
     schema: src/components/display/Badge.schema.ts

@@ -319,6 +319,45 @@ value still appears, at any length. The comparison is case-folded and NFKC-norma
 `ABCD` is an echo of `abcd`; a very short secret can therefore also collide with unrelated text and
 refuse loudly (the issuer keeps it out of the other props).
 
+## Config-driven List and Detail views (one `ui://` resource for a whole MCP)
+
+A tool describes its view as DATA (a view config, `view-config/1`); the generic `ConfigList` and
+`ConfigDetail` render it. Changing a column is a data edit, not a deploy. Both views are cross-runtime
+(React 19 / Preact 10), FR + EN (every label in the config carries `en` and `fr`), validated at runtime
+(an invalid config renders a visible refusal that names the problem, never a silent default) and WCAG AA.
+
+```ts
+// server (stdio or HTTP): one resource, many tools
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { buildConfigViewResource, createConfigViewToolResult } from "@vantageos/mosaic/server/config-view";
+
+const html = readFileSync(createRequire(import.meta.url).resolve("@vantageos/mosaic/server/config-view.html"), "utf8");
+const view = buildConfigViewResource({ html, servedUrl: "https://my-mcp.example/mcp" });
+// register the resource at view.resource.uri; give every tool `_meta: view.toolMeta`
+// (only the nested _meta.ui.resourceUri: do not use a helper that back-fills the flat key).
+
+// in a tool handler: markdown fallback in content[] (A-1), typed payload, view config in _meta
+return createConfigViewToolResult({ viewConfig, payload, locale: "fr" });
+```
+
+* `ConfigList` (`kind: "list"`): columns with formats, sort, paging ("Voir la suite") through the cursor
+  with `callServerTool`, row actions that call another tool with arguments taken from the row
+  (`$row.<path>`), totals with a scope / completeness note. An action marked `disabled` renders disabled.
+* `ConfigDetail` (`kind: "detail"`): sections of labelled, formatted fields and nested tables, actions
+  with arguments taken from the record (`$.<path>`); `dataPath` may hold one record or several (a chooser).
+* Formats: `text`, `date`, `money` (the currency is a parameter), `percent` (the value is in percent
+  units: `87.5` shows `87.5%`), `number`, `boolean`, `enum` (labels in the `map`), `count`, `join`.
+* `configToMarkdown(viewConfig, payload, locale)`: the A-1 fallback for both kinds. Loud: an invalid
+  config or a payload that does not match throws `ViewConfigError`.
+* `ColumnDef` of `TableView` gains serialisable `path` (dotted) and `format`; `DetailView` is the
+  description-list primitive (sections, fields, nested table) with `detailViewToMarkdown`.
+* The single-file view (`dist/config-view.html`, Preact, `@modelcontextprotocol/ext-apps` `App`,
+  `ontoolresult` registered before `connect`, no network, no storage, empty CSP) switches on
+  `_meta.viewConfig.kind`. `pnpm --filter @vantageos/mosaic run check:config-view` measures it against
+  the 250,000-byte gzip budget; `run smoke:config-view` drives it in a real Chromium through a minimal
+  MCP Apps host (handshake, render, axe, drill-down, back).
+
 ## Components
 
 ### What each subpath actually exports

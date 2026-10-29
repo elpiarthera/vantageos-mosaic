@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "license": "FSL-1.1-Apache-2.0",
   "description": "Fleet-wide MCP UI design system — 7-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
@@ -149,6 +149,12 @@
       "import": "./dist/server/resource.js",
       "require": "./dist/server/resource.cjs"
     },
+    "./server/config-view": {
+      "types": "./dist/server/config-view.d.ts",
+      "import": "./dist/server/config-view.js",
+      "require": "./dist/server/config-view.cjs"
+    },
+    "./server/config-view.html": "./dist/config-view.html",
     "./registry.yaml": "./registry.yaml"
   },
   "files": [
@@ -161,11 +167,13 @@
   "sideEffects": false,
   "scripts": {
     "prebuild": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
-    "build": "NODE_OPTIONS=--max-old-space-size=8192 tsup",
+    "build": "NODE_OPTIONS=--max-old-space-size=8192 tsup && vite build --config vite.config-view.ts",
     "dev": "tsup --watch",
     "test": "vitest run",
     "lint": "biome check --error-on-warnings src",
     "size-limit": "size-limit",
+    "check:config-view": "node scripts/check-config-view-bundle.mjs",
+    "smoke:config-view": "node --experimental-strip-types scripts/config-view-smoke.mjs",
     "build-storybook": "storybook build -o storybook-static",
     "prepublishOnly": "node scripts/rewrite-workspace-deps.mjs && pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js",
     "postpublish": "git checkout HEAD -- package.json && echo '[postpublish] reverted package.json — workspace:* refs restored for monorepo dev'"

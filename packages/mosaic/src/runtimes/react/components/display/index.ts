@@ -125,3 +125,43 @@ export {
   validatePipelineBoardProps,
 } from "../../../../components/display/PipelineBoard.schema.js";
 export type { PipelineBoardViewProps } from "../../../../components/display/PipelineBoard.js";
+
+// DetailView (G1) — description list with sections, labelled fields and nested tables
+export { DetailView } from "../../../../components/display/DetailView.js";
+export type {
+  DetailViewProps,
+  DetailViewPropsOutput,
+} from "../../../../components/display/DetailView.schema.js";
+export {
+  DetailViewPropsSchema,
+  validateDetailViewProps,
+} from "../../../../components/display/DetailView.schema.js";
+export { detailViewToMarkdown } from "../../../../components/display/DetailView.markdown.js";
+
+// ConfigList / ConfigDetail — config-driven views (view-config/1) + the A-1 fallback
+export { ConfigList } from "../../../../components/display/ConfigList.js";
+export type { ConfigListProps } from "../../../../components/display/ConfigList.js";
+export { ConfigListPropsSchema } from "../../../../components/display/ConfigList.schema.js";
+export { ConfigDetail } from "../../../../components/display/ConfigDetail.js";
+export type { ConfigDetailProps } from "../../../../components/display/ConfigDetail.js";
+export { ConfigDetailPropsSchema } from "../../../../components/display/ConfigDetail.schema.js";
+export { configToMarkdown } from "../../../../components/display/ConfigView.markdown.js";
+export {
+  ViewConfigError,
+  ViewConfigSchema,
+  assertViewConfig,
+  parseViewConfig,
+} from "../../../../view-config/view-config.js";
+export type {
+  ConfigToolResult,
+  ConfigViewBridge,
+  DetailViewConfig,
+  ListViewConfig,
+  ViewConfig,
+} from "../../../../view-config/view-config.js";
+export {
+  COLUMN_FORMAT_TYPES,
+  ColumnFormatSchema,
+  formatValue,
+} from "../../../../components/shared/format.js";
+export type { ColumnFormat } from "../../../../components/shared/format.js";

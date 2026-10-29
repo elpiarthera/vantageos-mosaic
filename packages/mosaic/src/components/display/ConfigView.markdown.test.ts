@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { REMOVE, mutated } from "../../__tests__/mutate";
 import {
   DETAIL_CONFIG,
   DETAIL_PAYLOAD,
@@ -43,6 +44,28 @@ describe("configToMarkdown (A-1 fallback)", () => {
     expect(md).not.toContain("| R54 |");
   });
 
+  it("list: library empty message when the config has none", () => {
+    const cfg = mutated(LIST_CONFIG, "emptyMessage", REMOVE);
+    expect(configToMarkdown(cfg, { contracts: [] }, "en")).toContain("No data to display");
+  });
+
+  it("list: truncation notice, default cursor argument name, incomplete totals without a note", () => {
+    const cfg = {
+      ...mutated(LIST_CONFIG, "paging", { cursorPath: "nextCursor", truncatedPath: "truncated" }),
+      totalsScope: { completePath: "c" },
+    };
+    const md = configToMarkdown(cfg, { ...LIST_PAYLOAD, truncated: true, c: false }, "en");
+    expect(md).toContain("Results are truncated");
+    expect(md).toContain("cursor = ` cur-2 `");
+    expect(md).toContain("Totals are incomplete");
+  });
+
+  it("list: an empty note adds nothing to the incomplete warning", () => {
+    const cfg = { ...LIST_CONFIG, totalsScope: { completePath: "c", notePath: "n" } };
+    const md = configToMarkdown(cfg, { ...LIST_PAYLOAD, c: false, n: "" }, "en");
+    expect(md).toContain("Totals are incomplete\n");
+  });
+
   it("list: no cursor line once exhausted", () => {
     const md = configToMarkdown(
       LIST_CONFIG,
@@ -85,7 +108,7 @@ describe("configToMarkdown (A-1 fallback)", () => {
     expect(md).toContain("## Identity");
     expect(md).toContain("- **Name**: Résidence des Lilas");
     expect(md).toContain("- **Treasury balance**: €15,234.80");
-    expect(md).toContain("| Code | Type | Living area (m²) |");
+    expect(md).toContain("| Code | Type | Living area \\(m²\\) |");
     expect(md).toContain("| A1 | Apartment | 54.2 |");
   });
 

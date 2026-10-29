@@ -118,6 +118,7 @@ const reactPass: Options = {
     forms: "src/components/forms/index.ts",
     server: "src/server/create-mosaic-resource.ts",
     "server/resource": "src/server/mcp-app-resource.ts",
+    "server/config-view": "src/server/config-view.ts",
     host: "src/host/host-context.ts",
     // v0.2.0 react runtime subpaths
     "react/index": "src/runtimes/react/index.ts",
