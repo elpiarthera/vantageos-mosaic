@@ -11,6 +11,19 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.8.0] — 2026-10-29 — a Detail view reads the payload root
+
+Additive minor. Every config valid in 0.7.0 that rendered keeps rendering the same way.
+
+### Added
+- **`dataPath: "$"` on a Detail config** (`view-config/1`): the token selects the whole payload (the tool's `structuredContent`), so a tool whose figures sit at the root needs no duplicated record. An object at the root is one record, an array the chooser; `ConfigDetail` and `configToMarkdown` render a root record exactly like the same record under a named path. A root that is not a record is refused as `$: not a record or a list of records`.
+
+### Changed
+- **A List config with `dataPath: "$"` is refused at validation**, naming the field and the reason (`dataPath: "$" (the whole payload) is a Detail-only dataPath; a list reads its rows under a named path`). In 0.7.0 the schema accepted it and the view failed later on the data (`$: not a list`); no such config could ever render.
+- `"$"` is not a JSONPath: `"$.x"` stays an ordinary key path, and every other path field (columns, fields, tables, totals, paging, `when`) is unchanged.
+
+---
+
 ## [0.7.0] — 2026-10-29 — config-driven List and Detail MCP App views
 
 Additive minor. Existing `key` / `type` / `render` behaviour of `TableView` is unchanged when the new fields are absent.
