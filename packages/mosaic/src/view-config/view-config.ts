@@ -20,6 +20,21 @@ import type { MosaicLocale as MosaicLocaleLike } from "../i18n/strings.js";
 
 const Path = z.string().min(1);
 
+/**
+ * The whole-payload token. Valid ONLY as the `dataPath` of a Detail config, where it selects the
+ * tool's `structuredContent` itself. It is not a JSONPath: `$.x` is an ordinary key path, and
+ * every other path field (columns, fields, tables, totals, paging, `when`) reads keys literally.
+ */
+const ROOT_TOKEN = "$";
+
+/** A List reads an array under a named key: the whole payload is never a list of rows. */
+const ListDataPath = Path.refine((p) => p !== ROOT_TOKEN, {
+  message: `"${ROOT_TOKEN}" (the whole payload) is a Detail-only dataPath; a list reads its rows under a named path`,
+});
+
+/** A Detail may read a named path or the whole payload (`"$"`). */
+const DetailDataPath = Path;
+
 const ColumnSchema = z.strictObject({
   id: z.string().min(1),
   path: Path,
@@ -74,7 +89,6 @@ const base = {
   schemaVersion: z.literal(1),
   tool: z.string().min(1),
   title: I18nTextSchema,
-  dataPath: Path,
   rowActions: z.array(RowActionSchema).optional(),
 };
 
@@ -103,6 +117,7 @@ const ListConfigSchema = z
   .strictObject({
     ...base,
     kind: z.literal("list"),
+    dataPath: ListDataPath,
     rowKey: Path.optional(),
     columns: z.array(ColumnSchema).min(1),
     defaultSort: z
@@ -138,6 +153,7 @@ const DetailConfigSchema = z
   .strictObject({
     ...base,
     kind: z.literal("detail"),
+    dataPath: DetailDataPath,
     sections: z.array(SectionSchema).min(1),
   })
   .superRefine((c, ctx) => checkActions(c.rowActions, REF_REC, ctx));
@@ -285,14 +301,15 @@ export function actionVisible(action: { when?: string }, scope: Scope): boolean 
 // ── Detail helpers ───────────────────────────────────────────────────────────
 
 /**
- * The records a detail view shows: `dataPath` may point to one object or to a list of them. A
- * payload that has neither is a mismatch, reported by name, never an empty default.
+ * The records a detail view shows: `dataPath` may point to one object or to a list of them, or be
+ * `"$"` to read the whole payload the same way. A payload that has neither is a mismatch, reported
+ * by name, never an empty default.
  */
 export function detailRecords(
   config: DetailViewConfig,
   payload: unknown,
 ): { ok: true; records: Record<string, unknown>[] } | { ok: false } {
-  const data = getPath(payload, config.dataPath);
+  const data = config.dataPath === ROOT_TOKEN ? payload : getPath(payload, config.dataPath);
   if (Array.isArray(data)) return { ok: true, records: data as Record<string, unknown>[] };
   if (data !== null && typeof data === "object") {
     return { ok: true, records: [data as Record<string, unknown>] };
