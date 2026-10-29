@@ -4,6 +4,7 @@ import * as z from "zod";
 import { FormField } from "../../../runtimes/react/components/forms/FormField";
 import { FormProvider } from "../../../runtimes/react/components/forms/FormProvider";
 import { useMosaicForm } from "../../../runtimes/react/components/forms/useMosaicForm";
+import { buildFieldId } from "../FormField.logic";
 import { FormFieldPropsSchema } from "../FormField.schema";
 
 // ─── Schema tests ───────────────────────────────────────────────────────────
@@ -92,5 +93,17 @@ describe("FormField", () => {
     await waitFor(() => {
       expect(renderSpy.mock.calls.length).toBeGreaterThan(initialCalls);
     });
+  });
+});
+
+// ─── Logic: buildFieldId (public export of forms/index) ─────────────────────
+
+describe("buildFieldId", () => {
+  it("namespaces the field id with the form name when there is one", () => {
+    expect(buildFieldId("signup", "email")).toBe("signup-email");
+  });
+  it("is the field name alone when the form is unnamed or its name is empty", () => {
+    expect(buildFieldId(undefined, "email")).toBe("email");
+    expect(buildFieldId("", "email")).toBe("email");
   });
 });
