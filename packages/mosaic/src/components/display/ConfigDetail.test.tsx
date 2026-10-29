@@ -214,3 +214,43 @@ describe("ConfigDetail accessibility", () => {
     expect(await wcagViolations(refused.container)).toEqual([]);
   });
 });
+
+describe('ConfigDetail: dataPath "$" reads the whole payload', () => {
+  const ROOT = mutated(DETAIL_CONFIG, "dataPath", "$");
+  const record = DETAIL_PAYLOAD.condominiums[0];
+  const snapshot = (el: HTMLElement) => ({
+    text: el.textContent,
+    headings: Array.from(el.querySelectorAll("h1,h2,h3,h4")).map((h) => h.textContent),
+    dt: Array.from(el.querySelectorAll("dt")).map((e) => e.textContent),
+    dd: Array.from(el.querySelectorAll("dd")).map((e) => e.textContent),
+    alerts: el.querySelectorAll("[role=alert]").length,
+  });
+  it("a root record renders exactly like the same record under a path (EN and FR)", () => {
+    for (const locale of ["en", "fr"] as const) {
+      const viaPath = render(
+        <ConfigDetail config={DETAIL_CONFIG} payload={{ condominiums: record }} locale={locale} />,
+      );
+      const expected = snapshot(viaPath.container);
+      cleanup();
+      const viaRoot = render(<ConfigDetail config={ROOT} payload={record} locale={locale} />);
+      const got = snapshot(viaRoot.container);
+      cleanup();
+      expect(got).toEqual(expected);
+      expect(got.alerts).toBe(0);
+      expect(got.dd).toContain("Résidence des Lilas");
+    }
+  });
+  it("a root array shows the chooser", () => {
+    render(<ConfigDetail config={ROOT} payload={[{ title: "A" }, { title: "B" }]} />);
+    expect(screen.getByRole("button", { name: "A" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "B" })).toBeTruthy();
+  });
+  it('a root that is not a record renders a data alert naming "$"', () => {
+    render(<ConfigDetail config={ROOT} payload="x" />);
+    expect(screen.getByRole("alert").textContent).toContain("$: not a record");
+  });
+  it("is accessible on a root record", async () => {
+    const { container } = render(<ConfigDetail config={ROOT} payload={record} />);
+    expect(await wcagViolations(container)).toEqual([]);
+  });
+});

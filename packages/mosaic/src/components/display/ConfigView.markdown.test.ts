@@ -136,3 +136,28 @@ describe("configToMarkdown (A-1 fallback)", () => {
     ).toThrow(ViewConfigError);
   });
 });
+
+describe('configToMarkdown: a detail whose dataPath is the whole payload ("$")', () => {
+  const ROOT = mutated(DETAIL_CONFIG, "dataPath", "$");
+  const record = DETAIL_PAYLOAD.condominiums[0];
+  it("renders a root record exactly like the same record under a path", () => {
+    for (const locale of ["en", "fr"] as const) {
+      const viaRoot = configToMarkdown(ROOT, record, locale);
+      expect(viaRoot).toBe(configToMarkdown(DETAIL_CONFIG, { condominiums: record }, locale));
+      expect(viaRoot).toContain("Résidence des Lilas");
+    }
+  });
+  it("a root array is listed record after record", () => {
+    const md = configToMarkdown(ROOT, [{ title: "A" }, { title: "B" }], "en");
+    expect(md).toContain("- **Name**: A");
+    expect(md).toContain("- **Name**: B");
+  });
+  it('a root that is not a record throws, naming "$"', () => {
+    expect(() => configToMarkdown(ROOT, "x", "en")).toThrow(/\$: not a record/);
+  });
+  it("a list config cannot point at the root", () => {
+    expect(() => configToMarkdown(mutated(LIST_CONFIG, "dataPath", "$"), [], "en")).toThrow(
+      /dataPath: .*whole payload/,
+    );
+  });
+});

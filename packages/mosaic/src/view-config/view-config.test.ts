@@ -2,11 +2,13 @@ import { describe, expect, it } from "vitest";
 import { REMOVE, mutated } from "../__tests__/mutate";
 import { DETAIL_CONFIG, LIST_CONFIG, LIST_PAYLOAD } from "./fixtures";
 import {
+  type DetailViewConfig,
   type ListViewConfig,
   ViewConfigError,
   ViewConfigSchema,
   actionVisible,
   assertViewConfig,
+  detailRecords,
   listRows,
   pagingState,
   parseViewConfig,
@@ -68,6 +70,13 @@ describe("ViewConfigSchema: refuses an invalid config (one case per rule)", () =
     ["unknown $ reference", LIST_CONFIG, "rowActions.0.args.lease_id", "$other.id", /rowActions/],
     ["object-valued arg", LIST_CONFIG, "rowActions.0.args.lease_id", { a: 1 }, /rowActions/],
     ["action without label", LIST_CONFIG, "rowActions.0.label", REMOVE, /rowActions/],
+    [
+      "list dataPath set to the whole-payload token",
+      LIST_CONFIG,
+      "dataPath",
+      "$",
+      /^dataPath: .*whole payload.*Detail/m,
+    ],
   ];
   for (const [name, base, path, value, rx] of cases) {
     it(name, () => {
@@ -185,5 +194,34 @@ describe("helpers", () => {
       }),
     ).toBe("boom");
     expect(toolErrorText({ isError: true })).toBe("");
+  });
+});
+
+describe('Detail dataPath "$": the whole payload', () => {
+  const ROOT = mutated(DETAIL_CONFIG, "dataPath", "$");
+  function asDetail(raw: unknown): DetailViewConfig {
+    const c = assertViewConfig(raw);
+    if (c.kind !== "detail") throw new Error("detail expected");
+    return c;
+  }
+  it("a detail config may point at the root", () => {
+    expect(parseViewConfig(ROOT).ok).toBe(true);
+  });
+  it("an object payload is one record", () => {
+    const record = { id: "x", title: "Root" };
+    expect(detailRecords(asDetail(ROOT), record)).toEqual({ ok: true, records: [record] });
+  });
+  it("an array payload is the chooser list", () => {
+    const rows = [{ id: "a" }, { id: "b" }];
+    expect(detailRecords(asDetail(ROOT), rows)).toEqual({ ok: true, records: rows });
+  });
+  it("a payload that is not a record is a mismatch", () => {
+    for (const p of [null, undefined, "x", 3]) {
+      expect(detailRecords(asDetail(ROOT), p)).toEqual({ ok: false });
+    }
+  });
+  it('"$" is not a general JSONPath: a dotted "$.x" dataPath reads a key literally', () => {
+    const c = asDetail(mutated(DETAIL_CONFIG, "dataPath", "$.x"));
+    expect(detailRecords(c, { x: { id: 1 } })).toEqual({ ok: false });
   });
 });
