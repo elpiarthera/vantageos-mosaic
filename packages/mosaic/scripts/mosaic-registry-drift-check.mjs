@@ -9,7 +9,10 @@
  *   3. Diff names ↔ filesystem (both directions).
  *   4. For each component, verify the declared zodExport symbol is exported.
  *   5. Verify every i18nKey is present in both en.json and fr.json (from mosaic-i18n).
- *   6. Exit 1 on any mismatch (file:line format), exit 0 otherwise.
+ *   6. Verify registry.yaml `version` equals package.json `version` (the registry ships in the
+ *      tarball and is exported as `./registry.yaml`; a hand-typed version drifts — a missing or
+ *      unreadable one fails too, never skipped).
+ *   7. Exit 1 on any mismatch (file:line format), exit 0 otherwise.
  *
  * No external YAML dep — we ship a minimal parser sufficient for our
  * well-known shape (version, components[]). Keeps install footprint small.
@@ -146,6 +149,17 @@ if (!existsSync(REGISTRY_PATH)) {
   fail(`${rel(REGISTRY_PATH)}: not found`);
 } else {
   const registry = parseRegistry(readFileSync(REGISTRY_PATH, "utf8"));
+  const PKG_JSON = join(PKG_ROOT, "package.json");
+  const pkgVersion = JSON.parse(readFileSync(PKG_JSON, "utf8")).version;
+  if (typeof pkgVersion !== "string" || pkgVersion === "") {
+    fail(`${rel(PKG_JSON)}: no readable "version"`);
+  } else if (registry.version === null) {
+    fail(`${rel(REGISTRY_PATH)}:1: no "version" (expected "${pkgVersion}" from ${rel(PKG_JSON)})`);
+  } else if (registry.version !== pkgVersion) {
+    fail(
+      `${rel(REGISTRY_PATH)}:1: version "${registry.version}" differs from ${rel(PKG_JSON)} "${pkgVersion}"`,
+    );
+  }
   const declaredByName = new Map();
   for (const c of registry.components) declaredByName.set(c.name, c);
 
