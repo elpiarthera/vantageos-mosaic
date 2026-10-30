@@ -9,6 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+- `registry.yaml` `version` was a hand-typed `"0.3.0-alpha.1"` while the package is `0.8.0` (the file ships in the tarball and is exported as `./registry.yaml`). It now reads `"0.8.0"`, and `scripts/mosaic-registry-drift-check.mjs` (CI step `registry-drift`) fails when it differs from `package.json` `version` or is missing, naming both values — a release that bumps the package without the registry goes red.
+
 ---
 
 ## [0.8.0] — 2026-10-29 — a Detail view reads the payload root
