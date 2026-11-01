@@ -14,6 +14,19 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.9.0] — 2026-11-01 — the config view speaks the host's language and looks designed
+
+Minor. Every config valid in 0.8.0 renders; what changes is the view's locale order and its look.
+
+### Changed
+- **Locale: the host's first.** The config view now takes the host context's locale (it knows the person's language) before the locale a server echoes in `_meta`, then `en`. A server that receives no locale from its host echoes its default `en`; measured live in claude.ai, a French user saw English headers on Lojii's list. A server locale still applies when the host gives none.
+- **Design from the mosaic tokens.** `config-view.css` imports `@vantageos/mosaic-tokens/css` (inlined into the single file at build, no network). The list sits in a framed card that scrolls sideways inside itself on a narrow viewport. The header row is sticky on the muted surface, in small uppercase. Rows have token-coloured separators and a hover. Figures use tabular numbers; actions, alerts and the detail grid use the same tokens.
+
+### Added
+- **The host's theme is applied** to the document (`data-theme="light"|"dark"`) from the host context at start and on every host context change, so the tokens switch with Claude's light or dark mode; with no host theme, `prefers-color-scheme` decides.
+
+---
+
 ## [0.8.0] — 2026-10-29 — a Detail view reads the payload root
 
 Additive minor. Every config valid in 0.7.0 that rendered keeps rendering the same way.
