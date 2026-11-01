@@ -13,7 +13,7 @@ export interface AppLike extends ConfigViewBridge {
   ontoolinput?: unknown;
   onhostcontextchanged?: unknown;
   connect(): Promise<unknown>;
-  getHostContext(): { locale?: string } | undefined;
+  getHostContext(): { locale?: string; theme?: string } | undefined;
 }
 
 interface ViewState {
@@ -46,7 +46,8 @@ export function createViewStore(app: AppLike): ViewStore {
   app.ontoolresult = (result: ConfigToolResult) => set({ history: [result], seq: state.seq + 1 });
   app.ontoolinput = (params: { arguments?: Record<string, unknown> }) =>
     set({ toolArgs: params.arguments });
-  app.onhostcontextchanged = (ctx: { locale?: string }) => {
+  app.onhostcontextchanged = (ctx: { locale?: string; theme?: string }) => {
+    applyTheme(ctx.theme);
     if (ctx.locale) set({ hostLocale: ctx.locale });
   };
   return {
@@ -60,19 +61,32 @@ export function createViewStore(app: AppLike): ViewStore {
   };
 }
 
+/**
+ * The host's theme on the document, so the mosaic tokens switch with it (`[data-theme="dark"]`).
+ * Only the two values the host contract defines are applied; anything else leaves the document as it is.
+ */
+export function applyTheme(theme: string | undefined): void {
+  if (theme !== "light" && theme !== "dark") return;
+  if (typeof document !== "undefined") document.documentElement.dataset.theme = theme;
+}
+
 function toLocale(tag: string | undefined): MosaicLocale | undefined {
   if (tag === undefined) return undefined;
   return tag.toLowerCase().startsWith("fr") ? "fr" : "en";
 }
 
-/** Locale: the one the server echoed in `_meta`, else the host's, else en. */
+/**
+ * Locale: the host's (it knows the person's language), else the one the server echoed in `_meta`,
+ * else en. A server that receives no locale from the host echoes its default, so the echo comes second.
+ */
 function resolveLocale(
   result: ConfigToolResult | undefined,
   hostLocale: string | undefined,
 ): MosaicLocale {
+  const host = toLocale(hostLocale);
+  if (host) return host;
   const echoed = result?._meta?.locale;
-  if (echoed === "fr" || echoed === "en") return echoed;
-  return toLocale(hostLocale) ?? "en";
+  return echoed === "fr" || echoed === "en" ? echoed : "en";
 }
 
 /**
@@ -123,6 +137,13 @@ export function ConfigViewApp({ app, store: given }: { app: AppLike; store?: Vie
 /** Entry: bind the notifications, render, then connect. */
 export async function startConfigView(app: AppLike, root: HTMLElement): Promise<void> {
   const store = createViewStore(app);
+  const initialTheme = app.getHostContext()?.theme;
+  applyTheme(
+    initialTheme ??
+      (typeof matchMedia === "function" && matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light"),
+  );
   createRoot(root).render(<ConfigViewApp app={app} store={store} />);
   await app.connect();
 }

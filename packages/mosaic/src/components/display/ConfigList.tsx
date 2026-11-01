@@ -146,21 +146,23 @@ function ListBody({
       {rows.length === 0 ? (
         <p>{empty}</p>
       ) : (
-        <TableView
-          ariaLabel={pick(config.title, locale)}
-          locale={locale}
-          columns={columns}
-          rows={rows}
-          {...(config.rowKey ? { rowKey: config.rowKey } : {})}
-          {...(config.defaultSort
-            ? {
-                defaultSort: {
-                  key: config.defaultSort.column,
-                  direction: config.defaultSort.direction,
-                },
-              }
-            : {})}
-        />
+        <div className="mosaic-table-frame">
+          <TableView
+            ariaLabel={pick(config.title, locale)}
+            locale={locale}
+            columns={columns}
+            rows={rows}
+            {...(config.rowKey ? { rowKey: config.rowKey } : {})}
+            {...(config.defaultSort
+              ? {
+                  defaultSort: {
+                    key: config.defaultSort.column,
+                    direction: config.defaultSort.direction,
+                  },
+                }
+              : {})}
+          />
+        </div>
       )}
       {config.totals && config.totals.length > 0 ? (
         <dl className="mosaic-detail-fields">

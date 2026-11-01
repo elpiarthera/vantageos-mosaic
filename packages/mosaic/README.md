@@ -6,10 +6,10 @@ Fleet-wide MCP UI design system. Zod-validated, taxonomy-organized (7 categories
 
 ```sh
 # React 19
-npm install @vantageos/mosaic@^0.8.0 @vantageos/mosaic-tokens@^0.7.0 react react-dom
+npm install @vantageos/mosaic@^0.9.0 @vantageos/mosaic-tokens@^0.7.0 react react-dom
 
 # Preact 10
-npm install @vantageos/mosaic@^0.8.0 @vantageos/mosaic-tokens@^0.7.0 preact
+npm install @vantageos/mosaic@^0.9.0 @vantageos/mosaic-tokens@^0.7.0 preact
 ```
 
 All runtime peers are marked optional via `peerDependenciesMeta` — install only what your runtime needs.
@@ -348,6 +348,11 @@ return createConfigViewToolResult({ viewConfig, payload, locale: "fr" });
   with arguments taken from the record (`$.<path>`); `dataPath` may hold one record or several (a chooser).
   `dataPath: "$"` reads the whole payload: a tool whose figures sit at the root of its
   `structuredContent` needs no duplicated record (an object is one record, an array the chooser).
+* Language and theme: the view uses the host's locale first (it knows the person's language), then the
+  `locale` the tool echoed in `_meta`, then `en`. It applies the host's light or dark theme to the document,
+  following every host context change. Its styles come from `@vantageos/mosaic-tokens`, inlined into the
+  single file: a framed table with a sticky header, token-coloured row separators and a hover, scrolling
+  sideways inside its frame on a narrow viewport.
   `"$"` is the whole-payload token for the Detail `dataPath` ONLY, not a JSONPath: `"$.x"` is an
   ordinary key path, every other path field (columns, fields, tables, totals, paging, `when`) reads
   keys literally, and a List config with `dataPath: "$"` is refused (a list reads its rows under a

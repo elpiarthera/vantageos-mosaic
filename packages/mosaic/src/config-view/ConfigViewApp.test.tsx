@@ -113,7 +113,10 @@ describe("ConfigViewApp switches on _meta.viewConfig.kind", () => {
     const e = mockApp();
     render(<ConfigViewApp app={e.app} />);
     await act(async () =>
-      e.app.ontoolresult({ structuredContent: LIST_PAYLOAD, _meta: { viewConfig: LIST_CONFIG, locale: "fr" } }),
+      e.app.ontoolresult({
+        structuredContent: LIST_PAYLOAD,
+        _meta: { viewConfig: LIST_CONFIG, locale: "fr" },
+      }),
     );
     expect(screen.getByRole("heading", { name: "Contrats locataires" })).toBeTruthy();
     cleanup();
@@ -229,7 +232,9 @@ describe("theme and design (operator: the view looked plain)", () => {
   });
   it("the host theme is applied to the document, and follows a host context change", async () => {
     const { app } = mockApp();
-    (app as unknown as { getHostContext: () => unknown }).getHostContext = () => ({ theme: "dark" });
+    (app as unknown as { getHostContext: () => unknown }).getHostContext = () => ({
+      theme: "dark",
+    });
     const root = document.createElement("div");
     document.body.appendChild(root);
     await act(async () => {

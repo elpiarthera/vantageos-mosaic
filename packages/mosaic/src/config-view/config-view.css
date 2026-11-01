@@ -1,68 +1,133 @@
-/* Host theme variables when the host provides them, system colours otherwise. */
+/*
+ * The config view's design, drawn from the mosaic tokens (light, and dark under [data-theme="dark"],
+ * which the view sets from the host's theme). The tokens are inlined into the single file at build
+ * time; the view loads nothing.
+ */
+@import "@vantageos/mosaic-tokens/css";
+
 :root {
   color-scheme: light dark;
-  font-family: var(--font-sans, system-ui, sans-serif);
-  font-size: var(--font-text-md-size, 14px);
-  color: var(--color-text-primary, CanvasText);
+  font-family: var(--mosaic-font-sans, system-ui, sans-serif);
+  font-size: var(--mosaic-text-sm, 14px);
+  line-height: var(--mosaic-lh-normal, 1.5);
+  color: var(--mosaic-color-foreground, CanvasText);
   background: transparent;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+[data-theme="light"] {
+  color-scheme: light;
 }
 body {
   margin: 0;
-  padding: 8px;
+  padding: var(--mosaic-space-3, 12px);
 }
 h2 {
-  font-size: 1.15em;
-  margin: 0 0 8px;
+  font-size: var(--mosaic-text-lg, 1.125rem);
+  font-weight: var(--mosaic-fw-semibold, 600);
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--mosaic-space-3, 12px);
 }
 h3 {
-  font-size: 1em;
-  margin: 12px 0 4px;
+  font-size: var(--mosaic-text-base, 1rem);
+  font-weight: var(--mosaic-fw-semibold, 600);
+  margin: var(--mosaic-space-4, 16px) 0 var(--mosaic-space-2, 8px);
+}
+
+/* The table: a framed card that scrolls sideways inside itself on a narrow viewport. */
+.mosaic-table-frame {
+  overflow-x: auto;
+  border: 1px solid var(--mosaic-color-border, GrayText);
+  border-radius: var(--mosaic-radius-lg, 10px);
+  background: var(--mosaic-color-card, Canvas);
+  color: var(--mosaic-color-card-foreground, CanvasText);
+}
+.mosaic-table-frame > [role="region"] {
+  border-radius: inherit;
 }
 table {
   width: 100%;
   border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
 }
-th,
-td {
-  border-bottom: 1px solid var(--color-border-primary, GrayText);
-  padding: 4px 8px;
+th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--mosaic-color-muted, Canvas);
+  color: var(--mosaic-color-muted-foreground, GrayText);
+  font-size: var(--mosaic-text-xs, 0.75rem);
+  font-weight: var(--mosaic-fw-semibold, 600);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--mosaic-color-border, GrayText);
+  padding: var(--mosaic-space-2, 8px) var(--mosaic-space-3, 12px);
   text-align: start;
 }
+td {
+  border-bottom: 1px solid var(--mosaic-color-border, GrayText);
+  padding: var(--mosaic-space-2, 8px) var(--mosaic-space-3, 12px);
+  text-align: start;
+  vertical-align: middle;
+}
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+tbody tr:hover {
+  background: var(--mosaic-color-accent, Highlight);
+}
+th button {
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+th button:focus-visible {
+  outline: 2px solid var(--mosaic-color-ring, currentColor);
+  outline-offset: 2px;
+}
+
 .mosaic-detail-fields {
   display: grid;
   grid-template-columns: max-content 1fr;
-  gap: 4px 16px;
-  margin: 0;
+  gap: var(--mosaic-space-1, 4px) var(--mosaic-space-4, 16px);
+  margin: var(--mosaic-space-3, 12px) 0 0;
 }
 .mosaic-detail-field {
   display: contents;
 }
 .mosaic-detail-field dt {
-  font-weight: 600;
+  font-weight: var(--mosaic-fw-semibold, 600);
+  color: var(--mosaic-color-muted-foreground, GrayText);
 }
 .mosaic-action {
   font: inherit;
-  color: inherit;
+  font-size: var(--mosaic-text-xs, 0.75rem);
+  font-weight: var(--mosaic-fw-medium, 500);
+  color: var(--mosaic-color-primary, inherit);
   background: transparent;
-  border: 1px solid currentColor;
-  border-radius: 6px;
-  padding: 2px 10px;
+  border: 1px solid var(--mosaic-color-border, currentColor);
+  border-radius: var(--mosaic-radius-md, 6px);
+  padding: var(--mosaic-space-1, 4px) var(--mosaic-space-3, 12px);
   margin: 2px 4px 2px 0;
   cursor: pointer;
+}
+.mosaic-action:hover:not(:disabled) {
+  background: var(--mosaic-color-accent, Highlight);
 }
 .mosaic-action:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 .mosaic-action:focus-visible {
-  outline: 2px solid currentColor;
+  outline: 2px solid var(--mosaic-color-ring, currentColor);
   outline-offset: 2px;
 }
 [role="alert"] {
-  border: 1px solid currentColor;
-  border-radius: 6px;
-  padding: 6px 10px;
-  margin: 6px 0;
+  border: 1px solid var(--mosaic-color-destructive, currentColor);
+  border-radius: var(--mosaic-radius-md, 6px);
+  padding: var(--mosaic-space-2, 8px) var(--mosaic-space-3, 12px);
+  margin: var(--mosaic-space-2, 8px) 0;
 }
 @media (prefers-reduced-motion: reduce) {
   * {
