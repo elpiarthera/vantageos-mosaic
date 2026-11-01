@@ -95,7 +95,9 @@ describe("ConfigViewApp switches on _meta.viewConfig.kind", () => {
     expect(screen.getByRole("alert")).toBeTruthy();
   });
 
-  it("locale: result _meta first, then the host context, then en", async () => {
+  // The host knows the person's language; a server that cannot see it (no locale header from the host)
+  // echoes its default "en". Measured live: Lojii in claude.ai for a French user rendered English headers.
+  it("locale: the host context first, then the result _meta, then en", async () => {
     const a = mockApp({ locale: "fr-FR" });
     render(<ConfigViewApp app={a.app} />);
     await act(async () =>
@@ -106,7 +108,14 @@ describe("ConfigViewApp switches on _meta.viewConfig.kind", () => {
     const b = mockApp({ locale: "fr" });
     render(<ConfigViewApp app={b.app} />);
     await act(async () => b.app.ontoolresult(listResult));
-    expect(screen.getByRole("heading", { name: "Tenant contracts" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Contrats locataires" })).toBeTruthy();
+    cleanup();
+    const e = mockApp();
+    render(<ConfigViewApp app={e.app} />);
+    await act(async () =>
+      e.app.ontoolresult({ structuredContent: LIST_PAYLOAD, _meta: { viewConfig: LIST_CONFIG, locale: "fr" } }),
+    );
+    expect(screen.getByRole("heading", { name: "Contrats locataires" })).toBeTruthy();
     cleanup();
     const c = mockApp({ locale: "de" });
     render(<ConfigViewApp app={c.app} />);
@@ -212,4 +221,40 @@ describe("sandbox hygiene of the authored view source (A-2, A-3)", () => {
       expect(hits).toEqual([]);
     });
   }
+});
+
+describe("theme and design (operator: the view looked plain)", () => {
+  afterEach(() => {
+    delete document.documentElement.dataset.theme;
+  });
+  it("the host theme is applied to the document, and follows a host context change", async () => {
+    const { app } = mockApp();
+    (app as unknown as { getHostContext: () => unknown }).getHostContext = () => ({ theme: "dark" });
+    const root = document.createElement("div");
+    document.body.appendChild(root);
+    await act(async () => {
+      await startConfigView(app, root);
+    });
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    await act(async () => app.onhostcontextchanged({ theme: "light" }));
+    expect(document.documentElement.dataset.theme).toBe("light");
+  });
+
+  const css = readFileSync(join(import.meta.dirname, "config-view.css"), "utf8");
+  it("the stylesheet carries the mosaic tokens (light and dark) into the single file", () => {
+    expect(css).toMatch(/@import\s+["']@vantageos\/mosaic-tokens\/css["']/);
+  });
+  it.each([
+    ["the table header", /\bth\b[^{]*\{[^}]*var\(--mosaic-color-muted/],
+    ["row separators", /\btd\b[^{]*\{[^}]*border-bottom:[^;]*var\(--mosaic-color-border/],
+    ["the text colour", /var\(--mosaic-color-foreground/],
+    ["the table frame radius", /var\(--mosaic-radius-/],
+    ["row hover", /tr:hover[^{]*\{[^}]*var\(--mosaic-color-/],
+    ["the font", /var\(--mosaic-font-sans/],
+  ])("%s is drawn from a mosaic token", (_part, rx) => {
+    expect(css).toMatch(rx);
+  });
+  it("a narrow viewport keeps the table readable (horizontal scroll inside the frame, never the page)", () => {
+    expect(css).toMatch(/\.mosaic-table-frame\s*\{[^}]*overflow-x:\s*auto/);
+  });
 });
