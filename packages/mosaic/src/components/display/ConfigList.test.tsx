@@ -167,7 +167,8 @@ describe("ConfigList paging and row actions use the bridge", () => {
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Load more" }));
     });
-    expect(screen.getByRole("alert").textContent).toContain("rate limited");
+    expect(screen.getByRole("alert").textContent).toBe("The tool call failed");
+    expect(document.body.textContent).not.toContain("rate limited");
     expect(screen.queryAllByText("BAIL-001")).toHaveLength(1);
   });
 
@@ -181,16 +182,17 @@ describe("ConfigList paging and row actions use the bridge", () => {
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Load more" }));
     });
-    expect(screen.getByRole("alert").textContent).toContain("offline");
+    expect(screen.getByRole("alert").textContent).toBe("The tool call failed");
+    expect(document.body.textContent).not.toContain("offline");
   });
 
-  it("a paging result without rows at dataPath shows a data alert", async () => {
+  it("a paging result without rows at dataPath is refused and the restart failing shows the localized error", async () => {
     const b = bridge({ structuredContent: { nope: 1 } });
     render(<ConfigList config={LIST_CONFIG} payload={LIST_PAYLOAD} bridge={b} />);
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Load more" }));
     });
-    expect(screen.getByRole("alert").textContent).toContain("does not match");
+    expect(screen.getByRole("alert").textContent).toBe("The tool call failed");
   });
 
   it("the row action calls the detail tool named in the config with the row's values", async () => {
@@ -210,7 +212,7 @@ describe("ConfigList paging and row actions use the bridge", () => {
       name: "get_rental_situation",
       arguments: { lease_id: "c2" },
     });
-    expect(onResult).toHaveBeenCalledWith(result);
+    expect(onResult).toHaveBeenCalledWith(result, { lease_id: "c2" });
   });
 
   it("each action button names its row for assistive tech", () => {

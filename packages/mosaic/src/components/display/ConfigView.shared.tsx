@@ -48,9 +48,14 @@ export function useToolRunner(bridge: ConfigViewBridge | undefined, locale: Mosa
   const [error, setError] = useState<string | undefined>();
   const [busy, setBusy] = useState(false);
 
+  /**
+   * `quiet`: a failure is returned as `undefined` without writing the raw tool error to the view,
+   * so the caller can recover and decide what the person sees.
+   */
   async function call(
     name: string,
     args: Record<string, unknown>,
+    opts: { quiet?: boolean } = {},
   ): Promise<ConfigToolResult | undefined> {
     setError(undefined);
     setBusy(true);
@@ -58,12 +63,15 @@ export function useToolRunner(bridge: ConfigViewBridge | undefined, locale: Mosa
     try {
       const res = await (bridge ?? NO_BRIDGE).callServerTool({ name, arguments: args });
       if (res.isError) {
-        setError(`${t("ConfigView.error.toolFailed", locale)}: ${toolErrorText(res)}`);
+        if (!opts.quiet) {
+          setError(`${t("ConfigView.error.toolFailed", locale)}: ${toolErrorText(res)}`);
+        }
       } else {
         out = res;
       }
     } catch (e) {
-      setError(`${t("ConfigView.error.toolFailed", locale)}: ${(e as Error).message}`);
+      if (!opts.quiet)
+        setError(`${t("ConfigView.error.toolFailed", locale)}: ${(e as Error).message}`);
     }
     setBusy(false);
     return out;
@@ -72,13 +80,14 @@ export function useToolRunner(bridge: ConfigViewBridge | undefined, locale: Mosa
   async function runAction(
     action: ViewConfigRowAction,
     scope: { row?: unknown; record?: unknown },
-  ): Promise<ConfigToolResult | undefined> {
+  ): Promise<{ result: ConfigToolResult; args: Record<string, unknown> } | undefined> {
     const r = resolveActionArgs(action.args, scope);
     if (!r.ok) {
       setError(`${t("ConfigView.error.actionArgs", locale)}: ${r.missing}`);
       return undefined;
     }
-    return call(action.tool, r.args);
+    const result = await call(action.tool, r.args);
+    return result ? { result, args: r.args } : undefined;
   }
 
   return { call, runAction, error, setError, busy, canCall: bridge !== undefined };

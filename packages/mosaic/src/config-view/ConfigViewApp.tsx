@@ -16,9 +16,15 @@ export interface AppLike extends ConfigViewBridge {
   getHostContext(): { locale?: string; theme?: string } | undefined;
 }
 
+/** A result shown, with the arguments of the call that produced it (re-sent to page THIS list). */
+export interface ViewEntry {
+  result: ConfigToolResult;
+  args: Record<string, unknown> | undefined;
+}
+
 interface ViewState {
-  /** Results shown, oldest first; the last one is on screen. */
-  history: ConfigToolResult[];
+  /** Entries shown, oldest first; the last one is on screen. */
+  history: ViewEntry[];
   /** Counter bumped per result so a view remounts with fresh state. */
   seq: number;
   toolArgs: Record<string, unknown> | undefined;
@@ -28,7 +34,7 @@ interface ViewState {
 export interface ViewStore {
   subscribe(listener: () => void): () => void;
   getSnapshot(): ViewState;
-  push(result: ConfigToolResult): void;
+  push(result: ConfigToolResult, args?: Record<string, unknown>): void;
   back(): void;
 }
 
@@ -43,9 +49,18 @@ export function createViewStore(app: AppLike): ViewStore {
     state = { ...state, ...next };
     for (const l of listeners) l();
   };
-  app.ontoolresult = (result: ConfigToolResult) => set({ history: [result], seq: state.seq + 1 });
-  app.ontoolinput = (params: { arguments?: Record<string, unknown> }) =>
-    set({ toolArgs: params.arguments });
+  app.ontoolresult = (result: ConfigToolResult) =>
+    set({ history: [{ result, args: state.toolArgs }], seq: state.seq + 1 });
+  // The input may arrive before or after the result: attach it to the first entry when it comes later.
+  app.ontoolinput = (params: { arguments?: Record<string, unknown> }) => {
+    const [first, ...rest] = state.history;
+    set({
+      toolArgs: params.arguments,
+      ...(first && first.args === undefined
+        ? { history: [{ ...first, args: params.arguments }, ...rest] }
+        : {}),
+    });
+  };
   app.onhostcontextchanged = (ctx: { locale?: string; theme?: string }) => {
     applyTheme(ctx.theme);
     if (ctx.locale) set({ hostLocale: ctx.locale });
@@ -56,7 +71,8 @@ export function createViewStore(app: AppLike): ViewStore {
       return () => listeners.delete(l);
     },
     getSnapshot: () => state,
-    push: (result) => set({ history: [...state.history, result], seq: state.seq + 1 }),
+    push: (result, args) =>
+      set({ history: [...state.history, { result, args }], seq: state.seq + 1 }),
     back: () => set({ history: state.history.slice(0, -1), seq: state.seq + 1 }),
   };
 }
@@ -104,7 +120,8 @@ function resolveLocale(
 export function ConfigViewApp({ app, store: given }: { app: AppLike; store?: ViewStore }) {
   const [store] = useState(() => given ?? createViewStore(app));
   const s = useSyncExternalStore(store.subscribe, store.getSnapshot);
-  const current = s.history[s.history.length - 1];
+  const entry = s.history[s.history.length - 1];
+  const current = entry?.result;
   const locale = resolveLocale(current, s.hostLocale ?? app.getHostContext()?.locale);
 
   if (!current) return <output>{t("ConfigView.waiting", locale)}</output>;
@@ -132,7 +149,7 @@ export function ConfigViewApp({ app, store: given }: { app: AppLike; store?: Vie
           config={viewConfig}
           payload={current.structuredContent}
           locale={locale}
-          toolArgs={s.history.length === 1 ? s.toolArgs : undefined}
+          toolArgs={entry?.args}
           bridge={app}
           onResult={store.push}
         />
