@@ -14,6 +14,16 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.10.0] — 2026-11-17 — a server can make its locale authoritative (opt-in)
+
+Minor. Additive: a server that does not opt in behaves exactly as in 0.9.0 (host locale, else `_meta.locale`, else `en`).
+
+### Added
+- Tool result `_meta.localeAuthority?: "host" | "server"`. `"server"`: `_meta.locale` (`"fr"` | `"en"`) wins over the host's locale, for a client deployment whose staff read one language whatever the host UI shows. Absent, `"host"` or any other value: the 0.9.0 order. `"server"` with a missing or invalid `_meta.locale` falls back to the 0.9.0 order, never fails.
+- `createConfigViewToolResult` accepts `localeAuthority` and puts it in `_meta` when given.
+
+---
+
 ## [0.9.0] — 2026-11-01 — the config view speaks the host's language and looks designed
 
 Minor. Every config valid in 0.8.0 renders; what changes is the view's locale order and its look.

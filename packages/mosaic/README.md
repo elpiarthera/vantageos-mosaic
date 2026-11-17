@@ -349,7 +349,10 @@ return createConfigViewToolResult({ viewConfig, payload, locale: "fr" });
   `dataPath: "$"` reads the whole payload: a tool whose figures sit at the root of its
   `structuredContent` needs no duplicated record (an object is one record, an array the chooser).
 * Language and theme: the view uses the host's locale first (it knows the person's language), then the
-  `locale` the tool echoed in `_meta`, then `en`. It applies the host's light or dark theme to the document,
+  `locale` the tool echoed in `_meta`, then `en`. A server can opt in to the reverse with
+  `_meta.localeAuthority: "server"` (`createConfigViewToolResult({ ..., localeAuthority: "server" })`):
+  its `_meta.locale` then wins over the host's, for a deployment whose staff read only one language. A
+  missing or invalid `_meta.locale` falls back to the default order. It applies the host's light or dark theme to the document,
   following every host context change. Its styles come from `@vantageos/mosaic-tokens`, inlined into the
   single file: a framed table with a sticky header, token-coloured row separators and a hover, scrolling
   sideways inside its frame on a narrow viewport.

@@ -76,17 +76,24 @@ function toLocale(tag: string | undefined): MosaicLocale | undefined {
 }
 
 /**
- * Locale: the host's (it knows the person's language), else the one the server echoed in `_meta`,
- * else en. A server that receives no locale from the host echoes its default, so the echo comes second.
+ * Locale, two orders.
+ * Default (`_meta.localeAuthority` absent, "host", or any other value): the host's locale (it knows the
+ * person's language), else the one the server echoed in `_meta.locale`, else en. A server that receives no
+ * locale from the host echoes its default, so the echo comes second.
+ * Opt-in (`_meta.localeAuthority: "server"`): `_meta.locale` ("fr" | "en") wins over the host's. A client
+ * deployment holds its staff's language as data, and that staff may read only French while the host UI is
+ * English. A missing or invalid `_meta.locale` falls back to the default order, never to a failure.
  */
 function resolveLocale(
   result: ConfigToolResult | undefined,
   hostLocale: string | undefined,
 ): MosaicLocale {
+  const echoed = result?._meta?.locale;
+  const valid = echoed === "fr" || echoed === "en" ? echoed : undefined;
+  if (result?._meta?.localeAuthority === "server" && valid) return valid;
   const host = toLocale(hostLocale);
   if (host) return host;
-  const echoed = result?._meta?.locale;
-  return echoed === "fr" || echoed === "en" ? echoed : "en";
+  return valid ?? "en";
 }
 
 /**
