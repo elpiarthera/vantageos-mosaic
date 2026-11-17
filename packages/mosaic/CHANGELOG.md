@@ -21,6 +21,7 @@ Minor. Additive: a server that does not opt in behaves exactly as in 0.9.0 (host
 ### Added
 - Tool result `_meta.localeAuthority?: "host" | "server"`. `"server"`: `_meta.locale` (`"fr"` | `"en"`) wins over the host's locale, for a client deployment whose staff read one language whatever the host UI shows. Absent, `"host"` or any other value: the 0.9.0 order. `"server"` with a missing or invalid `_meta.locale` falls back to the 0.9.0 order, never fails.
 - `createConfigViewToolResult` accepts `localeAuthority` and puts it in `_meta` when given.
+- Dates in table and list cells render, for locale `fr`, as dd/mm/yyyy (`31/12/2026`) via `formatValue(value, format, locale, "cell")` / `columnText`; `en` cells and every detail view keep `dateStyle: "medium"` (UTC).
 
 ---
 

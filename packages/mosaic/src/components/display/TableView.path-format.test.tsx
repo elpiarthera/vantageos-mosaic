@@ -50,7 +50,7 @@ describe("ColumnDef path + format (G2)", () => {
         ]}
       />,
     );
-    expect(screen.queryAllByText("1 mai 2024")).toHaveLength(1);
+    expect(screen.queryAllByText("01/05/2024")).toHaveLength(1);
     expect(screen.queryAllByText("Oui")).toHaveLength(1);
     expect(screen.queryAllByText("Bail loué")).toHaveLength(1);
     expect(screen.queryAllByText("Vacant")).toHaveLength(1);

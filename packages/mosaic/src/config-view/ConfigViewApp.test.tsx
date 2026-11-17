@@ -144,7 +144,7 @@ describe("ConfigViewApp switches on _meta.viewConfig.kind", () => {
       render(<ConfigViewApp app={app} />);
       await act(async () => app.ontoolresult(result({ locale: "fr", localeAuthority: "server" })));
       expect(screen.getByRole("heading", { name: "Contrats locataires" })).toBeTruthy();
-      expect(document.body.textContent).toContain("31 déc. 2026");
+      expect(document.body.textContent).toContain("31/12/2026");
       expect(document.body.textContent).toContain("70\u202f852,72");
     });
 

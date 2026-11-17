@@ -198,7 +198,7 @@ function renderCell<TRow extends AnyRow>(
   }
   const value = cellValue(row as AnyRow, col);
   if (col.format) {
-    const text = formatValue(value, col.format, locale);
+    const text = formatValue(value, col.format, locale, "cell");
     return isNumericFormat(col.format) ? (
       <span style={{ fontVariantNumeric: "tabular-nums" }}>{text}</span>
     ) : (
