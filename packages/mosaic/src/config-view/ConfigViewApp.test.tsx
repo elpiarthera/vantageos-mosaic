@@ -410,3 +410,90 @@ describe("theme and design (operator: the view looked plain)", () => {
     expect(css).toMatch(/\.mosaic-table-frame\s*\{[^}]*overflow-x:\s*auto/);
   });
 });
+
+describe("per-deployment theme (_meta.theme)", () => {
+  const styleEls = () => document.head.querySelectorAll("style[data-mosaic-theme]");
+  const themed = (theme: unknown) => ({ ...listResult, _meta: { ...listResult._meta, theme } });
+  afterEach(() => {
+    for (const el of styleEls()) el.remove();
+    vi.restoreAllMocks();
+  });
+
+  it("writes ONE style element with the light custom properties and a dark block", async () => {
+    const { app } = mockApp();
+    render(<ConfigViewApp app={app} />);
+    await act(async () =>
+      app.ontoolresult(
+        themed({
+          schemaVersion: 1,
+          light: { "--mosaic-radius-md": "9px" },
+          dark: { "--mosaic-color-accent": "#112233" },
+        }),
+      ),
+    );
+    expect(styleEls()).toHaveLength(1);
+    const css = styleEls()[0]?.textContent;
+    expect(css).toContain(":root{--mosaic-radius-md:9px;}");
+    expect(css).toContain('[data-theme="dark"]{--mosaic-color-accent:#112233;}');
+  });
+
+  it("a second result with another theme replaces it, never accumulates", async () => {
+    const { app } = mockApp();
+    render(<ConfigViewApp app={app} />);
+    await act(async () =>
+      app.ontoolresult(themed({ schemaVersion: 1, light: { "--mosaic-radius-md": "9px" } })),
+    );
+    await act(async () =>
+      app.ontoolresult(themed({ schemaVersion: 1, light: { "--mosaic-radius-md": "2px" } })),
+    );
+    expect(styleEls()).toHaveLength(1);
+    expect(styleEls()[0]?.textContent).toContain("2px");
+    expect(styleEls()[0]?.textContent).not.toContain("9px");
+  });
+
+  it("a result without a theme removes the element (default look)", async () => {
+    const { app } = mockApp();
+    render(<ConfigViewApp app={app} />);
+    await act(async () =>
+      app.ontoolresult(themed({ schemaVersion: 1, light: { "--mosaic-radius-md": "9px" } })),
+    );
+    await act(async () => app.ontoolresult(listResult));
+    expect(styleEls()).toHaveLength(0);
+  });
+
+  it("no theme at all: nothing is written to the head", async () => {
+    const { app } = mockApp();
+    render(<ConfigViewApp app={app} />);
+    await act(async () => app.ontoolresult(listResult));
+    expect(styleEls()).toHaveLength(0);
+  });
+
+  it("an invalid theme applies nothing, logs the bad token, shows nothing raw", async () => {
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = mockApp();
+    const { container } = render(<ConfigViewApp app={app} />);
+    await act(async () =>
+      app.ontoolresult(
+        themed({
+          schemaVersion: 1,
+          light: { "--mosaic-color-nope": "red;x", "--mosaic-radius-md": "1px" },
+        }),
+      ),
+    );
+    expect(styleEls()).toHaveLength(0);
+    expect(err.mock.calls.flat().join(" ")).toContain("--mosaic-color-nope");
+    expect(container.textContent).not.toContain("--mosaic-color-nope");
+    expect(screen.getByRole("heading", { name: "Tenant contracts" })).toBeTruthy();
+  });
+
+  it("an invalid theme after a valid one removes the previous theme (default tokens)", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { app } = mockApp();
+    render(<ConfigViewApp app={app} />);
+    await act(async () =>
+      app.ontoolresult(themed({ schemaVersion: 1, light: { "--mosaic-radius-md": "9px" } })),
+    );
+    await act(async () => app.ontoolresult(themed({ schemaVersion: 1, light: { "--x": "1" } })));
+    expect(styleEls()).toHaveLength(0);
+  });
+});

@@ -9,7 +9,11 @@
  * do not use a helper that back-fills the deprecated flat `ui/resourceUri` key.
  */
 import { configToMarkdown } from "../components/display/ConfigView.markdown.js";
+import { type ThemeDocument, parseThemeDocument } from "../theme/theme.js";
 import { type McpAppResourceOutput, buildMcpAppResource } from "./mcp-app-resource.js";
+
+export { ThemeError, parseThemeDocument } from "../theme/theme.js";
+export type { ThemeDocument, ThemeIssue } from "../theme/theme.js";
 
 export const CONFIG_VIEW_URI = "ui://mosaic/config-view" as const;
 
@@ -48,6 +52,8 @@ export function createConfigViewToolResult(input: {
   locale?: "en" | "fr";
   /** "server": the view shows `locale` even when the host's differs. Absent: the host's locale first. */
   localeAuthority?: "host" | "server";
+  /** A per-deployment theme document; validated through `parseThemeDocument` (throws `ThemeError`). */
+  theme?: unknown;
 }): {
   content: [{ type: "text"; text: string }];
   structuredContent: unknown;
@@ -55,9 +61,11 @@ export function createConfigViewToolResult(input: {
     viewConfig: unknown;
     locale: "en" | "fr";
     localeAuthority?: "host" | "server";
+    theme?: ThemeDocument;
   };
 } {
   const locale = input.locale ?? "en";
+  const theme = input.theme === undefined ? undefined : parseThemeDocument(input.theme);
   const text = configToMarkdown(input.viewConfig, input.payload, locale);
   return {
     content: [{ type: "text", text }],
@@ -66,6 +74,7 @@ export function createConfigViewToolResult(input: {
       viewConfig: input.viewConfig,
       locale,
       ...(input.localeAuthority ? { localeAuthority: input.localeAuthority } : {}),
+      ...(theme ? { theme } : {}),
     },
   };
 }

@@ -366,6 +366,12 @@ return createConfigViewToolResult({ viewConfig, payload, locale: "fr" });
   config or a payload that does not match throws `ViewConfigError`.
 * `ColumnDef` of `TableView` gains serialisable `path` (dotted) and `format`; `DetailView` is the
   description-list primitive (sections, fields, nested table) with `detailViewToMarkdown`.
+* Theme per deployment: `_meta.theme` is `{ schemaVersion: 1, name?, light?, dark? }`, token overrides keyed by
+  the `@vantageos/mosaic-tokens` naming contract (`--mosaic-<category>-<key>`), at least one of `light` / `dark`.
+  A server passes it as `createConfigViewToolResult({ viewConfig, payload, theme })` (validated, throws `ThemeError`
+  naming every bad token) or checks it at load with `parseThemeDocument`, both from `@vantageos/mosaic/server/config-view`.
+  The view applies it as one `<style data-mosaic-theme>` (light on `:root`, dark under `[data-theme="dark"]`); an
+  unknown token, an injection-shaped value or a malformed colour is refused loudly and the default look stays.
 * The single-file view (`dist/config-view.html`, Preact, `@modelcontextprotocol/ext-apps` `App`,
   `ontoolresult` registered before `connect`, no network, no storage, empty CSP) switches on
   `_meta.viewConfig.kind`. `pnpm --filter @vantageos/mosaic run check:config-view` measures it against
