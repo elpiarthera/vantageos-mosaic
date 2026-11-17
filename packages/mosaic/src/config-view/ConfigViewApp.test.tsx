@@ -233,6 +233,96 @@ describe("ConfigViewApp drill-down through the bridge", () => {
     });
   });
 
+  describe("Load more resends the args of the list it pages (every list in the history)", () => {
+    const pagedConfig = {
+      ...LIST_CONFIG,
+      tool: "list_lots",
+      rowActions: [],
+    };
+    const pagedResult = {
+      structuredContent: { contracts: LIST_PAYLOAD.contracts.slice(0, 1), nextCursor: "cur-9" },
+      _meta: { viewConfig: pagedConfig, locale: "en" },
+    };
+    const lastPage = { structuredContent: { contracts: [], exhausted: true } };
+
+    it("a list reached by a row action pages with that action's tool + args + cursor", async () => {
+      const { app } = mockApp();
+      app.callServerTool.mockResolvedValueOnce(pagedResult).mockResolvedValueOnce(lastPage);
+      render(<ConfigViewApp app={app} />);
+      await act(async () => app.ontoolinput({ arguments: { q: "dupont" } }));
+      await act(async () => app.ontoolresult(listResult));
+      await act(async () => {
+        fireEvent.click(
+          screen.getAllByRole("button", { name: /Rental situation/ })[0] as HTMLElement,
+        );
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Load more" }));
+      });
+      expect(app.callServerTool).toHaveBeenLastCalledWith({
+        name: "list_lots",
+        arguments: { lease_id: "c2", cursor: "cur-9", limit: 20 },
+      });
+    });
+
+    it("ontoolinput arriving AFTER the result still feeds Load more", async () => {
+      const { app } = mockApp({
+        callResult: { structuredContent: { contracts: [], exhausted: true } },
+      });
+      render(<ConfigViewApp app={app} />);
+      await act(async () => app.ontoolresult(listResult));
+      await act(async () => app.ontoolinput({ arguments: { q: "dupont" } }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Load more" }));
+      });
+      expect(app.callServerTool).toHaveBeenCalledWith({
+        name: "list_tenant_contracts",
+        arguments: { q: "dupont", cursor: "cur-2", limit: 20 },
+      });
+    });
+
+    it("a refused page restarts the list without the cursor, with a localized notice and no raw error", async () => {
+      const { app } = mockApp({ locale: "fr" });
+      app.callServerTool
+        .mockResolvedValueOnce({
+          isError: true,
+          content: [{ type: "text", text: "invalid_cursor: RAW-TOOL-ERROR" }],
+        })
+        .mockResolvedValueOnce({
+          structuredContent: { contracts: [LIST_PAYLOAD.contracts[0]], nextCursor: "cur-fresh" },
+        });
+      render(<ConfigViewApp app={app} />);
+      await act(async () => app.ontoolinput({ arguments: { q: "dupont" } }));
+      await act(async () => app.ontoolresult(listResult));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Voir la suite" }));
+      });
+      expect(app.callServerTool).toHaveBeenCalledTimes(2);
+      expect(app.callServerTool).toHaveBeenLastCalledWith({
+        name: "list_tenant_contracts",
+        arguments: { q: "dupont" },
+      });
+      expect(screen.getByText("La liste a été rechargée depuis le début.")).toBeTruthy();
+      expect(document.body.textContent).not.toContain("RAW-TOOL-ERROR");
+      expect(screen.getAllByRole("row")).toHaveLength(2);
+    });
+
+    it("a failed restart shows the localized error, never the raw text", async () => {
+      const { app } = mockApp({ locale: "en" });
+      app.callServerTool.mockResolvedValue({
+        isError: true,
+        content: [{ type: "text", text: "RAW-TOOL-ERROR" }],
+      });
+      render(<ConfigViewApp app={app} />);
+      await act(async () => app.ontoolresult(listResult));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Load more" }));
+      });
+      expect(screen.getByRole("alert").textContent).toBe("The tool call failed");
+      expect(document.body.textContent).not.toContain("RAW-TOOL-ERROR");
+    });
+  });
+
   it("a new tool result from the host replaces the view and clears the history", async () => {
     const { app } = mockApp({ callResult: detailResult });
     render(<ConfigViewApp app={app} />);

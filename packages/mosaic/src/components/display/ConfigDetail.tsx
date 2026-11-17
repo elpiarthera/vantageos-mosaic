@@ -25,7 +25,7 @@ export interface ConfigDetailProps {
   locale?: MosaicLocale;
   bridge?: ConfigViewBridge;
   /** Receives the result of an action so the host shell can show it. */
-  onResult?: (result: ConfigToolResult) => void;
+  onResult?: (result: ConfigToolResult, args: Record<string, unknown>) => void;
 }
 
 /**
@@ -72,7 +72,7 @@ function DetailBody({
   records: Record<string, unknown>[];
   locale: MosaicLocale;
   bridge?: ConfigViewBridge;
-  onResult?: (result: ConfigToolResult) => void;
+  onResult?: (result: ConfigToolResult, args: Record<string, unknown>) => void;
 }) {
   const uid = useId();
   const [selected, setSelected] = useState<number | undefined>(
@@ -126,7 +126,7 @@ function DetailBody({
               disabled={!runner.canCall || runner.busy}
               onClick={async () => {
                 const res = await runner.runAction(a, { record });
-                if (res) onResult?.(res);
+                if (res) onResult?.(res.result, res.args);
               }}
             />
           ))}

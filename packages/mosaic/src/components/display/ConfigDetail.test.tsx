@@ -150,7 +150,7 @@ describe("ConfigDetail actions use the bridge", () => {
       name: "list_co_owners",
       arguments: { condominium_id: "k1" },
     });
-    expect(onResult).toHaveBeenCalledWith(result);
+    expect(onResult).toHaveBeenCalledWith(result, { condominium_id: "k1" });
   });
 
   it("the action marked disabled in the config renders disabled", () => {

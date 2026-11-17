@@ -1,4 +1,4 @@
-// i18nKeys: ConfigList.paging.more, ConfigList.paging.loading, ConfigList.truncated, ConfigList.actions.header, ConfigList.empty.message, ConfigList.totals.incomplete, ConfigList.totals.scope, ConfigView.error.invalidConfig, ConfigView.error.invalidData
+// i18nKeys: ConfigList.paging.more, ConfigList.paging.restarted, ConfigList.paging.loading, ConfigList.truncated, ConfigList.actions.header, ConfigList.empty.message, ConfigList.totals.incomplete, ConfigList.totals.scope, ConfigView.error.invalidConfig, ConfigView.error.invalidData
 
 import React, { useId, useState } from "react";
 import { type MosaicLocale, t } from "../../i18n/strings.js";
@@ -31,7 +31,7 @@ export interface ConfigListProps {
   /** The bridge (`App.callServerTool`); without it paging and actions are disabled. */
   bridge?: ConfigViewBridge;
   /** Receives the result of a row action so the host shell can show it. */
-  onResult?: (result: ConfigToolResult) => void;
+  onResult?: (result: ConfigToolResult, args: Record<string, unknown>) => void;
 }
 
 /**
@@ -76,6 +76,7 @@ function ListBody({
   const uid = useId();
   const [rows, setRows] = useState(rows0);
   const [latest, setLatest] = useState(payload);
+  const [restarted, setRestarted] = useState(false);
   const runner = useToolRunner(bridge, locale);
   const paging = pagingState(config, latest);
   const columns: ColumnDef[] = toColumnDefs(config.columns, locale);
@@ -98,7 +99,7 @@ function ListBody({
                 ariaLabel={`${pick(a.label, locale)}: ${columnText(row, columns[0] as ColumnDef, locale)}`}
                 onClick={async () => {
                   const res = await runner.runAction(a, { row });
-                  if (res) onResult?.(res);
+                  if (res) onResult?.(res.result, res.args);
                 }}
               />
             ))}
@@ -109,20 +110,30 @@ function ListBody({
 
   async function loadMore() {
     const p = config.paging;
+    setRestarted(false);
     const args: Record<string, unknown> = {
       ...toolArgs,
       [p?.cursorArg ?? "cursor"]: paging.cursor,
     };
     if (p?.limitArg && p.pageSize) args[p.limitArg] = p.pageSize;
-    const res = await runner.call(config.tool, args);
-    if (!res) return;
-    const next = listRows(config, res.structuredContent);
-    if (!next.ok) {
-      runner.setError(`${t("ConfigView.error.invalidData", locale)}: ${config.dataPath}`);
+    const res = await runner.call(config.tool, args, { quiet: true });
+    const next = res ? listRows(config, res.structuredContent) : undefined;
+    if (res && next?.ok) {
+      setRows((prev) => [...prev, ...next.rows]);
+      setLatest(res.structuredContent);
       return;
     }
-    setRows((prev) => [...prev, ...next.rows]);
-    setLatest(res.structuredContent);
+    // A refused page (expired or mismatched cursor, any error): restart the list from its first page
+    // with the arguments that produced it, never show the raw tool error.
+    const first = await runner.call(config.tool, { ...toolArgs }, { quiet: true });
+    const firstRows = first ? listRows(config, first.structuredContent) : undefined;
+    if (first && firstRows?.ok) {
+      setRows(firstRows.rows);
+      setLatest(first.structuredContent);
+      setRestarted(true);
+      return;
+    }
+    runner.setError(t("ConfigView.error.toolFailed", locale));
   }
 
   const complete = config.totalsScope?.completePath
@@ -186,6 +197,7 @@ function ListBody({
         <p>{`${t("ConfigList.totals.scope", locale)}: ${scopeText}`}</p>
       ) : null}
       {paging.truncated ? <p>{t("ConfigList.truncated", locale)}</p> : null}
+      {restarted ? <output>{t("ConfigList.paging.restarted", locale)}</output> : null}
       <ErrorAlert message={runner.error} />
       {paging.cursor && !paging.exhausted ? (
         <button
