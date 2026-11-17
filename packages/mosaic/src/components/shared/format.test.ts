@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   ColumnFormatSchema,
   I18nTextSchema,
+  columnText,
   formatValue,
   isNumericFormat,
   sortKindOfFormat,
@@ -56,6 +57,17 @@ describe("formatValue", () => {
     expect(formatValue("2024-05-01", { type: "date" }, "en")).toBe("May 1, 2024");
     expect(formatValue("2024-05-01", { type: "date" }, "fr")).toBe("1 mai 2024");
     expect(formatValue("not a date", { type: "date" }, "en")).toBe("not a date");
+  });
+
+  it("date in a table / list cell: fr is dd/mm/yyyy, en and detail keep the medium form", () => {
+    expect(formatValue("2026-12-31", { type: "date" }, "fr", "cell")).toBe("31/12/2026");
+    expect(formatValue("2026-12-31", { type: "date" }, "fr", "detail")).toBe("31 déc. 2026");
+    expect(formatValue("2026-12-31", { type: "date" }, "fr")).toBe("31 déc. 2026");
+    expect(formatValue("2026-12-31", { type: "date" }, "en", "cell")).toBe("Dec 31, 2026");
+    expect(formatValue("not a date", { type: "date" }, "fr", "cell")).toBe("not a date");
+    expect(columnText({ d: "2026-12-31" }, { key: "d", format: { type: "date" } }, "fr")).toBe(
+      "31/12/2026",
+    );
   });
   it("money: currency from the format, decimal strings accepted", () => {
     expect(formatValue(1234.5, { type: "money", currency: "EUR" }, "en")).toBe("€1,234.50");

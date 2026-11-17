@@ -85,6 +85,12 @@ function money(v: unknown, currency: string | undefined, locale: MosaicLocale): 
 }
 
 /**
+ * Where a value is shown: `"cell"` = a table / list cell (fr dates are the short numeric
+ * dd/mm/yyyy), `"detail"` = a detail field or total (dateStyle medium). Default `"detail"`.
+ */
+export type FormatContext = "cell" | "detail";
+
+/**
  * Formats a value for display. Pure; the locale only selects wording and number / date
  * conventions. A value that does not fit its format is shown as its raw text, never hidden.
  * Missing values (`null`, `undefined`, empty string) show a dash.
@@ -93,6 +99,7 @@ export function formatValue(
   value: unknown,
   format: ColumnFormat | undefined,
   locale: MosaicLocale,
+  context: FormatContext = "detail",
 ): string {
   if (value === null || value === undefined || value === "") return EMPTY;
   if (format === undefined) return rawText(value);
@@ -101,9 +108,16 @@ export function formatValue(
       return rawText(value);
     case "date": {
       const d = new Date(value as string | number);
-      return Number.isNaN(d.getTime())
-        ? rawText(value)
-        : new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(d);
+      if (Number.isNaN(d.getTime())) return rawText(value);
+      if (context === "cell" && locale === "fr") {
+        return new Intl.DateTimeFormat("fr-FR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          timeZone: "UTC",
+        }).format(d);
+      }
+      return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(d);
     }
     case "money":
       return money(value, format.currency, locale);
@@ -151,5 +165,5 @@ export function columnText(
   locale: MosaicLocale,
 ): string {
   const v = col.path ? getPath(row, col.path) : row[col.key];
-  return col.format ? formatValue(v, col.format, locale) : String(v ?? "");
+  return col.format ? formatValue(v, col.format, locale, "cell") : String(v ?? "");
 }
