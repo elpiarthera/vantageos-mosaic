@@ -9,12 +9,6 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Fixed
-- Config view: "Load more" resends the arguments that produced the list it pages, for every list in the view history (a list opened by a row action used to send the cursor alone and was refused `invalid_cursor`). A refused page restarts the list from its first page with a localized notice (`ConfigList.paging.restarted`) instead of showing the raw tool error.
-- `registry.yaml` `version` was a hand-typed `"0.3.0-alpha.1"` while the package is `0.8.0` (the file ships in the tarball and is exported as `./registry.yaml`). It now reads `"0.8.0"`, and `scripts/mosaic-registry-drift-check.mjs` (CI step `registry-drift`) fails when it differs from `package.json` `version` or is missing, naming both values — a release that bumps the package without the registry goes red.
-
----
-
 ## [0.10.0] — 2026-11-17 — a server can make its locale authoritative (opt-in)
 
 Minor. Additive: a server that does not opt in behaves exactly as in 0.9.0 (host locale, else `_meta.locale`, else `en`).
@@ -23,6 +17,9 @@ Minor. Additive: a server that does not opt in behaves exactly as in 0.9.0 (host
 - Tool result `_meta.localeAuthority?: "host" | "server"`. `"server"`: `_meta.locale` (`"fr"` | `"en"`) wins over the host's locale, for a client deployment whose staff read one language whatever the host UI shows. Absent, `"host"` or any other value: the 0.9.0 order. `"server"` with a missing or invalid `_meta.locale` falls back to the 0.9.0 order, never fails.
 - `createConfigViewToolResult` accepts `localeAuthority` and puts it in `_meta` when given.
 - Dates in table and list cells render, for locale `fr`, as dd/mm/yyyy (`31/12/2026`) via `formatValue(value, format, locale, "cell")` / `columnText`; `en` cells and every detail view keep `dateStyle: "medium"` (UTC).
+
+### Fixed
+- Config view: "Load more" resends the arguments that produced the list it pages, for every list in the view history (a list opened by a row action used to send the cursor alone and was refused `invalid_cursor`). A refused page restarts the list from its first page with a localized notice (`ConfigList.paging.restarted`) instead of showing the raw tool error.
 
 ---
 
@@ -36,6 +33,9 @@ Minor. Every config valid in 0.8.0 renders; what changes is the view's locale or
 
 ### Added
 - **The host's theme is applied** to the document (`data-theme="light"|"dark"`) from the host context at start and on every host context change, so the tokens switch with Claude's light or dark mode; with no host theme, `prefers-color-scheme` decides.
+
+### Fixed
+- `registry.yaml` `version` was a hand-typed `"0.3.0-alpha.1"` while the package is `0.8.0` (the file ships in the tarball and is exported as `./registry.yaml`). It now reads `"0.8.0"`, and `scripts/mosaic-registry-drift-check.mjs` (CI step `registry-drift`) fails when it differs from `package.json` `version` or is missing, naming both values — a release that bumps the package without the registry goes red.
 
 ---
 
