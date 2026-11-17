@@ -82,3 +82,31 @@ describe("createConfigViewToolResult (A-1 + view config in _meta)", () => {
     );
   });
 });
+
+describe("createConfigViewToolResult theme", () => {
+  const theme = { schemaVersion: 1 as const, light: { "--mosaic-radius-md": "1px" } };
+
+  it("sets _meta.theme when a valid theme is given", () => {
+    const r = createConfigViewToolResult({
+      viewConfig: LIST_CONFIG,
+      payload: LIST_PAYLOAD,
+      theme,
+    });
+    expect(r._meta.theme).toEqual(theme);
+  });
+
+  it("omits _meta.theme when none is given", () => {
+    const r = createConfigViewToolResult({ viewConfig: LIST_CONFIG, payload: LIST_PAYLOAD });
+    expect("theme" in r._meta).toBe(false);
+  });
+
+  it("throws ThemeError naming the token on an invalid theme", () => {
+    expect(() =>
+      createConfigViewToolResult({
+        viewConfig: LIST_CONFIG,
+        payload: LIST_PAYLOAD,
+        theme: { schemaVersion: 1, light: { "--mosaic-nope": "1px" } },
+      }),
+    ).toThrow(/--mosaic-nope/);
+  });
+});

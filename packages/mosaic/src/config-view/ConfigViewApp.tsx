@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { ConfigDetail } from "../components/display/ConfigDetail.js";
 import { ConfigList } from "../components/display/ConfigList.js";
 import { type MosaicLocale, t } from "../i18n/strings.js";
+import { ThemeError, parseThemeDocument, themeToCss } from "../theme/theme.js";
 import type { ConfigToolResult, ConfigViewBridge } from "../view-config/view-config.js";
 
 /** The slice of the ext-apps `App` this shell uses (typed structurally, like the host layer). */
@@ -47,6 +48,8 @@ export function createViewStore(app: AppLike): ViewStore {
   const listeners = new Set<() => void>();
   const set = (next: Partial<ViewState>) => {
     state = { ...state, ...next };
+    if (next.history)
+      applyThemeDocument(state.history[state.history.length - 1]?.result._meta?.theme);
     for (const l of listeners) l();
   };
   app.ontoolresult = (result: ConfigToolResult) =>
@@ -84,6 +87,33 @@ export function createViewStore(app: AppLike): ViewStore {
 export function applyTheme(theme: string | undefined): void {
   if (theme !== "light" && theme !== "dark") return;
   if (typeof document !== "undefined") document.documentElement.dataset.theme = theme;
+}
+
+/**
+ * The per-deployment theme of the result on screen: ONE `<style data-mosaic-theme>` in the head,
+ * replaced on a new theme, removed when the result carries none. An invalid theme applies nothing
+ * (default tokens stay) and is reported on the console naming the bad tokens, never shown raw.
+ */
+export function applyThemeDocument(theme: unknown): void {
+  if (typeof document === "undefined") return;
+  const existing = document.head.querySelector("style[data-mosaic-theme]");
+  let css = "";
+  if (theme !== undefined && theme !== null) {
+    try {
+      css = themeToCss(parseThemeDocument(theme));
+    } catch (e) {
+      if (!(e instanceof ThemeError)) throw e;
+      console.error(`mosaic config view: theme refused, default tokens kept: ${e.message}`);
+    }
+  }
+  if (css === "") {
+    existing?.remove();
+    return;
+  }
+  const el = existing ?? document.createElement("style");
+  el.setAttribute("data-mosaic-theme", "");
+  el.textContent = css;
+  if (!existing) document.head.appendChild(el);
 }
 
 function toLocale(tag: string | undefined): MosaicLocale | undefined {
