@@ -46,16 +46,26 @@ export function createConfigViewToolResult(input: {
   viewConfig: unknown;
   payload: unknown;
   locale?: "en" | "fr";
+  /** "server": the view shows `locale` even when the host's differs. Absent: the host's locale first. */
+  localeAuthority?: "host" | "server";
 }): {
   content: [{ type: "text"; text: string }];
   structuredContent: unknown;
-  _meta: { viewConfig: unknown; locale: "en" | "fr" };
+  _meta: {
+    viewConfig: unknown;
+    locale: "en" | "fr";
+    localeAuthority?: "host" | "server";
+  };
 } {
   const locale = input.locale ?? "en";
   const text = configToMarkdown(input.viewConfig, input.payload, locale);
   return {
     content: [{ type: "text", text }],
     structuredContent: input.payload,
-    _meta: { viewConfig: input.viewConfig, locale },
+    _meta: {
+      viewConfig: input.viewConfig,
+      locale,
+      ...(input.localeAuthority ? { localeAuthority: input.localeAuthority } : {}),
+    },
   };
 }

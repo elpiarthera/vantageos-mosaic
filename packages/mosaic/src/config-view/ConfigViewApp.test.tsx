@@ -128,6 +128,63 @@ describe("ConfigViewApp switches on _meta.viewConfig.kind", () => {
     expect(screen.getByRole("heading", { name: "Tenant contracts" })).toBeTruthy();
   });
 
+  // A client deployment holds its staff's language as data: the server may opt in to be authoritative.
+  describe("locale authority (_meta.localeAuthority)", () => {
+    const AUTH_PAYLOAD = {
+      ...LIST_PAYLOAD,
+      contracts: [{ ...LIST_PAYLOAD.contracts[0], end: "2026-12-31", rent_ttc: 70852.72 }],
+    };
+    const result = (meta: Record<string, unknown>) => ({
+      structuredContent: AUTH_PAYLOAD,
+      _meta: { viewConfig: LIST_CONFIG, ...meta },
+    });
+
+    it("server authority: _meta.locale fr beats an English host (labels, date, number)", async () => {
+      const { app } = mockApp({ locale: "en-US" });
+      render(<ConfigViewApp app={app} />);
+      await act(async () => app.ontoolresult(result({ locale: "fr", localeAuthority: "server" })));
+      expect(screen.getByRole("heading", { name: "Contrats locataires" })).toBeTruthy();
+      expect(document.body.textContent).toContain("31 déc. 2026");
+      expect(document.body.textContent).toContain("70\u202f852,72");
+    });
+
+    it("server authority: _meta.locale en beats a French host", async () => {
+      const { app } = mockApp({ locale: "fr-FR" });
+      render(<ConfigViewApp app={app} />);
+      await act(async () => app.ontoolresult(result({ locale: "en", localeAuthority: "server" })));
+      expect(screen.getByRole("heading", { name: "Tenant contracts" })).toBeTruthy();
+    });
+
+    it("no authority: the host stays first (default unchanged)", async () => {
+      const { app } = mockApp({ locale: "en-US" });
+      render(<ConfigViewApp app={app} />);
+      await act(async () => app.ontoolresult(result({ locale: "fr" })));
+      expect(screen.getByRole("heading", { name: "Tenant contracts" })).toBeTruthy();
+    });
+
+    it("authority 'host' and unknown values behave as the default", async () => {
+      for (const authority of ["host", "bogus"]) {
+        const { app } = mockApp({ locale: "en-US" });
+        render(<ConfigViewApp app={app} />);
+        await act(async () =>
+          app.ontoolresult(result({ locale: "fr", localeAuthority: authority })),
+        );
+        expect(screen.getByRole("heading", { name: "Tenant contracts" })).toBeTruthy();
+        cleanup();
+      }
+    });
+
+    it("server authority without a valid _meta.locale falls back to the host locale", async () => {
+      for (const meta of [{}, { locale: "de" }]) {
+        const { app } = mockApp({ locale: "fr-FR" });
+        render(<ConfigViewApp app={app} />);
+        await act(async () => app.ontoolresult(result({ ...meta, localeAuthority: "server" })));
+        expect(screen.getByRole("heading", { name: "Contrats locataires" })).toBeTruthy();
+        cleanup();
+      }
+    });
+  });
+
   it("a host context change updates the locale", async () => {
     const { app } = mockApp();
     render(<ConfigViewApp app={app} />);
