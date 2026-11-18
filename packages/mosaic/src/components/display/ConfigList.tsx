@@ -15,6 +15,7 @@ import {
 } from "../../view-config/view-config.js";
 import { columnText, formatValue } from "../shared/format.js";
 import { getPath } from "../shared/path.js";
+import { LIST_KEY_FIELD, type ListRegistry, useListControl } from "./ConfigList.control.js";
 import { resolveConfigLocale } from "./ConfigList.schema.js";
 import { ActionButton, ErrorAlert, Refusal, useToolRunner } from "./ConfigView.shared.js";
 import { TableView } from "./TableView.js";
@@ -32,6 +33,8 @@ export interface ConfigListProps {
   bridge?: ConfigViewBridge;
   /** Receives the result of a row action so the host shell can show it. */
   onResult?: (result: ConfigToolResult, args: Record<string, unknown>) => void;
+  /** Where the open list registers so the model can sort, filter and select it (app tools). */
+  listRegistry?: ListRegistry;
 }
 
 /**
@@ -67,6 +70,7 @@ function ListBody({
   toolArgs,
   bridge,
   onResult,
+  listRegistry,
   rows0,
 }: Omit<ConfigListProps, "config" | "locale"> & {
   config: ListViewConfig;
@@ -79,8 +83,19 @@ function ListBody({
   const [restarted, setRestarted] = useState(false);
   const runner = useToolRunner(bridge, locale);
   const paging = pagingState(config, latest);
-  const columns: ColumnDef[] = toColumnDefs(config.columns, locale);
+  const dataColumns: ColumnDef[] = toColumnDefs(config.columns, locale);
+  const columns: ColumnDef[] = [...dataColumns];
   const actions = config.rowActions ?? [];
+  const control = useListControl({
+    registry: listRegistry,
+    config,
+    rows,
+    locale,
+    columns: dataColumns,
+    hasMore: paging.cursor !== undefined && !paging.exhausted,
+    runAction: runner.runAction,
+    onResult,
+  });
 
   if (actions.length > 0) {
     columns.push({
@@ -162,16 +177,13 @@ function ListBody({
             ariaLabel={pick(config.title, locale)}
             locale={locale}
             columns={columns}
-            rows={rows}
-            {...(config.rowKey ? { rowKey: config.rowKey } : {})}
-            {...(config.defaultSort
-              ? {
-                  defaultSort: {
-                    key: config.defaultSort.column,
-                    direction: config.defaultSort.direction,
-                  },
-                }
-              : {})}
+            rows={control.rows}
+            rowKey={LIST_KEY_FIELD}
+            sort={control.sort}
+            onSortChange={control.onSortChange}
+            selectionMode={control.selectionMode}
+            selectedKeys={control.selectedKeys}
+            onSelectionChange={control.onSelectionChange}
           />
         </div>
       )}

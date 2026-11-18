@@ -157,11 +157,11 @@ type Item<TRow extends AnyRow> = { row: Partial<TRow>; key: string };
 type CellCol = Pick<CoreProps<AnyRow>["columns"][number], "key" | "path" | "format">;
 
 /** The raw value of a cell: the dotted `path` when the column has one, else the flat `key`. */
-function cellValue(row: AnyRow, col: CellCol): unknown {
+export function cellValue(row: AnyRow, col: CellCol): unknown {
   return col.path ? getPath(row, col.path) : row[col.key];
 }
 
-function kindOf(col: { type?: ColumnKind; format?: CellCol["format"] }): ColumnKind {
+export function kindOf(col: { type?: ColumnKind; format?: CellCol["format"] }): ColumnKind {
   return sortKindOfFormat(col.format) === "number" ? "number" : (col.type ?? "text");
 }
 

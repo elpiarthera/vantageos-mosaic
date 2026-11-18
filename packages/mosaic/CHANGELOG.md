@@ -9,6 +9,14 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- Model-drivable lists (MCP Apps app tools). The config view registers a constant set of seven tools
+  (`list_sort`, `list_filter`, `list_clear_filter`, `list_select`, `list_clear_selection`,
+  `list_describe`, `list_open_selected`) so the model can sort, filter and select the open list and
+  run the view's row action on the selection, updating the view in place with no server call. Hosts
+  that never call the tools, or cannot take them, see the same view as before. The selection column
+  appears once a tool selects rows. The new state is also sent with `ui/update-model-context`.
+
 ### Fixed
 - Theme per deployment: `themeToCss` emitted light on `:root` and dark under `[data-theme="dark"]`, equal specificity on the same `<html>`, with the theme `<style>` last — so a light-only theme painted its light overrides over the mosaic dark defaults in a dark host. Light is now `:root:not([data-theme="dark"])` and dark `:root[data-theme="dark"]` (both beat the tokens' selectors, neither matches the other scheme). / Thème par déploiement : un thème clair seul écrasait les valeurs sombres par défaut dans un hôte sombre ; chaque bloc est désormais limité à son schéma.
 

@@ -9,5 +9,10 @@ if (!root) throw new Error("config-view: #root is missing");
 
 // The ext-apps `App` is the only door to the host: tool results arrive on `ontoolresult`, every
 // further tool call goes through `callServerTool`.
-const app = new App({ name: "mosaic-config-view", version: __MOSAIC_VERSION__ }, {});
+const app = new App(
+  { name: "mosaic-config-view", version: __MOSAIC_VERSION__ },
+  {
+    tools: { listChanged: true },
+  },
+);
 void startConfigView(app as unknown as AppLike, root);
