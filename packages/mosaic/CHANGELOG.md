@@ -9,6 +9,9 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+- Theme per deployment: `themeToCss` emitted light on `:root` and dark under `[data-theme="dark"]`, equal specificity on the same `<html>`, with the theme `<style>` last — so a light-only theme painted its light overrides over the mosaic dark defaults in a dark host. Light is now `:root:not([data-theme="dark"])` and dark `:root[data-theme="dark"]` (both beat the tokens' selectors, neither matches the other scheme). / Thème par déploiement : un thème clair seul écrasait les valeurs sombres par défaut dans un hôte sombre ; chaque bloc est désormais limité à son schéma.
+
 ## [0.10.0] — 2026-11-17 — a server can make its locale authoritative (opt-in)
 
 Minor. Additive: a server that does not opt in behaves exactly as in 0.9.0 (host locale, else `_meta.locale`, else `en`).

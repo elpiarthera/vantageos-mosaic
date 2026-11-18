@@ -433,8 +433,8 @@ describe("per-deployment theme (_meta.theme)", () => {
     );
     expect(styleEls()).toHaveLength(1);
     const css = styleEls()[0]?.textContent;
-    expect(css).toContain(":root{--mosaic-radius-md:9px;}");
-    expect(css).toContain('[data-theme="dark"]{--mosaic-color-accent:#112233;}');
+    expect(css).toContain(':root:not([data-theme="dark"]){--mosaic-radius-md:9px;}');
+    expect(css).toContain(':root[data-theme="dark"]{--mosaic-color-accent:#112233;}');
   });
 
   it("a second result with another theme replaces it, never accumulates", async () => {

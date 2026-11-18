@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import contract from "../../../mosaic-tokens/naming-contract.json";
 import { THEME_TOKEN_NAMES, ThemeError, parseThemeDocument, themeToCss } from "./theme";
@@ -114,7 +116,7 @@ describe("parseThemeDocument", () => {
 });
 
 describe("themeToCss", () => {
-  it('writes :root for light and [data-theme="dark"] for dark', () => {
+  it('writes light scoped off the dark scheme and dark on :root[data-theme="dark"]', () => {
     const css = themeToCss(
       parseThemeDocument({
         schemaVersion: 1,
@@ -122,12 +124,74 @@ describe("themeToCss", () => {
         dark: { [COLOR]: "#fff" },
       }),
     );
-    expect(css).toBe(`:root{${RADIUS}:1px;}[data-theme="dark"]{${COLOR}:#fff;}`);
+    expect(css).toBe(
+      `:root:not([data-theme="dark"]){${RADIUS}:1px;}:root[data-theme="dark"]{${COLOR}:#fff;}`,
+    );
   });
 
   it("omits a block that has no tokens", () => {
     expect(themeToCss({ schemaVersion: 1, dark: { [COLOR]: "#fff" } })).toBe(
-      `[data-theme="dark"]{${COLOR}:#fff;}`,
+      `:root[data-theme="dark"]{${COLOR}:#fff;}`,
     );
+  });
+});
+
+describe("themeToCss selectors: a block never matches while the other scheme is active", () => {
+  it('scopes light to :root:not([data-theme="dark"]) and dark to :root[data-theme="dark"]', () => {
+    const css = themeToCss(
+      parseThemeDocument({
+        schemaVersion: 1,
+        light: { [RADIUS]: "1px" },
+        dark: { [COLOR]: "#fff" },
+      }),
+    );
+    expect(css).toBe(
+      `:root:not([data-theme="dark"]){${RADIUS}:1px;}:root[data-theme="dark"]{${COLOR}:#fff;}`,
+    );
+  });
+});
+
+const BG = "--mosaic-color-background";
+describe("themeToCss cascade against the real tokens.css (jsdom)", () => {
+  const tokensCss = readFileSync(
+    resolve(__dirname, "../../../mosaic-tokens/src/tokens.css"),
+    "utf8",
+  );
+  const DARK_DEFAULT = "oklch(0.145 0 0)"; // tokens.css [data-theme="dark"] --mosaic-color-background
+  const THEME_ACCENT = "#112233";
+  const THEME_DARK_ACCENT = "#aabbcc";
+
+  /** Applies tokens.css then the theme `<style>` LAST (as ConfigViewApp does), reads the computed token. */
+  function computed(theme: Parameters<typeof themeToCss>[0], dataTheme: string | null): string {
+    document.head.innerHTML = "";
+    const tok = document.createElement("style");
+    tok.textContent = tokensCss;
+    const th = document.createElement("style");
+    th.textContent = themeToCss(theme);
+    document.head.append(tok, th);
+    if (dataTheme === null) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", dataTheme);
+    return getComputedStyle(document.documentElement).getPropertyValue(BG).trim();
+  }
+  const lightOnly = { schemaVersion: 1 as const, light: { [BG]: THEME_ACCENT } };
+  const both = { ...lightOnly, dark: { [BG]: THEME_DARK_ACCENT } };
+
+  it("positive control: the instrument resolves a token from tokens.css", () => {
+    expect(computed({ schemaVersion: 1, light: { [RADIUS]: "1px" } }, "dark")).not.toBe(
+      THEME_ACCENT,
+    );
+    expect(computed(lightOnly, "light")).toBe(THEME_ACCENT);
+  });
+  it("light host + light theme -> light override", () => {
+    expect(computed(lightOnly, "light")).toBe(THEME_ACCENT);
+  });
+  it("no data-theme attribute -> light override", () => {
+    expect(computed(lightOnly, null)).toBe(THEME_ACCENT);
+  });
+  it("dark host + light-only theme -> mosaic dark default untouched", () => {
+    expect(computed(lightOnly, "dark")).toBe(DARK_DEFAULT);
+  });
+  it("dark host + dark block -> dark override", () => {
+    expect(computed(both, "dark")).toBe(THEME_DARK_ACCENT);
   });
 });

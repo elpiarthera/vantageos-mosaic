@@ -370,7 +370,7 @@ return createConfigViewToolResult({ viewConfig, payload, locale: "fr" });
   the `@vantageos/mosaic-tokens` naming contract (`--mosaic-<category>-<key>`), at least one of `light` / `dark`.
   A server passes it as `createConfigViewToolResult({ viewConfig, payload, theme })` (validated, throws `ThemeError`
   naming every bad token) or checks it at load with `parseThemeDocument`, both from `@vantageos/mosaic/server/config-view`.
-  The view applies it as one `<style data-mosaic-theme>` (light on `:root`, dark under `[data-theme="dark"]`); an
+  The view applies it as one `<style data-mosaic-theme>` (light on `:root:not([data-theme="dark"])`, dark on `:root[data-theme="dark"]`, so a light-only theme never overrides the dark defaults); an
   unknown token, an injection-shaped value or a malformed colour is refused loudly and the default look stays.
 * The single-file view (`dist/config-view.html`, Preact, `@modelcontextprotocol/ext-apps` `App`,
   `ontoolresult` registered before `connect`, no network, no storage, empty CSP) switches on
