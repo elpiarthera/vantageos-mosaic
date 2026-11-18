@@ -378,6 +378,38 @@ return createConfigViewToolResult({ viewConfig, payload, locale: "fr" });
   the 250,000-byte gzip budget; `run smoke:config-view` drives it in a real Chromium through a minimal
   MCP Apps host (handshake, render, axe, drill-down, back).
 
+### Model-drivable lists (app tools)
+
+While a list is open, the config view lets the model sort, filter and select it, then hand the selection
+to the view's row action, without re-running the search. It registers seven tools (MCP Apps "app tools")
+before `connect()`; their definitions never change between views (changing values travel in the results).
+
+| Tool | Does |
+|---|---|
+| `list_sort` `{column, direction}` | sorts the rows shown |
+| `list_filter` `{column, value}` / `list_clear_filter` | keeps rows whose displayed text contains the value (no case, no accents) |
+| `list_select` `{keys}` / `list_clear_selection` | selects rows by the view's `rowKey` (else the 0-based displayed index) |
+| `list_describe` | title, tool, column ids and headers, counts, sort, filter, selection |
+| `list_open_selected` `{action?}` | runs the declared row action on each selected row |
+
+Everything happens in the view (no server call for sort, filter, select). An unknown column or key is a
+normal result that lists the valid ones. On a detail view the tools answer "no list is open". The new
+state is also sent with `ui/update-model-context`. App tools are available to some hosts only: when a
+host never calls them, the view is unchanged (the selection column appears only once a tool selects rows).
+
+### Listes pilotables par le modèle (outils d'application)
+
+Tant qu'une liste est ouverte, la vue de configuration laisse le modèle la trier, la filtrer et y
+sélectionner des lignes, puis passer la sélection à l'action de ligne de la vue, sans relancer la
+recherche. Sept outils (« app tools » MCP Apps) sont enregistrés avant `connect()` ; leurs définitions
+ne changent jamais d'une vue à l'autre (les valeurs qui changent voyagent dans les résultats).
+`list_sort`, `list_filter` / `list_clear_filter` (texte affiché, sans casse ni accents), `list_select` /
+`list_clear_selection` (par `rowKey`, sinon index affiché à partir de 0), `list_describe`,
+`list_open_selected`. Tout se passe dans la vue, sans appel serveur. Une colonne ou une clé inconnue
+renvoie un résultat normal qui liste les valeurs valides ; sur une vue détail : « aucune liste n'est
+ouverte ». Si l'hôte n'appelle jamais ces outils, la vue reste inchangée (la colonne de sélection
+n'apparaît qu'après une sélection par un outil).
+
 ## Components
 
 ### What each subpath actually exports

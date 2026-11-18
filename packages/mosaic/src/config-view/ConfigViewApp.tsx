@@ -3,10 +3,12 @@
 import React, { useSyncExternalStore, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ConfigDetail } from "../components/display/ConfigDetail.js";
+import type { ListRegistry } from "../components/display/ConfigList.control.js";
 import { ConfigList } from "../components/display/ConfigList.js";
 import { type MosaicLocale, t } from "../i18n/strings.js";
 import { ThemeError, parseThemeDocument, themeToCss } from "../theme/theme.js";
 import type { ConfigToolResult, ConfigViewBridge } from "../view-config/view-config.js";
+import { createListRegistry, registerListTools } from "./appTools.js";
 
 /** The slice of the ext-apps `App` this shell uses (typed structurally, like the host layer). */
 export interface AppLike extends ConfigViewBridge {
@@ -147,7 +149,11 @@ function resolveLocale(
  * `_meta.viewConfig.kind`. Row actions call other tools through the host bridge and push the
  * returned view; a Back button pops it. No storage, no network, no window access of its own.
  */
-export function ConfigViewApp({ app, store: given }: { app: AppLike; store?: ViewStore }) {
+export function ConfigViewApp({
+  app,
+  store: given,
+  listRegistry,
+}: { app: AppLike; store?: ViewStore; listRegistry?: ListRegistry }) {
   const [store] = useState(() => given ?? createViewStore(app));
   const s = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const entry = s.history[s.history.length - 1];
@@ -182,6 +188,7 @@ export function ConfigViewApp({ app, store: given }: { app: AppLike; store?: Vie
           toolArgs={entry?.args}
           bridge={app}
           onResult={store.push}
+          {...(listRegistry ? { listRegistry } : {})}
         />
       )}
     </div>
@@ -191,6 +198,8 @@ export function ConfigViewApp({ app, store: given }: { app: AppLike; store?: Vie
 /** Entry: bind the notifications, render, then connect. */
 export async function startConfigView(app: AppLike, root: HTMLElement): Promise<void> {
   const store = createViewStore(app);
+  const listRegistry = createListRegistry();
+  registerListTools(app, listRegistry);
   const initialTheme = app.getHostContext()?.theme;
   applyTheme(
     initialTheme ??
@@ -198,6 +207,6 @@ export async function startConfigView(app: AppLike, root: HTMLElement): Promise<
         ? "dark"
         : "light"),
   );
-  createRoot(root).render(<ConfigViewApp app={app} store={store} />);
+  createRoot(root).render(<ConfigViewApp app={app} store={store} listRegistry={listRegistry} />);
   await app.connect();
 }
