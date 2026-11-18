@@ -106,7 +106,15 @@ const block = (selector: string, tokens: Record<string, string> | undefined): st
   return decls.length > 0 ? `${selector}{${decls.join("")}}` : "";
 };
 
-/** The CSS of an ALREADY PARSED document: light on `:root`, dark under `[data-theme="dark"]`. */
+/**
+ * The CSS of an ALREADY PARSED document. Each block is scoped so it cannot match while the other scheme
+ * is active: light on `:root:not([data-theme="dark"])` (specificity 0,2,0 > the tokens' `:root`), dark on
+ * `:root[data-theme="dark"]` (0,2,0 > the tokens' `[data-theme="dark"]`). The theme `<style>` is appended
+ * last, so a light-only theme can never paint over the dark defaults of a dark host.
+ */
 export function themeToCss(theme: ThemeDocument): string {
-  return block(":root", theme.light) + block('[data-theme="dark"]', theme.dark);
+  return (
+    block(':root:not([data-theme="dark"])', theme.light) +
+    block(':root[data-theme="dark"]', theme.dark)
+  );
 }
