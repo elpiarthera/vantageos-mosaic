@@ -9,7 +9,12 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.11.0] — 2026-11-18 — theme per deployment, model-drivable lists
+
+Minor. Additive: a result without `_meta.theme` renders exactly as in 0.10.0, and a host that never calls the app tools sees the same view.
+
 ### Added
+- **Theme per deployment, as data**: tool result `_meta.theme` is a token-override document (`{ schemaVersion: 1, name?, light?, dark? }`, keys from the `@vantageos/mosaic-tokens` naming contract). One parser, `parseThemeDocument` (typed `ThemeError` with `issues[]` naming every bad token), refuses an unknown token, an injection-shaped value and a malformed colour; the config view applies a valid theme as ONE `<style data-mosaic-theme>` (light on `:root`, dark under `[data-theme="dark"]`), replaced on a new theme and removed when a result carries none. An invalid theme applies nothing. No theme: the default look, unchanged. `createConfigViewToolResult` accepts `theme`; `ThemeError`, `parseThemeDocument` and the `ThemeDocument` type are exported from `@vantageos/mosaic/server/config-view`.
 - Model-drivable lists (MCP Apps app tools). The config view registers a constant set of seven tools
   (`list_sort`, `list_filter`, `list_clear_filter`, `list_select`, `list_clear_selection`,
   `list_describe`, `list_open_selected`) so the model can sort, filter and select the open list and
@@ -20,13 +25,14 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - Theme per deployment: `themeToCss` emitted light on `:root` and dark under `[data-theme="dark"]`, equal specificity on the same `<html>`, with the theme `<style>` last — so a light-only theme painted its light overrides over the mosaic dark defaults in a dark host. Light is now `:root:not([data-theme="dark"])` and dark `:root[data-theme="dark"]` (both beat the tokens' selectors, neither matches the other scheme). / Thème par déploiement : un thème clair seul écrasait les valeurs sombres par défaut dans un hôte sombre ; chaque bloc est désormais limité à son schéma.
 
+---
+
 ## [0.10.0] — 2026-11-17 — a server can make its locale authoritative (opt-in)
 
 Minor. Additive: a server that does not opt in behaves exactly as in 0.9.0 (host locale, else `_meta.locale`, else `en`).
 
 ### Added
 - Tool result `_meta.localeAuthority?: "host" | "server"`. `"server"`: `_meta.locale` (`"fr"` | `"en"`) wins over the host's locale, for a client deployment whose staff read one language whatever the host UI shows. Absent, `"host"` or any other value: the 0.9.0 order. `"server"` with a missing or invalid `_meta.locale` falls back to the 0.9.0 order, never fails.
-- **Theme per deployment, as data**: tool result `_meta.theme` is a token-override document (`{ schemaVersion: 1, name?, light?, dark? }`, keys from the `@vantageos/mosaic-tokens` naming contract). One parser, `parseThemeDocument` (typed `ThemeError` with `issues[]` naming every bad token), refuses an unknown token, an injection-shaped value and a malformed colour; the config view applies a valid theme as ONE `<style data-mosaic-theme>` (light on `:root`, dark under `[data-theme="dark"]`), replaced on a new theme and removed when a result carries none. An invalid theme applies nothing. No theme: the default look, unchanged. `createConfigViewToolResult` accepts `theme`; `ThemeError`, `parseThemeDocument` and the `ThemeDocument` type are exported from `@vantageos/mosaic/server/config-view`.
 - `createConfigViewToolResult` accepts `localeAuthority` and puts it in `_meta` when given.
 - Dates in table and list cells render, for locale `fr`, as dd/mm/yyyy (`31/12/2026`) via `formatValue(value, format, locale, "cell")` / `columnText`; `en` cells and every detail view keep `dateStyle: "medium"` (UTC).
 
