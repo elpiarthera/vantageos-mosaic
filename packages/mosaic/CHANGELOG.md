@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.11.1] — 2026-11-19
+
 ### Changed
 - The theme-document parser (`parseThemeDocument`, `ThemeError`, `themeToCss`, `THEME_TOKEN_NAMES`, types `ThemeDocument` and `ThemeIssue`) now lives in `@vantageos/mosaic-tokens`, which has no runtime dependency, so a server can validate a theme without depending on `@vantageos/mosaic`. Mosaic re-exports the same objects under the same names: `@vantageos/mosaic/server/config-view` imports keep working unchanged, with the same accept/refuse behaviour and the same issue messages. / Le parseur de thème est déplacé dans `@vantageos/mosaic-tokens` (aucune dépendance d'exécution) ; mosaic le ré-exporte sous les mêmes noms, comportement et messages inchangés.
 
