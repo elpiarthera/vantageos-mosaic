@@ -9,6 +9,12 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+- The theme-document parser (`parseThemeDocument`, `ThemeError`, `themeToCss`, `THEME_TOKEN_NAMES`, types `ThemeDocument` and `ThemeIssue`) now lives in `@vantageos/mosaic-tokens`, which has no runtime dependency, so a server can validate a theme without depending on `@vantageos/mosaic`. Mosaic re-exports the same objects under the same names: `@vantageos/mosaic/server/config-view` imports keep working unchanged, with the same accept/refuse behaviour and the same issue messages. / Le parseur de thème est déplacé dans `@vantageos/mosaic-tokens` (aucune dépendance d'exécution) ; mosaic le ré-exporte sous les mêmes noms, comportement et messages inchangés.
+
+### Fixed
+- Theme per deployment: a `"__proto__"` key inside `light` or `dark` was silently dropped from the parsed theme; it is now refused as `unknown token __proto__`, like any other name outside the naming contract. / Une clé `"__proto__"` dans un bloc de thème était ignorée en silence ; elle est désormais refusée comme jeton inconnu.
+
 ## [0.11.0] — 2026-11-18 — theme per deployment, model-drivable lists
 
 Minor. Additive: a result without `_meta.theme` renders exactly as in 0.10.0, and a host that never calls the app tools sees the same view.

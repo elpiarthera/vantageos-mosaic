@@ -6,3 +6,5 @@
 export type { MosaicTokens } from "./tokens";
 export { colors, spacing, typography, shadows, radii, motion, tokens } from "./tokens";
 export { default } from "./tokens";
+export type { ThemeDocument, ThemeIssue } from "./theme";
+export { THEME_TOKEN_NAMES, ThemeError, parseThemeDocument, themeToCss } from "./theme";
