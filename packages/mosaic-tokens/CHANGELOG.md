@@ -1,6 +1,6 @@
 # @vantageos/mosaic-tokens — Changelog
 
-## Unreleased
+## 0.8.0
 
 - **Added**: the theme-document parser, moved here from `@vantageos/mosaic` so a server can validate a
   per-deployment theme with this package alone. Exports `parseThemeDocument`, `ThemeError` (with
