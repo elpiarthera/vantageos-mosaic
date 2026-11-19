@@ -1,5 +1,17 @@
 # @vantageos/mosaic-tokens — Changelog
 
+## Unreleased
+
+- **Added**: the theme-document parser, moved here from `@vantageos/mosaic` so a server can validate a
+  per-deployment theme with this package alone. Exports `parseThemeDocument`, `ThemeError` (with
+  `issues[]` listing every problem), `themeToCss`, `THEME_TOKEN_NAMES` (derived from
+  `naming-contract.json`) and the types `ThemeDocument` and `ThemeIssue`. The validation is
+  hand-written: `dependencies` stays empty. Same accept/refuse behaviour and same messages as the
+  parser previously shipped in `@vantageos/mosaic`, except that a `"__proto__"` key inside `light` or
+  `dark`, previously dropped silently, is now refused as `unknown token __proto__`.
+  / Le parseur de thème rejoint ce paquet (sans dépendance) ; mêmes règles et mêmes messages, et une
+  clé `"__proto__"` dans un bloc est désormais refusée au lieu d'être ignorée.
+
 ## 0.5.1
 
 - **Fix**: `examples/` is now listed in `package.json` `files`, and
