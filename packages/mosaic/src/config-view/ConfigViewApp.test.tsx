@@ -392,6 +392,24 @@ describe("theme and design (operator: the view looked plain)", () => {
     expect(document.documentElement.dataset.theme).toBe("light");
   });
 
+  it("the host theme known only once connected (the real ext-apps App) is applied right after connect", async () => {
+    // The real App holds the host context only after the ui/initialize handshake: before connect()
+    // resolves, getHostContext() is undefined, and connect() fires no onhostcontextchanged.
+    const { app } = mockApp();
+    let connected = false;
+    (app as unknown as { getHostContext: () => unknown }).getHostContext = () =>
+      connected ? { theme: "dark" } : undefined;
+    (app as unknown as { connect: () => Promise<void> }).connect = async () => {
+      connected = true;
+    };
+    const root = document.createElement("div");
+    document.body.appendChild(root);
+    await act(async () => {
+      await startConfigView(app, root);
+    });
+    expect(document.documentElement.dataset.theme).toBe("dark");
+  });
+
   const css = readFileSync(join(import.meta.dirname, "config-view.css"), "utf8");
   it("the stylesheet carries the mosaic tokens (light and dark) into the single file", () => {
     expect(css).toMatch(/@import\s+["']@vantageos\/mosaic-tokens\/css["']/);

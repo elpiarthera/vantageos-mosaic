@@ -209,4 +209,8 @@ export async function startConfigView(app: AppLike, root: HTMLElement): Promise<
   );
   createRoot(root).render(<ConfigViewApp app={app} store={store} listRegistry={listRegistry} />);
   await app.connect();
+  // The ext-apps App holds the host context only once the handshake is done, and connect() fires no
+  // onhostcontextchanged: the host theme is read again here, so it is not lost to the fallback above.
+  const connectedTheme = app.getHostContext()?.theme;
+  if (connectedTheme !== undefined) applyTheme(connectedTheme);
 }

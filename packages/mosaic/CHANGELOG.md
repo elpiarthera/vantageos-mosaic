@@ -9,6 +9,12 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.11.2] — 2026-11-20
+
+### Fixed
+
+- Config view: the host colour scheme is applied once `connect()` resolves. The ext-apps `App` holds the host context only after the `ui/initialize` handshake and fires no `onhostcontextchanged` for it, so the scheme read before `connect()` was always empty and the view fell back to `prefers-color-scheme`: a dark host could render the view light until its next context change. The test mock now returns the context only after connect, as the real App does.
+
 ## [0.11.1] — 2026-11-19
 
 ### Changed
