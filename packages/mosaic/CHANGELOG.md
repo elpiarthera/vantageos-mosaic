@@ -9,6 +9,12 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.12.0] — 2026-11-20
+
+### Added
+
+- New entry `@vantageos/mosaic/view-config`: the view-config parser (`parseViewConfig`, `assertViewConfig`, `ViewConfigError`, `ViewConfigSchema`, types `ViewConfig`, `ListViewConfig`, `DetailViewConfig`, `ViewConfigRowAction`, `ViewConfigSection`, `ConfigToolResult`, `ConfigViewBridge`) with no UI runtime: its built file and its declarations import `zod` only, so an MCP server can validate the config it serves without installing react, react-dom or preact. `@vantageos/mosaic/display` still exports the same objects. / Nouvelle entrée `@vantageos/mosaic/view-config` : le parseur de configuration de vue sans runtime d'interface (seule dépendance `zod`), pour qu'un serveur MCP valide sa configuration sans installer react ; `@vantageos/mosaic/display` exporte toujours les mêmes objets.
+
 ## [0.11.2] — 2026-11-20
 
 ### Fixed
