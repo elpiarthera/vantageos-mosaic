@@ -105,6 +105,8 @@ const PREACT_EXTERNAL = [
   "rxjs",
 ];
 
+const VIRTUAL_BUNDLED = [/^@tanstack\/(react-virtual|virtual-core)($|\/)/];
+
 const reactPass: Options = {
   entry: {
     // v0.1.2 back-compat root entries — preserved verbatim
@@ -145,6 +147,12 @@ const reactPass: Options = {
   treeshake: true,
   splitting: false,
   external: REACT_EXTERNAL,
+  // Bundle the virtualizer (a devDependency, not a runtime dependency): its
+  // `@tanstack/react-virtual` package declares react as a peer, so a hard
+  // dependency on it made a server-only npm consumer install react + react-dom.
+  // react / react-dom imported inside the bundled code stay external via
+  // REACT_EXTERNAL above.
+  noExternal: VIRTUAL_BUNDLED,
 };
 
 const preactPass: Options = {
@@ -172,7 +180,11 @@ const preactPass: Options = {
   // `reactToPreact` plugin below intercept and rewrite them to preact. Without
   // this, tsup externalises `react` / `react/jsx-runtime` first (peerDeps are
   // auto-external) and our rewrite never runs — that was the Gate 2 bug.
-  noExternal: [/^react($|-dom|\/jsx-runtime|\/jsx-dev-runtime|-dom\/client)/],
+  // The bundled virtualizer's own react imports take the same path.
+  noExternal: [
+    /^react($|-dom|\/jsx-runtime|\/jsx-dev-runtime|-dom\/client)/,
+    ...VIRTUAL_BUNDLED,
+  ],
   // onResolve plugin (not esbuildOptions.alias): runs AFTER tsup's external
   // plugin returns undefined for the react family, deterministically mapping
   // every react specifier to its preact equivalent + marking it external.

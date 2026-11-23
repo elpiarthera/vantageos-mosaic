@@ -61,9 +61,6 @@ importers:
       '@mcp-ui/server':
         specifier: 6.1.0
         version: 6.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@4.6.7)
-      '@tanstack/react-virtual':
-        specifier: 3.13.6
-        version: 3.13.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@vantageos/mosaic-tokens':
         specifier: workspace:*
         version: link:../mosaic-tokens
@@ -122,6 +119,9 @@ importers:
       '@tailwindcss/vite':
         specifier: 4.1.8
         version: 4.1.8(vite@6.4.4(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.30.1)(yaml@2.9.1))
+      '@tanstack/react-virtual':
+        specifier: 3.13.6
+        version: 3.13.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@testing-library/react':
         specifier: 16.3.0
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.0(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -199,7 +199,7 @@ importers:
         version: 25.0.0(typescript@5.8.3)
       react-i18next:
         specifier: 15.5.2
-        version: 15.5.2(i18next@25.0.0(typescript@5.8.3))(react@19.1.0)(typescript@5.8.3)
+        version: 15.5.2(i18next@25.0.0(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       tsup:
         specifier: 8.4.0
         version: 8.4.0(@swc/core@1.15.40)(jiti@2.7.0)(postcss@8.5.31)(typescript@5.8.3)(yaml@2.9.1)
@@ -7478,15 +7478,6 @@ snapshots:
       react: 19.1.0
     optionalDependencies:
       react-dom: 19.1.0(react@19.1.0)
-      typescript: 5.8.3
-
-  react-i18next@15.5.2(i18next@25.0.0(typescript@5.8.3))(react@19.1.0)(typescript@5.8.3):
-    dependencies:
-      '@babel/runtime': 7.29.7
-      html-parse-stringify: 3.0.1
-      i18next: 25.0.0(typescript@5.8.3)
-      react: 19.1.0
-    optionalDependencies:
       typescript: 5.8.3
 
   react-is@17.0.2: {}

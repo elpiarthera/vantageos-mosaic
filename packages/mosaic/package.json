@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "license": "FSL-1.1-Apache-2.0",
   "description": "Fleet-wide MCP UI design system — 7-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
@@ -222,7 +222,6 @@
   "dependencies": {
     "@lit-labs/react": "1.0.6",
     "@mcp-ui/server": "6.1.0",
-    "@tanstack/react-virtual": "3.13.6",
     "@vantageos/mosaic-tokens": "workspace:*",
     "dompurify": "3.4.17",
     "marked": "15.0.7",
@@ -241,6 +240,7 @@
     "@storybook/react": "8.6.19",
     "@storybook/react-vite": "8.6.19",
     "@storybook/test-runner": "0.21.0",
+    "@tanstack/react-virtual": "3.13.6",
     "@tailwindcss/vite": "4.1.8",
     "@testing-library/react": "16.3.0",
     "@testing-library/user-event": "14.6.1",
