@@ -463,7 +463,7 @@ schema is the authority on the props rather than this snippet.
 
 #### VirtualList
 
-Generic virtualized list for large datasets. Uses @tanstack/react-virtual v3 (already bundled via TableView). Cross-runtime: React 19 + Preact 10.
+Generic virtualized list for large datasets. Uses @tanstack/react-virtual v3 (bundled into the mosaic build, so a consumer never installs it). Cross-runtime: React 19 + Preact 10.
 
 ```tsx
 import { VirtualList } from "@vantageos/mosaic/react/display";
