@@ -13,7 +13,7 @@ const DEFAULT_ITEM_HEIGHT = 40;
  * VirtualList — generic virtualized list component.
  *
  * Cross-runtime: same file used by React 19 and Preact 10 (via preact/compat alias in tsup).
- * Virtualization: @tanstack/react-virtual v3 (already in mosaic deps via TableView).
+ * Virtualization: @tanstack/react-virtual v3 (bundled into the mosaic build, not a runtime dependency).
  * a11y: WCAG-AA — when onRowClick provided, rows get role=button + tabIndex=0 + Enter/Space.
  * Zod-validated serialisable props; renders role="alert" fallback on failure.
  *
