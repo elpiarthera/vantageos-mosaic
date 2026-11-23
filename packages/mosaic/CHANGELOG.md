@@ -9,6 +9,12 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.12.1] — 2026-11-23
+
+### Fixed
+
+- A server-only npm consumer no longer installs react and react-dom: `@tanstack/react-virtual` (whose peer is react) was a hard dependency, imported as an external specifier by the built `display` and `index` entries. It is now bundled into the React and Preact builds (inside the Preact build its react imports map to preact/compat) and moved to devDependencies; no built file imports it any more. / Un consommateur npm côté serveur n'installe plus react ni react-dom : `@tanstack/react-virtual` (dont le peer est react) est désormais embarqué dans les builds React et Preact et déplacé en devDependencies.
+
 ## [0.12.0] — 2026-11-20
 
 ### Added

@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic-i18n",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "FR+EN locale resources and react-i18next wiring for @vantageos/mosaic.",
   "license": "FSL-1.1-Apache-2.0",
   "type": "module",
@@ -54,6 +54,14 @@
   "peerDependencies": {
     "i18next": "^25.0.0",
     "react-i18next": "15.5.2"
+  },
+  "peerDependenciesMeta": {
+    "i18next": {
+      "optional": true
+    },
+    "react-i18next": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
