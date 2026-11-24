@@ -32,4 +32,22 @@ if (!preactImportFailed) {
   process.exit(3);
 }
 
-console.log("PASS: react-only fixture — react/* succeeds, preact/* fails as expected");
+// streaming entry — MUST fail: it loads rxjs, which this consumer does not have.
+let streamingImportFailed = false;
+try {
+  await import("@vantageos/mosaic/streaming");
+} catch (e) {
+  if (e?.code !== "ERR_MODULE_NOT_FOUND" || !String(e.message).includes("'rxjs'")) {
+    console.error("FAIL: streaming import failed for a reason other than missing rxjs", e);
+    process.exit(5);
+  }
+  streamingImportFailed = true;
+}
+if (!streamingImportFailed) {
+  console.error("FAIL: streaming import succeeded in react-only fixture without rxjs");
+  process.exit(6);
+}
+
+console.log(
+  "PASS: react-only fixture — react/* and the root succeed, preact/* and streaming fail as expected",
+);

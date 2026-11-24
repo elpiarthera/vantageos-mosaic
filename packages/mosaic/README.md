@@ -40,6 +40,7 @@ This constraint is codified locally via the `build` script (the `NODE_OPTIONS` p
 | `@vantageos/mosaic/server` | Node | `createMosaicResource()` MCP UI builder (runtime-agnostic) |
 | `@vantageos/mosaic/server/resource` | Node | `buildMcpAppResource()` MCP Apps `_meta` helper (pure, no React, no DOM) |
 | `@vantageos/mosaic/host` | runtime-free | Host-context core (theme, display mode, locale, model context) |
+| `@vantageos/mosaic/streaming` | runtime-free, needs `rxjs` | `createPostMessageObservable()`: `mosaic.stream.chunk` messages as an rxjs Observable. Install `rxjs@^7.8.0`; the root entry does not load rxjs |
 | `@vantageos/mosaic/react/host` · `/preact/host` | React 19 · Preact 10 | Hooks over the host-context core |
 
 `<cat>` = `progress` | `input` | `display` | `artifacts` | `confirmation` | `media`.

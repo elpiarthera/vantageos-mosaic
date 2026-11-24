@@ -34,6 +34,7 @@ echo "mosaic tarball: $MOSAIC_TGZ"
 declare -A FIXTURE_PEERS=(
   ["react-only"]="react@^19.1.0 react-dom@^19.1.0"
   ["preact-only"]="preact@^10.25.0"
+  ["react-rxjs"]="react@^19.1.0 react-dom@^19.1.0 rxjs@^7.8.0"
 )
 
 CONSUMERS=()
@@ -42,7 +43,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-for fixture in react-only preact-only; do
+for fixture in react-only preact-only react-rxjs; do
   echo "=== Gate 2 fixture: $fixture ==="
   CONSUMER="$(mktemp -d)"
   CONSUMERS+=("$CONSUMER")
@@ -69,4 +70,4 @@ EOF
   ( cd "$CONSUMER" && node index.mjs )
 done
 
-echo "PASS: Gate 2 peerDeps optionality smoke — both fixtures green"
+echo "PASS: Gate 2 peerDeps optionality smoke — all fixtures green"

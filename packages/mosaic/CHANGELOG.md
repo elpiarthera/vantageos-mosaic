@@ -9,6 +9,16 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.13.0] — 2026-11-24
+
+### Fixed
+
+- A React consumer without rxjs can import the root entry. `@vantageos/mosaic` loaded rxjs at runtime (through `createPostMessageObservable`), so `import "@vantageos/mosaic"` threw `ERR_MODULE_NOT_FOUND: Cannot find package 'rxjs'` although rxjs is an optional peer. The root now loads no optional peer other than react and react-dom. / Un consommateur React sans rxjs peut importer l'entrée racine : elle ne charge plus rxjs, qui est un peer optionnel.
+
+### Changed (breaking)
+
+- `createPostMessageObservable` moved from the root entry to the new entry `@vantageos/mosaic/streaming` (same function, same rxjs `Observable` return type). Migrate with `import { createPostMessageObservable } from "@vantageos/mosaic/streaming"` and install `rxjs@^7.8.0`. `MOSAIC_STREAM_CHUNK_TYPE`, `postSizeChanged` and `startSizeReporting` stay in the root; `MOSAIC_STREAM_CHUNK_TYPE` is also exported from `/streaming`. / `createPostMessageObservable` quitte l'entrée racine pour la nouvelle entrée `@vantageos/mosaic/streaming` (même fonction) ; installer `rxjs@^7.8.0` pour l'utiliser.
+
 ## [0.12.1] — 2026-11-23
 
 ### Fixed
