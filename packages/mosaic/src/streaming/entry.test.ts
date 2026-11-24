@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * The `@vantageos/mosaic/streaming` entry: the rxjs-backed postMessage stream, kept out of the
  * root entry because rxjs is an optional peer (see src/__tests__/root-entry-optional-peers.test.ts).
@@ -8,13 +9,19 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Observable } from "rxjs";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import * as root from "../index.js";
 import { runtimeBareImports } from "../__tests__/runtime-imports.js";
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 describe("@vantageos/mosaic/streaming entry", () => {
+  // Node environment (esbuild, loaded by the tsup config, refuses jsdom); the stream test
+  // supplies its own `window` as a plain EventTarget.
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("is declared in package.json exports with types, import and require", () => {
     const pkg = JSON.parse(readFileSync(resolve(PKG, "package.json"), "utf8"));
     expect(pkg.exports["./streaming"]).toEqual({
@@ -50,15 +57,17 @@ describe("@vantageos/mosaic/streaming entry", () => {
     const { createPostMessageObservable, MOSAIC_STREAM_CHUNK_TYPE } = await import(
       /* @vite-ignore */ entryPath
     );
+    const win = new EventTarget();
+    vi.stubGlobal("window", win);
     const stream$ = createPostMessageObservable();
     expect(stream$).toBeInstanceOf(Observable);
     const got: unknown[] = [];
     const sub = stream$.subscribe((v: unknown) => got.push(v));
-    window.dispatchEvent(
+    win.dispatchEvent(
       new MessageEvent("message", { data: { type: MOSAIC_STREAM_CHUNK_TYPE, data: { a: 1 } } }),
     );
-    window.dispatchEvent(new MessageEvent("message", { data: { type: "other", data: { b: 2 } } }));
-    window.dispatchEvent(
+    win.dispatchEvent(new MessageEvent("message", { data: { type: "other", data: { b: 2 } } }));
+    win.dispatchEvent(
       new MessageEvent("message", { data: { type: MOSAIC_STREAM_CHUNK_TYPE, params: { c: 3 } } }),
     );
     sub.unsubscribe();
