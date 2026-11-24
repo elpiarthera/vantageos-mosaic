@@ -82,8 +82,19 @@ def die(what: str) -> "NoReturn":
 # never the working directory.
 DEFAULT_PACKAGE_ROOT = Path(__file__).resolve().parent.parent
 
-# Categories that are NOT component categories even if they look like bare subpaths
-EXCLUDED_KEYS = {".", "./react", "./preact", "./tokens", "./server", "./registry.yaml"}
+# Categories that are NOT component categories even if they look like bare subpaths.
+# ./view-config and ./streaming are runtime-free entries (no React, no Preact): they have no
+# per-runtime counterpart by design, like ./tokens and ./server.
+EXCLUDED_KEYS = {
+    ".",
+    "./react",
+    "./preact",
+    "./tokens",
+    "./server",
+    "./view-config",
+    "./streaming",
+    "./registry.yaml",
+}
 
 # DEVIATION (see header): vantageos-mosaic exports are runtime-prefixed
 # (./react/<cat>, ./preact/<cat>). The canonical skill assumes category-prefixed
