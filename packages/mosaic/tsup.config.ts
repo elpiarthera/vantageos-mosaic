@@ -183,10 +183,7 @@ const preactPass: Options = {
   // this, tsup externalises `react` / `react/jsx-runtime` first (peerDeps are
   // auto-external) and our rewrite never runs — that was the Gate 2 bug.
   // The bundled virtualizer's own react imports take the same path.
-  noExternal: [
-    /^react($|-dom|\/jsx-runtime|\/jsx-dev-runtime|-dom\/client)/,
-    ...VIRTUAL_BUNDLED,
-  ],
+  noExternal: [/^react($|-dom|\/jsx-runtime|\/jsx-dev-runtime|-dom\/client)/, ...VIRTUAL_BUNDLED],
   // onResolve plugin (not esbuildOptions.alias): runs AFTER tsup's external
   // plugin returns undefined for the react family, deterministically mapping
   // every react specifier to its preact equivalent + marking it external.
