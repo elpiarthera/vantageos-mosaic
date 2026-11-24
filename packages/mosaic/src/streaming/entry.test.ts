@@ -10,8 +10,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Observable } from "rxjs";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import * as root from "../index.js";
 import { runtimeBareImports } from "../__tests__/runtime-imports.js";
+import * as root from "../index.js";
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
