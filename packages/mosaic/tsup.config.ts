@@ -123,6 +123,8 @@ const reactPass: Options = {
     "server/config-view": "src/server/config-view.ts",
     // React-free view-config parser (servers validate a config without a UI runtime)
     "view-config": "src/view-config/index.ts",
+    // rxjs-backed postMessage stream, kept out of the root entry (rxjs is an optional peer)
+    streaming: "src/streaming/index.ts",
     host: "src/host/host-context.ts",
     // v0.2.0 react runtime subpaths
     "react/index": "src/runtimes/react/index.ts",

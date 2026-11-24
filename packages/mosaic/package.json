@@ -1,6 +1,6 @@
 {
   "name": "@vantageos/mosaic",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "license": "FSL-1.1-Apache-2.0",
   "description": "Fleet-wide MCP UI design system — 7-category taxonomy, Zod-validated, registry-gated, streaming-ready, cross-runtime (React 19 + Preact 10).",
   "type": "module",
@@ -159,6 +159,11 @@
       "types": "./dist/view-config.d.ts",
       "import": "./dist/view-config.js",
       "require": "./dist/view-config.cjs"
+    },
+    "./streaming": {
+      "types": "./dist/streaming.d.ts",
+      "import": "./dist/streaming.js",
+      "require": "./dist/streaming.cjs"
     },
     "./registry.yaml": "./registry.yaml"
   },

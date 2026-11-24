@@ -1,0 +1,12 @@
+{
+  "name": "mosaic-peer-resolution-react-rxjs-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vantageos/mosaic": "file:../../../packages/mosaic",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "rxjs": "^7.8.0"
+  }
+}
