@@ -165,11 +165,46 @@ function Harness({
 }
 
 describe("MultiSelect (React runtime)", () => {
-  it("renders trigger with combobox role and aria-multiselectable", () => {
+  it("renders trigger with combobox role; aria-multiselectable sits on the listbox, not the combobox", () => {
     render(<Harness />);
     const trigger = screen.getByTestId("multiselect-trigger");
     expect(trigger.getAttribute("role")).toBe("combobox");
-    expect(trigger.getAttribute("aria-multiselectable")).toBe("true");
+    // ARIA 1.2: aria-multiselectable is not a supported property of role=combobox.
+    expect(trigger.hasAttribute("aria-multiselectable")).toBe(false);
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(trigger);
+    expect(screen.getByRole("listbox").getAttribute("aria-multiselectable")).toBe("true");
+  });
+
+  it("keyboard on the focused combobox alone: ArrowDown opens, ArrowDown moves, Enter selects; aria-activedescendant names the active option", async () => {
+    render(<Harness />);
+    const trigger = screen.getByTestId("multiselect-trigger");
+    trigger.focus();
+    expect(document.activeElement).toBe(trigger);
+    expect(trigger.hasAttribute("aria-activedescendant")).toBe(false);
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    expect(screen.getByRole("listbox")).toBeTruthy();
+    expect(trigger.getAttribute("aria-activedescendant")).toBe(screen.getByTestId("option-fr").id);
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    const spain = screen.getByTestId("option-es");
+    expect(spain.id).not.toBe("");
+    expect(trigger.getAttribute("aria-activedescendant")).toBe(spain.id);
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    await waitFor(() => {
+      expect(screen.getByTestId("multiselect-chips").textContent).toContain("Spain");
+    });
+    // Focus never left the combobox.
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("Escape on the focused combobox closes the open listbox", () => {
+    render(<Harness />);
+    const trigger = screen.getByTestId("multiselect-trigger");
+    trigger.focus();
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    expect(screen.getByRole("listbox")).toBeTruthy();
+    fireEvent.keyDown(trigger, { key: "Escape" });
+    expect(screen.queryByRole("listbox")).toBeNull();
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
   });
 

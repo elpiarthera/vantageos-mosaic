@@ -26,7 +26,7 @@ function SkeletonInner({ variant, width, height, count, animation, locale }: Ske
 
   if (variant === "text") {
     return (
-      // biome-ignore lint/a11y/useSemanticElements: role="status" is the correct ARIA pattern for loading indicators; <output> conveys form output semantics which is incorrect here
+      // biome-ignore lint/a11y/useSemanticElements: role="status" is the correct ARIA pattern for loading indicators; <output> conveys form output semantics which is incorrect here // react-doctor-disable-next-line react-doctor/prefer-tag-over-role -- <output> is the result of a form calculation; a loading placeholder is a status message, for which role=status on a <div> is the ARIA pattern
       <div role="status" aria-label={ariaLabel} aria-busy="true" class="flex flex-col gap-2">
         {Array.from({ length: count }, (_, i) => (
           <span
@@ -45,6 +45,7 @@ function SkeletonInner({ variant, width, height, count, animation, locale }: Ske
 
   return (
     <div
+      // react-doctor-disable-next-line react-doctor/prefer-tag-over-role -- <output> is the result of a form calculation; a loading placeholder is a status message, for which role=status on a <div> is the ARIA pattern
       role="status"
       aria-label={ariaLabel}
       aria-busy="true"

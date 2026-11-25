@@ -28,8 +28,10 @@ export interface MultiSelectProps {
  * Multi-value dropdown. Bound to RHF via `FormField` — value lives at
  * `form.values[name]` as `string[]`. Selected values render as removable
  * chips; the dropdown lists only unselected options. WCAG-AA combobox
- * pattern: `role=combobox aria-multiselectable=true`, chip removal via
- * Backspace / Delete / per-chip close icon, Tab + Arrow nav.
+ * pattern (APG select-only combobox): focus stays on the `role=combobox`
+ * trigger, which drives the open `role=listbox aria-multiselectable=true`
+ * through `aria-activedescendant` (Arrow keys move, Enter selects, Escape
+ * closes); chip removal via Backspace / Delete / per-chip close icon.
  */
 export function MultiSelect(props: MultiSelectProps) {
   const parsed = MultiSelectPropsSchema.parse({
@@ -181,6 +183,9 @@ function Inner(p: InnerProps) {
     [availableAfterSelect, p.searchable, query],
   );
   const atMax = isAtMaxItems(p.value, p.maxItems);
+  const optionId = (i: number) => `${p.listboxId}-option-${i}`;
+  const activeDescendant =
+    open && visibleOptions[activeIndex] !== undefined ? optionId(activeIndex) : undefined;
 
   const handleSelect = useCallback(
     (val: string) => {
@@ -200,32 +205,8 @@ function Inner(p: InnerProps) {
     [p],
   );
 
-  const handleTriggerKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (p.disabled) return;
-      if (e.key === "Backspace" || e.key === "Delete") {
-        const last = p.value[p.value.length - 1];
-        if (last !== undefined) {
-          e.preventDefault();
-          handleRemove(last);
-        }
-        return;
-      }
-      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        setOpen(true);
-        setActiveIndex(0);
-        return;
-      }
-      if (e.key === "Escape") {
-        setOpen(false);
-      }
-    },
-    [p.disabled, p.value, handleRemove],
-  );
-
   const handleListKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLUListElement>) => {
+    (e: React.KeyboardEvent<HTMLElement>) => {
       if (e.key === "ArrowDown") {
         e.preventDefault();
         setActiveIndex((i) => Math.min(i + 1, Math.max(visibleOptions.length - 1, 0)));
@@ -249,6 +230,38 @@ function Inner(p: InnerProps) {
       }
     },
     [visibleOptions, activeIndex, handleSelect],
+  );
+
+  const handleTriggerKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (p.disabled) return;
+      if (e.key === "Backspace" || e.key === "Delete") {
+        const last = p.value[p.value.length - 1];
+        if (last !== undefined) {
+          e.preventDefault();
+          handleRemove(last);
+        }
+        return;
+      }
+      // Open: the trigger keeps focus and drives the listbox (aria-activedescendant).
+      if (
+        open &&
+        (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === "Escape")
+      ) {
+        handleListKeyDown(e);
+        return;
+      }
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        setOpen(true);
+        setActiveIndex(0);
+        return;
+      }
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    },
+    [p.disabled, p.value, handleRemove, open, handleListKeyDown],
   );
 
   return (
@@ -279,9 +292,9 @@ function Inner(p: InnerProps) {
         type="button"
         // biome-ignore lint/a11y/useSemanticElements: WAI-ARIA combobox pattern requires role=combobox on the trigger element (button is the recommended host element per APG 1.2 — there is no semantic HTML equivalent for a multi-select combobox).
         role="combobox"
-        aria-multiselectable={true}
         aria-expanded={open}
         aria-controls={p.listboxId}
+        aria-activedescendant={activeDescendant}
         aria-labelledby={p.labelId}
         aria-disabled={p.disabled || atMax || undefined}
         disabled={p.disabled}
@@ -310,8 +323,9 @@ function Inner(p: InnerProps) {
           <ul
             id={p.listboxId}
             // biome-ignore lint/a11y/useSemanticElements: APG combobox requires role=listbox on a ul container.
-            // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG combobox listbox pattern.
+            // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG combobox listbox pattern. // react-doctor-disable-next-line react-doctor/no-noninteractive-element-to-interactive-role -- APG combobox popup: the explicit listbox role replaces the list semantics of <ul>; no native element is a multi-select listbox popup
             role="listbox"
+            // react-doctor-disable-next-line react-doctor/role-supports-aria-props -- ARIA 1.2 lists aria-multiselectable as a supported property of role=listbox; the rule's table omits it
             aria-multiselectable={true}
             aria-labelledby={p.labelId}
             tabIndex={-1}
@@ -322,12 +336,13 @@ function Inner(p: InnerProps) {
               <li className="mosaic-multiselect-empty">No options</li>
             ) : (
               visibleOptions.map((opt, i) => (
-                // biome-ignore lint/a11y/useFocusableInteractive: focus stays on the listbox; APG combobox active-descendant pattern.
-                // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard handled at listbox level per APG.
+                // biome-ignore lint/a11y/useFocusableInteractive: focus stays on the combobox; APG combobox active-descendant pattern.
+                // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard handled on the combobox per APG. // react-doctor-disable-next-line react-doctor/click-events-have-key-events -- options are never focused: Arrow/Enter on the focused combobox select the aria-activedescendant option (APG combobox)
                 <li
                   key={opt.value}
+                  id={optionId(i)}
                   // biome-ignore lint/a11y/useSemanticElements: APG combobox-listbox pattern.
-                  // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG combobox-listbox pattern.
+                  // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG combobox-listbox pattern. // react-doctor-disable-next-line react-doctor/no-noninteractive-element-to-interactive-role -- APG combobox popup: each <li> of the listbox is an option; the role replaces listitem semantics
                   role="option"
                   aria-selected={false}
                   data-testid={`option-${opt.value}`}

@@ -206,14 +206,21 @@ describe("TokenDisplayOnceModal behaviour", () => {
     expect(screen.queryByText("Copied")).toBeNull();
   });
 
-  it("inner div stops keydown propagation to prevent unintended dialog-level keydown handling", () => {
+  it("Enter on a button inside the dialog does not close it", () => {
     const onClose = vi.fn();
     render(<TokenDisplayOnceModal {...baseProps} onClose={onClose} />);
     const copyBtn = screen.getByText("Copy token");
-    // Fire keydown on the button (inside the inner div) — exercises onKeyDown stopPropagation
     fireEvent.keyDown(copyBtn, { key: "Enter" });
-    // onClose should NOT have been called via ESC handling
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("Escape with focus on a button inside the dialog calls onClose (focus is always inside a modal dialog)", () => {
+    const onClose = vi.fn();
+    render(<TokenDisplayOnceModal {...baseProps} onClose={onClose} />);
+    const copyBtn = screen.getByText("Copy token");
+    copyBtn.focus();
+    fireEvent.keyDown(copyBtn, { key: "Escape", code: "Escape" });
+    expect(onClose).toHaveBeenCalledOnce();
   });
 });
 

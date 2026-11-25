@@ -24,13 +24,14 @@ function ProgressBarInner(props: ProgressBarProps) {
   const containerClass = containerVariantClasses[colorVariant];
 
   return (
+    // biome-ignore lint/a11y/useFocusableInteractive: a progressbar is read, not operated; WAI-ARIA APG gives it no keyboard interaction, and a tab stop that does nothing misleads keyboard users
     <div
+      // react-doctor-disable-next-line react-doctor/prefer-tag-over-role -- native <progress> renders its children only as fallback content, so it cannot carry the colour-variant fill and the visible "label: value%" text this component draws
       role="progressbar"
       aria-valuenow={value}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-label={label}
-      tabIndex={0}
       className={`mosaic-progress ${containerClass}`}
       style={{ width: "100%" }}
     >

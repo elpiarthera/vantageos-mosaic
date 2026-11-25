@@ -321,9 +321,9 @@ function TableCore<TRow extends AnyRow>(props: CoreProps<TRow>) {
   if (stickyHeader) {
     return (
       <div
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: WCAG 2.1.1 — the sticky-header scroll region is scrollable and must be keyboard reachable (axe scrollable-region-focusable)
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: WCAG 2.1.1 — the sticky-header scroll region is scrollable and must be keyboard reachable (axe scrollable-region-focusable) // react-doctor-disable-next-line react-doctor/no-noninteractive-tabindex -- WCAG 2.1.1: a scrollable region must be keyboard reachable to be scrolled (axe scrollable-region-focusable); its name is announced on focus
         tabIndex={0}
-        // biome-ignore lint/a11y/useSemanticElements: the region wraps a <table>; role=region + aria-label is the non-structural annotation (same as the virtual viewport)
+        // biome-ignore lint/a11y/useSemanticElements: the region wraps a <table>; role=region + aria-label is the non-structural annotation (same as the virtual viewport) // react-doctor-disable-next-line react-doctor/prefer-tag-over-role -- a named <section> yields the same region landmark; the explicit role on a <div> is kept because styles select the scroll viewport by [role="region"] (config-view.css), so a tag change would break them
         role="region"
         aria-label={ariaLabel}
         style={{ maxHeight: props.maxHeight ?? 400, overflow: "auto" }}
@@ -569,9 +569,9 @@ function VirtualTable<TRow extends AnyRow>(props: TableContentProps<TRow>) {
       // virtualized viewport in the tab order so keyboard users can scroll it;
       // role=region + aria-label expose it as a named landmark so the focusable
       // element is announced. Verified axe 0 violations (tests/a11y/TableView.spec.ts).
-      // biome-ignore lint/a11y/useSemanticElements: the scroll viewport wraps a <table>; converting it to <section> would nest sectioning content inside the table wrapper and break the virtualizer's ref-bound div — role=region is the correct, non-structural a11y annotation here
+      // biome-ignore lint/a11y/useSemanticElements: the scroll viewport wraps a <table>; converting it to <section> would nest sectioning content inside the table wrapper and break the virtualizer's ref-bound div — role=region is the correct, non-structural a11y annotation here // react-doctor-disable-next-line react-doctor/prefer-tag-over-role -- a named <section> yields the same region landmark; the explicit role on a <div> is kept because styles select the scroll viewport by [role="region"] (config-view.css), so a tag change would break them
       role="region"
-      // biome-ignore lint/a11y/noNoninteractiveTabindex: WCAG 2.1.1 — the virtual-scroll viewport is scrollable and must be in the tab order for keyboard scroll access (axe scrollable-region-focusable)
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: WCAG 2.1.1 — the virtual-scroll viewport is scrollable and must be in the tab order for keyboard scroll access (axe scrollable-region-focusable) // react-doctor-disable-next-line react-doctor/no-noninteractive-tabindex -- WCAG 2.1.1: the virtual-scroll viewport must be keyboard reachable to be scrolled (axe scrollable-region-focusable); its name is announced on focus
       tabIndex={0}
       aria-label={ariaLabel}
       style={{ height: 400, overflow: "auto", position: "relative" }}

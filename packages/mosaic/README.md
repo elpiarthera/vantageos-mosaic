@@ -194,7 +194,7 @@ export function PlanSelector() {
 - `aria-disabled` on disabled options; disabled options skipped in arrow nav
 - `aria-orientation` reflects `orientation` prop
 
-| `<MultiSelect name="..." label="..." options={...} placeholder? disabled? searchable? maxItems? />` | Multi-value dropdown. RHF value is `string[]`. Selected items render as removable chips (Backspace/Delete on trigger removes last, per-chip × removes specific). WCAG-AA combobox (`role=combobox aria-multiselectable=true`), Arrow/Enter keyboard nav, optional case-insensitive search, optional `maxItems` cap. |
+| `<MultiSelect name="..." label="..." options={...} placeholder? disabled? searchable? maxItems? />` | Multi-value dropdown. RHF value is `string[]`. Selected items render as removable chips (Backspace/Delete on trigger removes last, per-chip × removes specific). WCAG-AA combobox: focus stays on the `role=combobox` trigger, which drives the `role=listbox aria-multiselectable=true` popup through `aria-activedescendant` (Arrow/Enter/Escape), optional case-insensitive search, optional `maxItems` cap. |
 
 | `<Select name="..." label="..." options={[...]} />` | Single-select dropdown (combobox+listbox APG). Optional `searchable` prop enables in-popup filter. Full keyboard nav + type-ahead. WCAG-AA strict. |
 

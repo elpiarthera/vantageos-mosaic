@@ -148,14 +148,22 @@ describe("ConfirmDialog behaviour", () => {
     expect(onCancel).toHaveBeenCalledOnce();
   });
 
-  it("inner div stops keydown propagation to prevent unintended dialog-level keydown handling", () => {
+  it("Enter on the confirm button does not cancel", () => {
     const onConfirm = vi.fn();
     const onCancel = vi.fn();
     render(<ConfirmDialog {...baseProps} onConfirm={onConfirm} onCancel={onCancel} />);
-    const confirmBtn = screen.getByText("Confirm");
-    // Fire keydown on the button (inside the inner div) — exercises onKeyDown stopPropagation
-    fireEvent.keyDown(confirmBtn, { key: "Enter" });
-    // onCancel should NOT have been called (stopPropagation prevents dialog-level ESC handling)
+    fireEvent.keyDown(screen.getByText("Confirm"), { key: "Enter" });
     expect(onCancel).not.toHaveBeenCalled();
+  });
+
+  it("Escape with focus on a button inside the dialog calls onCancel (focus is always inside a modal dialog)", () => {
+    const onConfirm = vi.fn();
+    const onCancel = vi.fn();
+    render(<ConfirmDialog {...baseProps} onConfirm={onConfirm} onCancel={onCancel} />);
+    const cancelBtn = screen.getByText("Cancel");
+    cancelBtn.focus();
+    fireEvent.keyDown(cancelBtn, { key: "Escape", code: "Escape" });
+    expect(onCancel).toHaveBeenCalledOnce();
+    expect(onConfirm).not.toHaveBeenCalled();
   });
 });
