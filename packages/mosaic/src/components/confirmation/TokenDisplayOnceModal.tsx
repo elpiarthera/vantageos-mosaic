@@ -1,5 +1,3 @@
-"use client";
-
 // i18nKeys: TokenDisplayOnceModal.button.copy, TokenDisplayOnceModal.button.close,
 //           TokenDisplayOnceModal.warning.once, TokenDisplayOnceModal.copied
 

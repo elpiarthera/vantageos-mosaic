@@ -1,5 +1,3 @@
-"use client";
-
 // i18nKeys: EmptyState.error.invalidProps
 
 import type { ReactNode } from "react";

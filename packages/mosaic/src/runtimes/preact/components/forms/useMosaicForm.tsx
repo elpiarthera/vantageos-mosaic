@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type DefaultValues, type FieldValues, type UseFormReturn, useForm } from "react-hook-form";
 import type { ZodSchema, ZodType } from "zod";

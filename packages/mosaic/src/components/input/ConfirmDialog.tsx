@@ -1,5 +1,3 @@
-"use client";
-
 // i18nKeys: ConfirmDialog.button.confirm, ConfirmDialog.button.cancel, ConfirmDialog.aria.dialog
 
 import { type KeyboardEvent, type MouseEvent, useEffect, useId, useRef } from "react";

@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useId, useRef } from "react";
 import type { FieldValues, Path } from "react-hook-form";
 import {

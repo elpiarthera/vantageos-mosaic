@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useId, useMemo, useRef, useState } from "react";
 import {
   addValue,

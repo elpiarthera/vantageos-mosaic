@@ -1,5 +1,3 @@
-"use client";
-
 // i18nKeys: Alert.aria.dismiss, Alert.error.invalidProps
 
 import {
