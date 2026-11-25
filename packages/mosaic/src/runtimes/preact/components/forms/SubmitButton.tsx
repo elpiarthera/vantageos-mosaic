@@ -1,5 +1,3 @@
-"use client";
-
 import { computeSubmitButtonState } from "../../../../components/forms/SubmitButton.logic.js";
 import { validateSubmitButtonProps } from "../../../../components/forms/SubmitButton.schema.js";
 import { useMosaicFormContext } from "./FormProvider.js";

@@ -1,5 +1,3 @@
-"use client";
-
 // i18nKeys: MarkdownRenderer.aria.content, MarkdownRenderer.error.invalidProps, MarkdownRenderer.error.tooLong
 
 import DOMPurify from "dompurify";

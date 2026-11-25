@@ -1,5 +1,3 @@
-"use client";
-
 import { type ReactNode, createContext, useContext } from "react";
 import { type FieldValues, FormProvider as RhfFormProvider } from "react-hook-form";
 import { FORM_PROVIDER_CONTEXT_MISSING } from "../../../../components/forms/FormProvider.logic.js";

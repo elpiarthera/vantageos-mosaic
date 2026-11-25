@@ -1,5 +1,3 @@
-"use client";
-
 // i18nKeys: Toast.aria.close, Toast.error.invalidProps
 
 import { type KeyboardEvent, useEffect } from "react";

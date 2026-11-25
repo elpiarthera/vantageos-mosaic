@@ -1,5 +1,3 @@
-"use client";
-
 import { formatErrorMessage } from "../../../../components/forms/ErrorDisplay.logic.js";
 import type { FieldErrorShape } from "../../../../components/forms/ErrorDisplay.schema.js";
 

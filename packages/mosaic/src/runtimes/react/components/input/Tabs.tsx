@@ -1,5 +1,3 @@
-"use client";
-
 // i18nKeys: Tabs.error.invalidProps
 
 import { type KeyboardEvent, useId, useRef, useState } from "react";
