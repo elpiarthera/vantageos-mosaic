@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
@@ -213,5 +213,32 @@ describe("check-boat-proof", () => {
     r = run(bare, proof, bare, { GIT_CEILING_DIRECTORIES: dirname(bare) });
     expect(r.status).toBe(2);
     expect(r.out).toContain("Boat proof check error");
+  });
+});
+
+// The checker only protects a publish if the package actually calls it, and a Boat proof only means
+// something if the script Boat runs still runs the tests. Both links live in the REAL package.json
+// of this package (located from this file, never from the working directory), so they are pinned
+// here: removing either one turns a test red.
+describe("publish wiring in packages/mosaic/package.json", () => {
+  const realPkg = JSON.parse(readFileSync(join(import.meta.dirname, "..", "package.json"), "utf8"));
+  const scripts: Record<string, string> = realPkg.scripts ?? {};
+
+  it("prepublishOnly runs the Boat proof check first and runs no tests on the host", () => {
+    const pre = scripts.prepublishOnly;
+    expect(typeof pre).toBe("string");
+    expect(pre.startsWith("node scripts/check-boat-proof.mjs &&")).toBe(true);
+    for (const banned of ["vitest", "pnpm run test", "size-limit"]) {
+      expect(pre, `prepublishOnly must not run '${banned}'`).not.toContain(banned);
+    }
+  });
+
+  it("publish:proof runs build, test and size-limit as separate steps", () => {
+    const proof = scripts["publish:proof"];
+    expect(typeof proof).toBe("string");
+    const steps = proof.split("&&").map((s) => s.trim());
+    for (const step of ["pnpm run build", "pnpm run test", "pnpm run size-limit"]) {
+      expect(steps, `publish:proof must have the step '${step}'`).toContain(step);
+    }
   });
 });

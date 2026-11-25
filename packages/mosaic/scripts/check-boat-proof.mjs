@@ -20,6 +20,10 @@
  * command that produces the proof. Exit 2: the check itself could not run (fail closed).
  *
  * The package root is derived from this file's location, never from the working directory.
+ *
+ * Limit: the log is not authenticated. A hand-assembled log (a banner copied from a real run plus a
+ * BOAT line from a trivial run) passes, because boat-test-run does not print the command it ran;
+ * this check stops an accidental publish, not a deliberate one.
  */
 
 import { execFileSync } from "node:child_process";
