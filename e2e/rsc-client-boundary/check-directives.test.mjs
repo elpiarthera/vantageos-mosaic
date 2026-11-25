@@ -137,7 +137,11 @@ describe("Gate 6 census — trivia around a server directive (exit 1)", () => {
     ["block comment before, same line", "dist/server/resource.js", "/* a */ 'use client'"],
     ["block comment after, then ;", "dist/preact/forms.js", '"use client" /* x */;'],
     ["tab before and before ;", "dist/host.cjs", '\t"use client"\t;'],
-    ["vertical tab, form feed, no-break space", "dist/preact/progress.js", '\v\f\u00a0"use client"\u00a0;'],
+    [
+      "vertical tab, form feed, no-break space",
+      "dist/preact/progress.js",
+      '\v\f\u00a0"use client"\u00a0;',
+    ],
     ["BOM first", "dist/streaming.js", '\ufeff"use client";'],
     ["line separator ends the statement", "dist/server.js", '"use client"\u2028'],
     ["CR line break ends the statement", "dist/server.cjs", '"use client"\r'],
