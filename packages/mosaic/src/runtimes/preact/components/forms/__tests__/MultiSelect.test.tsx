@@ -20,6 +20,26 @@ const PARITY_OPTS = [
   { value: "es", label: "Spain" },
 ];
 
+const THREE_OPTS = [...PARITY_OPTS, { value: "de", label: "Germany" }];
+
+function ThreeHarness() {
+  const form = useMosaicForm({
+    schema: z.object({ countries: z.array(z.string()) }),
+    defaultValues: { countries: [] as string[] },
+  });
+  return (
+    <FormProvider form={form}>
+      <MultiSelect name="countries" label="Countries" options={THREE_OPTS} />
+    </FormProvider>
+  );
+}
+
+/** Every aria-activedescendant on a combobox must name an element present in the document. */
+function expectActiveDescendantResolves(trigger: HTMLElement) {
+  const id = trigger.getAttribute("aria-activedescendant");
+  if (id !== null) expect(document.getElementById(id)).not.toBeNull();
+}
+
 function Harness() {
   const form = useMosaicForm({
     schema: z.object({ countries: z.array(z.string()) }),
@@ -82,5 +102,37 @@ describe("preact/forms MultiSelect combobox keyboard + ARIA parity", () => {
       expect(screen.getByTestId("multiselect-chips").textContent).toContain("Spain");
     });
     expect(document.activeElement).toBe(trigger);
+  });
+
+  it("a keyboard selection that shrinks the list clamps the active option (parity)", async () => {
+    render(<ThreeHarness />);
+    const trigger = screen.getByTestId("multiselect-trigger");
+    trigger.focus();
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    expect(trigger.getAttribute("aria-activedescendant")).toBe(screen.getByTestId("option-de").id);
+    // Select the LAST option: the list shrinks to two and the old index 2 is past its end.
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    await waitFor(() => {
+      expect(screen.getByTestId("multiselect-chips").textContent).toContain("Germany");
+    });
+    expect(screen.queryByTestId("option-de")).toBeNull();
+    expectActiveDescendantResolves(trigger);
+    // The active option is clamped to the new last option (Spain), so Enter selects it.
+    expect(trigger.getAttribute("aria-activedescendant")).toBe(screen.getByTestId("option-es").id);
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    await waitFor(() => {
+      expect(screen.getByTestId("multiselect-chips").textContent).toContain("Spain");
+    });
+    expectActiveDescendantResolves(trigger);
+    // One option left: it is active, and Enter selects it.
+    expect(trigger.getAttribute("aria-activedescendant")).toBe(screen.getByTestId("option-fr").id);
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    await waitFor(() => {
+      expect(screen.getByTestId("multiselect-chips").textContent).toContain("France");
+    });
+    // No option left: nothing is referenced.
+    expect(trigger.hasAttribute("aria-activedescendant")).toBe(false);
   });
 });

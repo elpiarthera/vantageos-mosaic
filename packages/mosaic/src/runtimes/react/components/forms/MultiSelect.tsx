@@ -183,9 +183,12 @@ function Inner(p: InnerProps) {
     [availableAfterSelect, p.searchable, query],
   );
   const atMax = isAtMaxItems(p.value, p.maxItems);
+  // The option list shrinks after every selection (and on each search keystroke), so the
+  // stored index can point past its end. Every read goes through the clamped value: it
+  // always names an existing option, or nothing when the list is empty.
+  const currentIndex = Math.min(activeIndex, visibleOptions.length - 1);
   const optionId = (i: number) => `${p.listboxId}-option-${i}`;
-  const activeDescendant =
-    open && visibleOptions[activeIndex] !== undefined ? optionId(activeIndex) : undefined;
+  const activeDescendant = open && currentIndex >= 0 ? optionId(currentIndex) : undefined;
 
   const handleSelect = useCallback(
     (val: string) => {
@@ -209,17 +212,17 @@ function Inner(p: InnerProps) {
     (e: React.KeyboardEvent<HTMLElement>) => {
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setActiveIndex((i) => Math.min(i + 1, Math.max(visibleOptions.length - 1, 0)));
+        setActiveIndex(Math.min(currentIndex + 1, Math.max(visibleOptions.length - 1, 0)));
         return;
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();
-        setActiveIndex((i) => Math.max(i - 1, 0));
+        setActiveIndex(Math.max(currentIndex - 1, 0));
         return;
       }
       if (e.key === "Enter") {
         e.preventDefault();
-        const opt = visibleOptions[activeIndex];
+        const opt = visibleOptions[currentIndex];
         if (opt) handleSelect(opt.value);
         return;
       }
@@ -229,7 +232,7 @@ function Inner(p: InnerProps) {
         triggerRef.current?.focus();
       }
     },
-    [visibleOptions, activeIndex, handleSelect],
+    [visibleOptions, currentIndex, handleSelect],
   );
 
   const handleTriggerKeyDown = useCallback(
@@ -346,7 +349,7 @@ function Inner(p: InnerProps) {
                   role="option"
                   aria-selected={false}
                   data-testid={`option-${opt.value}`}
-                  data-active={i === activeIndex || undefined}
+                  data-active={i === currentIndex || undefined}
                   className="mosaic-multiselect-option"
                   onClick={() => handleSelect(opt.value)}
                 >
