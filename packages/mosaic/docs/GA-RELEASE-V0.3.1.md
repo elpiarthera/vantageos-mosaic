@@ -427,7 +427,7 @@ npm install @vantageos/mosaic@^0.3.1 @vantageos/mosaic-tokens@^0.2.0
 ```
 
 ```tsx
-// app/dashboard/page.tsx (Server Component — import works at module level)
+// app/dashboard/page.tsx (Server Component — see "Server Components" below for the versions this holds on)
 import { TableView } from '@vantageos/mosaic/react/display';
 import { ProgressBar } from '@vantageos/mosaic/react/progress';
 import { StatusBadge } from '@vantageos/mosaic/react/media';
@@ -439,6 +439,16 @@ import { Alert } from '@vantageos/mosaic/react/display';
 import { useMosaicForm, FormField, SubmitButton } from '@vantageos/mosaic/react/forms';
 import { Input, Select, Checkbox } from '@vantageos/mosaic/react/forms';
 ```
+
+> **Server Components** — the React entries (`@vantageos/mosaic`, the category entries such as
+> `@vantageos/mosaic/display`, and every `@vantageos/mosaic/react/*`) ship `"use client";` as
+> their first line from the first release after 0.13.0 (CHANGELOG `[Unreleased]`). A Server
+> Component then imports and renders their components as above. It receives client references,
+> so the validators and schemas those entries also export cannot be called from server code:
+> validate a view config on the server with `@vantageos/mosaic/view-config`, which carries no
+> directive. Up to and including 0.13.0 the built files carry no directive and a Server Component
+> that renders a hook-using component fails (`useState is not a function`): import the components
+> from a module that starts with `"use client"`. Proof: Gate 6, `e2e/rsc-client-boundary/run-next-build.sh`.
 
 #### React — Vite
 
@@ -523,6 +533,17 @@ import { StatusBadge } from '@vantageos/mosaic/react/media';
 import { Toast, ConfirmDialog } from '@vantageos/mosaic/react/confirmation';
 import { Input, Select, Checkbox, RadioGroup } from '@vantageos/mosaic/react/forms';
 ```
+
+> **Server Components** — les entrées React (`@vantageos/mosaic`, les entrées de catégorie comme
+> `@vantageos/mosaic/display`, et chaque `@vantageos/mosaic/react/*`) portent `"use client";` en
+> première ligne à partir de la première version publiée après 0.13.0 (CHANGELOG `[Unreleased]`).
+> Un Server Component importe et rend alors leurs composants directement. Il reçoit des références
+> client : les validateurs et schémas exportés par ces entrées ne peuvent pas être appelés côté
+> serveur ; valider une configuration de vue côté serveur avec `@vantageos/mosaic/view-config`, qui
+> ne porte pas la directive. Jusqu'à 0.13.0 incluse, les fichiers construits ne portent aucune
+> directive et un Server Component qui rend un composant à hooks échoue (`useState is not a
+> function`) : importer les composants depuis un module qui commence par `"use client"`. Preuve :
+> Gate 6, `e2e/rsc-client-boundary/run-next-build.sh`.
 
 #### Preact — Vite (ESM uniquement)
 

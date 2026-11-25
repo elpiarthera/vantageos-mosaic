@@ -1,3 +1,4 @@
+import { readFile, writeFile } from "node:fs/promises";
 import { type Options, defineConfig } from "tsup";
 
 // esbuild's `Plugin` type, derived from tsup's own `Options` so we don't need
@@ -107,36 +108,88 @@ const PREACT_EXTERNAL = [
 
 const VIRTUAL_BUNDLED = [/^@tanstack\/(react-virtual|virtual-core)($|\/)/];
 
+/**
+ * React-pass entries that render React components. Each ships `"use client";` as its FIRST line,
+ * so a React Server Component (Next.js App Router) that imports one receives client references
+ * instead of evaluating hooks in the server layer, where `useState` and friends do not exist.
+ *
+ * Why a post-build step and not `banner`: esbuild drops module-level directives from bundled
+ * sources, and tsup's `treeshake: true` re-bundles every chunk through rollup, which removes a
+ * `banner` directive too ("Module level directives cause errors when bundled"). `onSuccess` runs
+ * after every format of this pass is written, so the directive is the last edit to the file.
+ */
+const REACT_CLIENT_ENTRIES = {
+  // v0.1.2 back-compat root entries — preserved verbatim
+  index: "src/index.ts",
+  progress: "src/components/progress/index.ts",
+  input: "src/components/input/index.ts",
+  display: "src/components/display/index.ts",
+  artifacts: "src/components/artifacts/index.ts",
+  confirmation: "src/components/confirmation/index.ts",
+  media: "src/components/media/index.ts",
+  forms: "src/components/forms/index.ts",
+  // v0.2.0 react runtime subpaths
+  "react/index": "src/runtimes/react/index.ts",
+  "react/progress": "src/runtimes/react/components/progress/index.ts",
+  "react/input": "src/runtimes/react/components/input/index.ts",
+  "react/display": "src/runtimes/react/components/display/index.ts",
+  "react/artifacts": "src/runtimes/react/components/artifacts/index.ts",
+  "react/confirmation": "src/runtimes/react/components/confirmation/index.ts",
+  "react/media": "src/runtimes/react/components/media/index.ts",
+  "react/forms": "src/runtimes/react/components/forms/index.ts",
+  "react/host": "src/runtimes/react/host/index.ts",
+};
+
+/**
+ * React-pass entries with no React at runtime. They must NOT carry the directive: a server module
+ * importing one (an MCP server validating its view config) needs the real functions, and a client
+ * reference cannot be called on the server.
+ */
+const REACT_PASS_SERVER_ENTRIES = {
+  server: "src/server/create-mosaic-resource.ts",
+  "server/resource": "src/server/mcp-app-resource.ts",
+  "server/config-view": "src/server/config-view.ts",
+  // React-free view-config parser (servers validate a config without a UI runtime)
+  "view-config": "src/view-config/index.ts",
+  // rxjs-backed postMessage stream, kept out of the root entry (rxjs is an optional peer)
+  streaming: "src/streaming/index.ts",
+  host: "src/host/host-context.ts",
+};
+
+const USE_CLIENT = '"use client";';
+const REACT_IMPORT =
+  /\bfrom\s*["']react(-dom)?(\/[a-z-]+)?["']|\brequire\(["']react(-dom)?(\/[a-z-]+)?["']\)/;
+const REACT_PASS_FORMAT_EXTENSIONS = [".js", ".cjs"];
+
+/**
+ * Prepend the directive to every client entry of the React pass (both formats), shifting its
+ * source map by one generated line, then refuse the build if a server entry imports React: such
+ * an entry belongs in REACT_CLIENT_ENTRIES. A missing output file throws (readFile), never skips.
+ */
+async function markClientEntries(): Promise<void> {
+  for (const name of Object.keys(REACT_CLIENT_ENTRIES)) {
+    for (const ext of REACT_PASS_FORMAT_EXTENSIONS) {
+      const file = `dist/${name}${ext}`;
+      const code = await readFile(file, "utf8");
+      if (code.startsWith(USE_CLIENT)) continue;
+      await writeFile(file, `${USE_CLIENT}\n${code}`);
+      const map = JSON.parse(await readFile(`${file}.map`, "utf8")) as { mappings: string };
+      map.mappings = `;${map.mappings}`;
+      await writeFile(`${file}.map`, JSON.stringify(map));
+    }
+  }
+  for (const name of Object.keys(REACT_PASS_SERVER_ENTRIES)) {
+    for (const ext of REACT_PASS_FORMAT_EXTENSIONS) {
+      const file = `dist/${name}${ext}`;
+      if (REACT_IMPORT.test(await readFile(file, "utf8"))) {
+        throw new Error(`${file} imports react but is not a client entry (REACT_CLIENT_ENTRIES)`);
+      }
+    }
+  }
+}
+
 const reactPass: Options = {
-  entry: {
-    // v0.1.2 back-compat root entries — preserved verbatim
-    index: "src/index.ts",
-    progress: "src/components/progress/index.ts",
-    input: "src/components/input/index.ts",
-    display: "src/components/display/index.ts",
-    artifacts: "src/components/artifacts/index.ts",
-    confirmation: "src/components/confirmation/index.ts",
-    media: "src/components/media/index.ts",
-    forms: "src/components/forms/index.ts",
-    server: "src/server/create-mosaic-resource.ts",
-    "server/resource": "src/server/mcp-app-resource.ts",
-    "server/config-view": "src/server/config-view.ts",
-    // React-free view-config parser (servers validate a config without a UI runtime)
-    "view-config": "src/view-config/index.ts",
-    // rxjs-backed postMessage stream, kept out of the root entry (rxjs is an optional peer)
-    streaming: "src/streaming/index.ts",
-    host: "src/host/host-context.ts",
-    // v0.2.0 react runtime subpaths
-    "react/index": "src/runtimes/react/index.ts",
-    "react/progress": "src/runtimes/react/components/progress/index.ts",
-    "react/input": "src/runtimes/react/components/input/index.ts",
-    "react/display": "src/runtimes/react/components/display/index.ts",
-    "react/artifacts": "src/runtimes/react/components/artifacts/index.ts",
-    "react/confirmation": "src/runtimes/react/components/confirmation/index.ts",
-    "react/media": "src/runtimes/react/components/media/index.ts",
-    "react/forms": "src/runtimes/react/components/forms/index.ts",
-    "react/host": "src/runtimes/react/host/index.ts",
-  },
+  entry: { ...REACT_CLIENT_ENTRIES, ...REACT_PASS_SERVER_ENTRIES },
   format: ["esm", "cjs"],
   dts: true,
   sourcemap: true,
@@ -155,6 +208,7 @@ const reactPass: Options = {
   // react / react-dom imported inside the bundled code stay external via
   // REACT_EXTERNAL above.
   noExternal: VIRTUAL_BUNDLED,
+  onSuccess: markClientEntries,
 };
 
 const preactPass: Options = {
