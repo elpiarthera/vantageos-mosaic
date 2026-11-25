@@ -24,6 +24,12 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # @vantageos/mosaic resolves @vantageos/mosaic-tokens (workspace:*) through the
+      # tokens package's dist/ (main/types/exports). Nothing in a fresh checkout has
+      # built it, so tsc, vitest, the mosaic build and check:config-view all fail with
+      # "Cannot find module '@vantageos/mosaic-tokens'" unless it is built first —
+      # the same step every other job that builds mosaic already runs.
+      - run: pnpm --filter @vantageos/mosaic-tokens build
 
       # Step 1: tsc --noEmit (zero type errors)
       - name: tsc
@@ -211,6 +217,7 @@ jobs:
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @vantageos/mosaic-tokens build
       - run: pnpm --filter @vantageos/mosaic run build
       - name: Eta gate check
         env:
