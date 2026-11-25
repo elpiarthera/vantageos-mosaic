@@ -45,6 +45,7 @@ function ConfirmDialogInner({
       : "bg-gray-900 text-white hover:bg-gray-700 focus-visible:outline-gray-900 px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
 
   return (
+    // react-doctor-disable-next-line react-doctor/no-noninteractive-element-interactions -- the modal <dialog> owns two dismiss shortcuts: Escape (keydown bubbling from the focused control inside) and a backdrop click; both duplicate the Cancel button, which stays the operable control
     <dialog
       ref={dialogRef}
       aria-modal="true"
@@ -54,11 +55,15 @@ function ConfirmDialogInner({
       onClick={handleBackdropClick}
       className="rounded-lg shadow-xl p-0 backdrop:bg-black/40 w-full max-w-md mx-auto"
     >
-      {/* Inner div stops click propagation so backdrop-click only fires on <dialog> itself */}
+      {/* Inner div stops click propagation so backdrop-click only fires on <dialog> itself.
+          Keydown stops here too, except Escape: from any focused control it must reach the dialog. */}
+      {/* react-doctor-disable-next-line react-doctor/no-static-element-interactions -- not an interactive element: the handlers only stop event propagation; every action inside is a real button */}
       <div
         className="p-6 flex flex-col gap-4"
         onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => {
+          if (e.key !== "Escape") e.stopPropagation();
+        }}
       >
         <h2 id={titleId} className="text-lg font-semibold text-gray-900">
           {title}

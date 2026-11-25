@@ -34,6 +34,7 @@ function ToastInner({ variant, title, description, duration, locale, onClose }: 
   const closeLabel = t("Toast.aria.close", locale);
 
   return (
+    // react-doctor-disable-next-line react-doctor/no-static-element-interactions -- the element has a role (status or alert, from getAriaRole) that the rule cannot read through the expression; the handler only catches Escape bubbling from the focused close button
     <div
       role={role}
       aria-live={ariaLive}

@@ -329,13 +329,13 @@ function SelectInner({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search…"
-              // biome-ignore lint/a11y/noAutofocus: focus follows popup open per APG combobox pattern
+              // biome-ignore lint/a11y/noAutofocus: focus follows popup open per APG combobox pattern // react-doctor-disable-next-line react-doctor/no-autofocus -- this input mounts only when the user opens the popup, so focus follows that action into the search field; it never moves focus on page load
               autoFocus
               aria-label="Search options"
             />
           ) : null}
           {/* biome-ignore lint/a11y/useSemanticElements: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure */}
-          {/* biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure */}
+          {/* biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure // react-doctor-disable-next-line react-doctor/no-noninteractive-element-to-interactive-role -- APG combobox popup: the explicit listbox role replaces the list semantics of <ul> */}
           <ul id={listboxId} role="listbox" aria-labelledby={labelId} tabIndex={-1}>
             {visibleOptions.length === 0 ? (
               <li className="px-3 py-2 text-sm text-slate-500" role="presentation">
@@ -351,7 +351,7 @@ function SelectInner({
                     key={opt.value}
                     id={getOptionId(instanceId, opt.value)}
                     // biome-ignore lint/a11y/useSemanticElements: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure
-                    // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure
+                    // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: APG listbox pattern — ul/li with listbox/option roles is the WAI-ARIA APG canonical structure // react-doctor-disable-next-line react-doctor/no-noninteractive-element-to-interactive-role -- APG combobox popup: each <li> of the listbox is an option, reached through aria-activedescendant on the combobox
                     role="option"
                     aria-selected={isSelected}
                     aria-disabled={opt.disabled || undefined}

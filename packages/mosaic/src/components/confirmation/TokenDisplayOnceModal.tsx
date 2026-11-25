@@ -63,6 +63,7 @@ function TokenDisplayOnceModalInner({
   }
 
   return (
+    // react-doctor-disable-next-line react-doctor/no-noninteractive-element-interactions -- the modal <dialog> owns two dismiss shortcuts: Escape (keydown bubbling from the focused control inside) and a backdrop click; both duplicate the Close button, which stays the operable control
     <dialog
       ref={dialogRef}
       aria-modal="true"
@@ -72,11 +73,15 @@ function TokenDisplayOnceModalInner({
       onClick={handleBackdropClick}
       className="rounded-lg shadow-xl p-0 backdrop:bg-black/40 w-full max-w-lg mx-auto"
     >
-      {/* Inner div stops click propagation so backdrop-click only fires on <dialog> itself */}
+      {/* Inner div stops click propagation so backdrop-click only fires on <dialog> itself.
+          Keydown stops here too, except Escape: from any focused control it must reach the dialog. */}
+      {/* react-doctor-disable-next-line react-doctor/no-static-element-interactions -- not an interactive element: the handlers only stop event propagation; every action inside is a real button */}
       <div
         className="p-6 flex flex-col gap-4"
         onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => {
+          if (e.key !== "Escape") e.stopPropagation();
+        }}
       >
         <h2 id={titleId} className="text-lg font-semibold text-gray-900">
           {title}

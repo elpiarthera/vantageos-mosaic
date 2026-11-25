@@ -57,10 +57,11 @@ describe("ProgressBar (react) — ARIA attributes", () => {
     expect(bar.getAttribute("aria-label")).toBe("Budget");
   });
 
-  it("is keyboard focusable (tabIndex=0)", () => {
+  it("is not a tab stop: a progressbar is read, not operated (no tabindex)", () => {
     render(<ProgressBar value={50} label="Licenses" locale="en" colorVariant="default" />);
     const bar = screen.getByRole("progressbar");
-    expect(bar.getAttribute("tabindex")).toBe("0");
+    expect(bar.hasAttribute("tabindex")).toBe(false);
+    expect(bar.tabIndex).toBe(-1);
   });
 });
 

@@ -116,7 +116,7 @@ function DetailBody({
       ) : null}
       <DetailView {...built.props} />
       {actions.length > 0 ? (
-        // biome-ignore lint/a11y/useSemanticElements: a fieldset would add a border and legend box to a row of buttons; role=group + aria-label is the non-structural grouping
+        // biome-ignore lint/a11y/useSemanticElements: a fieldset would add a border and legend box to a row of buttons; role=group + aria-label is the non-structural grouping // react-doctor-disable-next-line react-doctor/prefer-tag-over-role -- the suggested <address> means contact information; this is a named group of action buttons, for which role=group on a <div> is the ARIA pattern
         <div role="group" aria-label={t("ConfigDetail.actions", locale)} className="mosaic-actions">
           {actions.map((a) => (
             <ActionButton
