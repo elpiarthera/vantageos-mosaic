@@ -9,6 +9,10 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Publishing no longer runs the test suite on the publishing host. `prepublishOnly` now first runs `scripts/check-boat-proof.mjs`, which refuses the publish unless `BOAT_PROOF` names a saved Boat log whose last `BOAT <sha> exit=<n>` line is the current `HEAD` with exit 0, showing pnpm's `> @vantageos/mosaic@<version> publish:proof` banner, on a clean working tree. Produce the log with `boat-test-run <checkout> <HEAD sha> -- bash -c 'pnpm install --frozen-lockfile && pnpm --filter @vantageos/mosaic-tokens build && pnpm --filter @vantageos/mosaic run publish:proof' > <log> 2>&1`, then publish with `BOAT_PROOF=<log>` set; the refusal prints this command. `publish:proof` runs build, tests and size-limit. The Eta gate (`ETA_APPROVED_TASK_ID`) is unchanged. / La publication ne lance plus les tests sur l'hôte qui publie. `prepublishOnly` exécute d'abord `scripts/check-boat-proof.mjs`, qui refuse la publication sauf si `BOAT_PROOF` désigne un journal Boat enregistré dont la dernière ligne `BOAT <sha> exit=<n>` porte le `HEAD` courant avec le code 0, montre la bannière pnpm `> @vantageos/mosaic@<version> publish:proof`, sur un arbre de travail propre. Produire le journal avec la commande `boat-test-run` ci-dessus (le refus l'affiche), puis publier avec `BOAT_PROOF=<journal>`. `publish:proof` lance build, tests et size-limit. La porte Eta (`ETA_APPROVED_TASK_ID`) ne change pas.
+
 ## [0.13.0] — 2026-11-24
 
 ### Fixed

@@ -185,7 +185,8 @@
     "check:config-view": "node scripts/check-config-view-bundle.mjs",
     "smoke:config-view": "node --experimental-strip-types scripts/config-view-smoke.mjs",
     "build-storybook": "storybook build -o storybook-static",
-    "prepublishOnly": "node scripts/rewrite-workspace-deps.mjs && pnpm run build && pnpm run test && pnpm run size-limit && node scripts/check-eta-gate.js",
+    "publish:proof": "pnpm run build && pnpm run test && pnpm run size-limit",
+    "prepublishOnly": "node scripts/check-boat-proof.mjs && node scripts/rewrite-workspace-deps.mjs && pnpm run build && node scripts/check-eta-gate.js",
     "postpublish": "git checkout HEAD -- package.json && echo '[postpublish] reverted package.json — workspace:* refs restored for monorepo dev'"
   },
   "peerDependencies": {
