@@ -4,12 +4,13 @@ Fleet-wide MCP UI design system for VantageOS. Zod-validated, taxonomy-organized
 
 ## CI gates (v0.3.x pre-ship)
 
-Five gates enforce the v0.2.0 architecture, each a job in `.github/workflows/ci.yml`:
+Gates 1-6 enforce the architecture, each a job in `.github/workflows/ci.yml`:
 - **Gate 1** Cross-runtime build parity — `scripts/verify-build-parity.sh`
 - **Gate 2** PeerDeps optionality smoke — `e2e/peer-resolution/run-smoke.sh`
 - **Gate 3** Coherence dedicated — `pnpm --filter @vantageos/mosaic-tokens test`
 - **Gate 4** Cross-runtime subpath coverage — `packages/mosaic/scripts/cross-runtime-subpath-coverage-check.py --ga-mode`
 - **Gate 5** Tarball-cited paths — `packages/mosaic-tokens/scripts/tarball-cited-paths-guard.mjs`
+- **Gate 6** RSC client boundary — `e2e/rsc-client-boundary/run-next-build.sh` (Next.js App Router Server Component, `next build`)
 
 The `ci` job also carries inline gates that have no script file of their own: `tsc --noEmit` over the whole workspace (`pnpm -r exec tsc --noEmit`), whole-repo `biome check --error-on-warnings .`, the `@vantageos/mosaic` Vitest suite with coverage thresholds, the `size-limit` budget, `packages/mosaic/scripts/mosaic-registry-drift-check.mjs`, the Playwright + axe a11y specs (`tests/a11y/`), and the Storybook test-runner (`test-storybook` against a served static build).
 
