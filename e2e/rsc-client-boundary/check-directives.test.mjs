@@ -122,6 +122,87 @@ describe("Gate 6 census — VIOLATION pole (exit 1, names the file)", () => {
   });
 });
 
+// Trivia forms around a directive, from the ECMAScript grammar: WhiteSpace (space, tab, vertical
+// tab, form feed, no-break space, BOM, Zs), LineTerminator (LF, CR, LS, PS) and Comment (single-line,
+// multi-line; a multi-line comment holding a line terminator counts as a line break for ASI).
+// Each prefix is prepended to a server entry and must be read as a directive (exit 1).
+describe("Gate 6 census — trivia around a server directive (exit 1)", () => {
+  const forms = [
+    ["D: line comment after the literal", "dist/server/config-view.js", '"use client" // injected'],
+    [
+      "F: block comments before and after, then ;",
+      "dist/view-config.cjs",
+      '/* banner */ "use client" /* x */;',
+    ],
+    ["block comment before, same line", "dist/server/resource.js", "/* a */ 'use client'"],
+    ["block comment after, then ;", "dist/preact/forms.js", '"use client" /* x */;'],
+    ["tab before and before ;", "dist/host.cjs", '\t"use client"\t;'],
+    ["vertical tab, form feed, no-break space", "dist/preact/progress.js", '\v\f\u00a0"use client"\u00a0;'],
+    ["BOM first", "dist/streaming.js", '\ufeff"use client";'],
+    ["line separator ends the statement", "dist/server.js", '"use client"\u2028'],
+    ["CR line break ends the statement", "dist/server.cjs", '"use client"\r'],
+  ];
+  for (const [label, rel, prefix] of forms) {
+    it(label, () => {
+      const dir = pkgCopy((d) => {
+        const file = join(d, rel);
+        writeFileSync(file, `${prefix}\n${readFileSync(file, "utf8")}`);
+        assert.ok(readFileSync(file, "utf8").startsWith(prefix), `${rel} not landed`);
+      });
+      const r = census(dir);
+      assert.equal(r.status, 1, r.out);
+      assert.match(r.out, new RegExp(rel.replaceAll("/", "\\/").replaceAll(".", "\\.")));
+    });
+  }
+
+  it("block comment spanning lines between two directives", () => {
+    const rel = "dist/tokens.cjs";
+    const prefix = "'use strict' /* a\n b */ \"use client\"";
+    const dir = pkgCopy((d) => {
+      const file = join(d, rel);
+      writeFileSync(file, `${prefix}\n${readFileSync(file, "utf8")}`);
+      assert.ok(readFileSync(file, "utf8").startsWith(prefix), `${rel} not landed`);
+    });
+    const r = census(dir);
+    assert.equal(r.status, 1, r.out);
+    assert.match(r.out, /dist\/tokens\.cjs/);
+  });
+});
+
+describe("Gate 6 census — trivia forms that must PASS or REFUSE", () => {
+  it("a client entry whose directive is wrapped in comments passes (exit 0)", () => {
+    const dir = pkgCopy((d) =>
+      rewriteHead(
+        d,
+        "dist/react/input.js",
+        (c) => `/* banner */ "use client" // kept\n${dropFirstLine(c)}`,
+        '/* banner */ "use client" // kept',
+      ),
+    );
+    const r = census(dir);
+    assert.equal(r.status, 0, r.out);
+  });
+
+  it('"use client" continued by an expression is not a directive (exit 0)', () => {
+    const dir = pkgCopy((d) => {
+      const file = join(d, "dist/view-config.js");
+      writeFileSync(file, `"use client" /* x */ .length;\n${readFileSync(file, "utf8")}`);
+    });
+    const r = census(dir);
+    assert.equal(r.status, 0, r.out);
+  });
+
+  it("a prologue string with an escape sequence refuses (exit 2)", () => {
+    const dir = pkgCopy((d) => {
+      const file = join(d, "dist/view-config.cjs");
+      writeFileSync(file, `"use\\u0020client";\n${readFileSync(file, "utf8")}`);
+    });
+    const r = census(dir);
+    assert.equal(r.status, 2, r.out);
+    assert.match(r.out, /REFUSING TO JUDGE: .*view-config\.cjs/);
+  });
+});
+
 describe("Gate 6 census — REFUSE pole (exit 2, REFUSING TO JUDGE)", () => {
   it("a missing package root", () => {
     const r = census(join(scratch, "does-not-exist"));
