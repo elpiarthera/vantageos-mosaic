@@ -47,6 +47,9 @@ echo "=== Gate 6: installing next@$NEXT_VERSION react@$REACT_VERSION + the tarba
     "next@$NEXT_VERSION" "react@$REACT_VERSION" "react-dom@$REACT_VERSION" \
     "$MOSAIC_TGZ" "$TOKENS_TGZ" )
 
+echo "=== Gate 6: census self-test (PASS / VIOLATION / REFUSE poles, mutations of the installed package) ==="
+MOSAIC_PKG_DIR="$CONSUMER/node_modules/@vantageos/mosaic" node --test "$FIXTURE/check-directives.test.mjs"
+
 echo "=== Gate 6: next build (app/page.jsx is a Server Component) ==="
 ( cd "$CONSUMER" && NEXT_TELEMETRY_DISABLED=1 npx --no-install next build )
 
