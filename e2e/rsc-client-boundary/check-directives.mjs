@@ -39,40 +39,76 @@ function read(path) {
   }
 }
 
-/** Skip whitespace and comments from `i`; returns the next code index (code.length at end). */
-function skipTrivia(code, i) {
+// Trivia, from the ECMAScript grammar (ECMA-262, "Lexical Grammar"): WhiteSpace (TAB, VT, FF,
+// ZWNBSP/BOM, any Zs code point including SP and NBSP), LineTerminator (LF, CR, LS, PS) and Comment
+// (SingleLineComment `// ...` up to a line terminator, MultiLineComment `/* ... */`; a
+// MultiLineComment holding a line terminator counts as a line terminator for ASI).
+const WHITE_SPACE = /[\t\v\f\ufeff\p{Zs}]/u;
+const LINE_TERMINATOR = /[\n\r\u2028\u2029]/;
+// After a line break, a token starting with one of these continues the expression (no ASI), so the
+// string literal before it is not a statement of its own. Declared set: punctuators that can
+// follow an expression, plus the template backtick.
+const CONTINUES_EXPRESSION = /^(?:[([.+\-*/%,?=<>&|^`]|in\b|instanceof\b)/;
+
+/**
+ * Skip trivia from `i`. Returns { at, newline }: the next code index (code.length at the end) and
+ * whether a line terminator was crossed. An unterminated MultiLineComment refuses.
+ */
+function skipTrivia(code, i, file) {
   let j = i;
+  let newline = false;
   for (;;) {
-    while (j < code.length && /\s/.test(code[j])) j += 1;
-    if (code.startsWith("//", j)) {
-      const nl = code.indexOf("\n", j);
-      j = nl < 0 ? code.length : nl + 1;
+    const ch = code[j];
+    if (j >= code.length) return { at: j, newline };
+    if (WHITE_SPACE.test(ch)) {
+      j += 1;
+    } else if (LINE_TERMINATOR.test(ch)) {
+      newline = true;
+      j += 1;
+    } else if (code.startsWith("//", j)) {
+      while (j < code.length && !LINE_TERMINATOR.test(code[j])) j += 1;
     } else if (code.startsWith("/*", j)) {
       const close = code.indexOf("*/", j + 2);
-      j = close < 0 ? code.length : close + 2;
+      if (close < 0) throw new Refusal(`${file}: unterminated comment in the directive prologue`);
+      if (LINE_TERMINATOR.test(code.slice(j + 2, close))) newline = true;
+      j = close + 2;
     } else {
-      return j;
+      return { at: j, newline };
     }
   }
 }
 
-/** The directive prologue: the string values of the leading string-literal statements. */
-function prologueDirectives(code) {
+/**
+ * The directive prologue: the values of the leading string-literal statements. A literal is a
+ * statement when, after trivia, it is followed by `;`, the end of the file, `}`, or a line break
+ * whose next token does not continue the expression. A prologue string holding an escape sequence
+ * is not decoded here: the census refuses rather than guess its value.
+ */
+function prologueDirectives(code, file) {
   const directives = [];
-  let i = skipTrivia(code, 0);
+  let i = skipTrivia(code, 0, file).at;
   while (code[i] === '"' || code[i] === "'") {
     const quote = code[i];
-    const end = code.indexOf(quote, i + 1);
-    if (end < 0) break;
+    let end = i + 1;
+    while (end < code.length && code[end] !== quote && !LINE_TERMINATOR.test(code[end])) {
+      if (code[end] === "\\") {
+        throw new Refusal(`${file}: prologue string with an escape sequence, value not decoded`);
+      }
+      end += 1;
+    }
+    if (code[end] !== quote) break;
     const value = code.slice(i + 1, end);
-    if (value.includes("\n") || value.includes("\\")) break;
-    // The literal is a statement only if it ends here: `;`, a line break, or the end of the file.
-    let j = end + 1;
-    while (j < code.length && (code[j] === " " || code[j] === "\t")) j += 1;
-    if (code[j] === ";") j += 1;
-    else if (j < code.length && code[j] !== "\n" && code[j] !== "\r") break;
+    const after = skipTrivia(code, end + 1, file);
+    let next = after.at;
+    if (code[next] === ";") {
+      next = skipTrivia(code, next + 1, file).at;
+    } else if (next >= code.length || code[next] === "}") {
+      // end of the file or of the block: the statement ends here
+    } else if (!after.newline || CONTINUES_EXPRESSION.test(code.slice(next, next + 10))) {
+      break;
+    }
     directives.push(value);
-    i = skipTrivia(code, j);
+    i = next;
   }
   return directives;
 }
@@ -110,7 +146,7 @@ function census(pkgRoot) {
         throw new Refusal(`exports ${key}: unknown condition "${condition}"`);
       }
       const code = read(join(pkgRoot, target));
-      const directives = prologueDirectives(code);
+      const directives = prologueDirectives(code, target);
       const expectClient =
         key === "./react" || key.startsWith("./react/") || REACT_IMPORT.test(code);
       if (expectClient) {
