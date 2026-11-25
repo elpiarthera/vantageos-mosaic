@@ -44,7 +44,11 @@ function census(dir) {
 function rewriteHead(dir, rel, transform, expectedFirstLine) {
   const file = join(dir, rel);
   writeFileSync(file, transform(readFileSync(file, "utf8")));
-  assert.equal(readFileSync(file, "utf8").split("\n", 1)[0], expectedFirstLine, `${rel} not landed`);
+  assert.equal(
+    readFileSync(file, "utf8").split("\n", 1)[0],
+    expectedFirstLine,
+    `${rel} not landed`,
+  );
 }
 
 const dropFirstLine = (code) => code.slice(code.indexOf("\n") + 1);
@@ -57,7 +61,12 @@ describe("Gate 6 census — PASS pole", () => {
 
   it("a client entry whose directive is single-quoted with no semicolon passes", () => {
     const dir = pkgCopy((d) =>
-      rewriteHead(d, "dist/react/media.js", (c) => `'use client'\n${dropFirstLine(c)}`, "'use client'"),
+      rewriteHead(
+        d,
+        "dist/react/media.js",
+        (c) => `'use client'\n${dropFirstLine(c)}`,
+        "'use client'",
+      ),
     );
     const r = census(dir);
     assert.equal(r.status, 0, r.out);

@@ -94,7 +94,9 @@ function census(pkgRoot) {
   for (const [key, value] of Object.entries(pkg.exports)) {
     if (typeof value === "string") {
       if (!NON_MODULE.test(value)) {
-        throw new Refusal(`exports ${key}: string target ${value} is not a shape this census reads`);
+        throw new Refusal(
+          `exports ${key}: string target ${value} is not a shape this census reads`,
+        );
       }
       result.skipped.push(`${key} -> ${value} (not a JS module)`);
       continue;
