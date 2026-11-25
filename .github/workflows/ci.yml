@@ -169,6 +169,28 @@ jobs:
       - name: Gate 2 — peer-resolution smoke
         run: bash e2e/peer-resolution/run-smoke.sh
 
+  rsc-client-boundary:
+    name: Gate 6 — RSC client boundary (Next.js App Router)
+    needs: build-parity-cross-runtime
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @vantageos/mosaic-tokens build
+      - run: pnpm --filter @vantageos/mosaic build
+      # A Next.js Server Component imports the React entries and `next build` prerenders it:
+      # red when a React entry ships without "use client" on its first line, or when a
+      # React-free entry (view-config, server/*, preact/*) ships with it.
+      - name: Gate 6 — rsc-client-boundary
+        run: bash e2e/rsc-client-boundary/run-next-build.sh
+
   coherence-test-mosaic-tokens:
     name: Gate 3 — Coherence dedicated (ship-blocker)
     runs-on: ubuntu-latest
